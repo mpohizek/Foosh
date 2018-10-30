@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "583639334947",
+    "firebase_url": "https://fooshandroid.firebaseio.com",
+    "project_id": "fooshandroid",
+    "storage_bucket": "fooshandroid.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583639334947:android:34906d69852e2aa2",
+        "android_client_info": {
+          "package_name": "foosh.air.foi.hr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583639334947-1e8n73our4r1l4qttl1iu32nns1rimt9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "foosh.air.foi.hr",
+            "certificate_hash": "ef574b7c6a22ebc91eebe1f71abb5feeb4aa9bdf"
+          }
+        },
+        {
+          "client_id": "583639334947-oeepf4skgp87vee23cn8l9tvarktsrue.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEOvA9j5MyuFuEcybEQTDJpZ3Tc5dUWW4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "583639334947-oeepf4skgp87vee23cn8l9tvarktsrue.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
