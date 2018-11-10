@@ -3,4 +3,7 @@
 
     <string name="facebook_application_id" translatable="false">285153438995763</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb285153438995763</string>
+    <string name="nav_home">Home</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 </resources>

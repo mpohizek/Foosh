@@ -3,7 +3,7 @@ package foosh.air.foi.hr;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends NavigationDrawerBaseActivity {
 
     private static final int RC_MAIN = 1001;
     private FirebaseAuth mAuth;
@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ConstraintLayout contentLayout = (ConstraintLayout) findViewById(R.id.main_layout);
+        getLayoutInflater().inflate(R.layout.activity_main_feed, contentLayout);
         mAuth = FirebaseAuth.getInstance();
         signOutButton = (Button) findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(new View.OnClickListener() {

@@ -1,6 +1,9 @@
 package foosh.air.foi.hr;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,18 +37,14 @@ public class SignInActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callSignInActivity();
+                if (isNetworkAvailable()){
+                    callSignInActivity();
+                }
+                else{
+                    Toast.makeText(SignInActivity.this, "No internet connection", Toast.LENGTH_LONG).show();
+                }
             }
         });
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE
-                        // Set the content to appear under the system bars so that the
-                        // content doesn't resize when the system bars hide and show.
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        // Hide the nav bar and status bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
         if (mAuth.getCurrentUser() != null){
             startActivity(new Intent(this, MainActivity.class));
@@ -53,12 +52,21 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isNetworkAvailable() throws NullPointerException{
+        try{
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+        } catch (NullPointerException ex){
+            return false;
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SIGN_IN){
             handleSignInResponse(resultCode, data);
-            return;
         }
     }
 
@@ -96,13 +104,10 @@ public class SignInActivity extends AppCompatActivity {
                 toast = Toast.makeText(this, "You have no internet connection", Toast.LENGTH_LONG);
                 toast.show();
             }
-            else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+            else {
                 toast = Toast.makeText(this, "Unknown Error!", Toast.LENGTH_LONG);
                 toast.show();
-                return;
             }
-            toast = Toast.makeText(this, "Unknown Error!", Toast.LENGTH_LONG);
-            toast.show();
         }
     }
     public void callSignInActivity(){
