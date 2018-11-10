@@ -12,4 +12,5 @@
 
     <color name="testRed">#DF4930</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#FFFFFF</color>
 </resources>
