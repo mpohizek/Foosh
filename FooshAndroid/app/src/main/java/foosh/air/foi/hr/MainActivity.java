@@ -1,19 +1,14 @@
 package foosh.air.foi.hr;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,10 +18,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int RC_SIGN_IN = 1000;
+    private static final int RC_MAIN = 1001;
     private FirebaseAuth mAuth;
     Button signOutButton;
-    ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    callSignInActivity();
+                                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
+                                    finish();
                                 } else {
                                     Toast.makeText(MainActivity.this, "Sign out failed", Toast.LENGTH_LONG).show();
                                 }
@@ -51,39 +46,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         if(mAuth.getCurrentUser() == null){
-            callSignInActivity();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_SIGN_IN){
-            handleSignInResponse(resultCode, data);
-            return;
-        }
-    }
-
-    private void handleSignInResponse(int resultCode, Intent data) {
-        IdpResponse response = IdpResponse.fromResultIntent(data);
-        Toast toast;
-        if (resultCode != RESULT_OK){
-            if (response == null) {
-                toast = Toast.makeText(this, "Sign in was cancelled!", Toast.LENGTH_LONG);
-                toast.show();
-            }
-            else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                toast = Toast.makeText(this, "You have no internet connection", Toast.LENGTH_LONG);
-                toast.show();
-            }
-            else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                toast = Toast.makeText(this, "Unknown Error!", Toast.LENGTH_LONG);
-                toast.show();
-                return;
-            }
-            toast = Toast.makeText(this, "Unknown Error!", Toast.LENGTH_LONG);
-            toast.show();
-            callSignInActivity();
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
         }
     }
     public void callSignInActivity(){
@@ -96,6 +60,6 @@ public class MainActivity extends AppCompatActivity {
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
                         .build(),
-                RC_SIGN_IN);
+                RC_MAIN);
     }
 }
