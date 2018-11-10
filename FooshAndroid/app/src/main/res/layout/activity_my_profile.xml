@@ -121,7 +121,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusant doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis." />
+            android:text="Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusant doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis."
+            android:textColor="@color/colorTextLightGray" />
 
 
     </LinearLayout>
@@ -161,6 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="VIŠE"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/moreArrow1"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -185,18 +187,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:columnCount="2"
-                android:padding="8dp">
+                android:padding="8dp"
+                android:background="@color/colorAccentBackground"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="0"
-                    android:text="ZAPOŠLJAVANJE" />
+                    android:text="ZAPOŠLJAVANJE"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold" />
 
                 <RatingBar
                     style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_column="1"
-                    android:layout_gravity="right" />
+                    android:layout_gravity="right"
+
+                    android:rating="3.5"
+
+                    android:progressBackgroundTintMode="add"
+                    android:progressBackgroundTint="@color/colorBlack"
+                    android:progressTintMode="src_atop"
+                    android:progressTint="@color/colorPrimaryDark"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -215,12 +228,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="0"
-                    android:text="RAD" />
+                    android:text="RAD"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold" />
 
                 <RatingBar
                     style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_column="1"
-                    android:layout_gravity="right" />
+                    android:layout_gravity="right"
+
+                    android:progressBackgroundTintMode="add"
+                    android:progressBackgroundTint="@color/colorBlack"
+                    android:progressTintMode="src_atop"
+                    android:progressTint="@color/colorPrimaryDark"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -273,6 +293,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="VIŠE"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/moreArrow2"
                 app:layout_constraintTop_toTopOf="parent" />
