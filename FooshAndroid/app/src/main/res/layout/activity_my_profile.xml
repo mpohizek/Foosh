@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout_editor_absoluteY="81dp">
+    tools:layout_editor_absoluteY="81dp"
+    android:id="@+id/activity_my_profile">
 
     <android.support.v7.widget.GridLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -21,9 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
 
         grid:columnCount="3"
-        grid:rowCount="3"
-
-        >
+        grid:rowCount="3">
 
         <de.hdodenhof.circleimageview.CircleImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
