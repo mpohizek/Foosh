@@ -203,9 +203,9 @@
                     android:layout_column="1"
                     android:layout_gravity="right"
 
-                    android:rating="3.5"
+                    android:rating="0"
 
-                    android:progressBackgroundTintMode="add"
+                    android:progressBackgroundTintMode="src_atop"
                     android:progressBackgroundTint="@color/colorBlack"
                     android:progressTintMode="src_atop"
                     android:progressTint="@color/colorPrimaryDark"/>
@@ -235,11 +235,11 @@
                     style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_column="1"
                     android:layout_gravity="right"
-
-                    android:progressBackgroundTintMode="add"
+                    
                     android:progressBackgroundTint="@color/colorBlack"
-                    android:progressTintMode="src_atop"
-                    android:progressTint="@color/colorPrimaryDark"/>
+                    android:progressBackgroundTintMode="src_atop"
+                    android:progressTint="@color/colorPrimaryDark"
+                    android:progressTintMode="src_atop" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -307,13 +307,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
         </android.support.constraint.ConstraintLayout>
-
-
-
     </LinearLayout>
-=======
-    tools:context=".MyProfileActivity">
->>>>>>> feature/Prijava_i_registracija
 
 </android.support.constraint.ConstraintLayout>

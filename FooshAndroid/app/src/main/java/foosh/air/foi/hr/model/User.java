@@ -5,24 +5,22 @@ import java.util.List;
 
 public class User {
     private String displayName;
-    private String profileImgUrl;
+    private String profileImgPath;
     private List<String> contact;
     private String bio;
-
-
-
     private String email;
 
-    public User() {
-    }
-
-    public User(String displayName, String profileImgUrl, List<String> contact, String bio, String email) {
+    public User(String displayName, String profileImgPath, List<String> contact, String bio, String email) {
         this.displayName = displayName;
-        this.profileImgUrl = profileImgUrl;
+        this.profileImgPath = profileImgPath;
         this.contact = contact;
         this.bio = bio;
         this.email = email;
     }
+
+    public User() {
+    }
+
 
     public String getDisplayName() {
         return displayName;
@@ -32,12 +30,12 @@ public class User {
         this.displayName = displayName;
     }
 
-    public String getImageUrl() {
-        return profileImgUrl;
+    public String getProfileImgPath() {
+        return profileImgPath;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.profileImgUrl = imageUrl;
+    public void setProfileImgPath(String profileImgPath) {
+        this.profileImgPath = profileImgPath;
     }
 
     public List<String> getContact() {

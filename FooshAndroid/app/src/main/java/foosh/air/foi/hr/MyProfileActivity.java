@@ -1,8 +1,8 @@
 package foosh.air.foi.hr;
 
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,9 +12,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.PicassoProvider;
-
-import java.util.Collection;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import foosh.air.foi.hr.model.User;
@@ -62,6 +59,7 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity implements o
     private void showData(DataSnapshot dataSnapshot) {
 
         user = dataSnapshot.getValue(User.class);
+
         TextView displayName = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userDisplayName);
         TextView email = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userEmail);
         TextView bio = (TextView) contentLayout.findViewById(R.id.linearLayout4).findViewById(R.id.userAboutMe);
@@ -69,8 +67,9 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity implements o
         displayName.setText(user.getDisplayName());
         email.setText(user.getEmail());
         bio.setText(user.getBio());
-        Picasso.get().load(user.getImageUrl()).into(profilePhoto);
-        //profilePhoto.setdra
+
+        Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+
         contentLayout.setVisibility(ConstraintLayout.VISIBLE);
     }
 }
