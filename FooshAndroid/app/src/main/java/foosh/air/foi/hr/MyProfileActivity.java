@@ -2,6 +2,7 @@ package foosh.air.foi.hr;
 
 import android.support.constraint.ConstraintLayout;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -60,15 +61,30 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity implements o
 
         user = dataSnapshot.getValue(User.class);
 
+        CircleImageView profilePhoto = (CircleImageView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userProfileImage);
         TextView displayName = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userDisplayName);
         TextView email = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userEmail);
+        ImageView locationIcon = (ImageView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.locationIcon);
+        TextView location = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userLocationName);
         TextView bio = (TextView) contentLayout.findViewById(R.id.linearLayout4).findViewById(R.id.userAboutMe);
-        CircleImageView profilePhoto = (CircleImageView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userProfileImage);
-        displayName.setText(user.getDisplayName());
-        email.setText(user.getEmail());
-        bio.setText(user.getBio());
+
 
         Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+        displayName.setText(user.getDisplayName());
+        email.setText(user.getEmail());
+
+        //Hiding the location icon and text if the user doesn't have a location specified in the database
+        if(user.getLocation() != null){
+            locationIcon.setVisibility(View.VISIBLE);
+            location.setVisibility(View.VISIBLE);
+            location.setText(user.getLocation());
+        }else{
+            locationIcon.setVisibility(View.INVISIBLE);
+            location.setVisibility(View.INVISIBLE);
+        }
+
+        bio.setText(user.getBio());
+
 
         contentLayout.setVisibility(ConstraintLayout.VISIBLE);
     }

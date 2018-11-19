@@ -9,18 +9,19 @@ public class User {
     private List<String> contact;
     private String bio;
     private String email;
+    private String location;
 
-    public User(String displayName, String profileImgPath, List<String> contact, String bio, String email) {
+    public User(String displayName, String profileImgPath, List<String> contact, String bio, String email, String location) {
         this.displayName = displayName;
         this.profileImgPath = profileImgPath;
         this.contact = contact;
         this.bio = bio;
         this.email = email;
+        this.location = location;
     }
 
     public User() {
     }
-
 
     public String getDisplayName() {
         return displayName;
@@ -52,6 +53,14 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getEmail() {
