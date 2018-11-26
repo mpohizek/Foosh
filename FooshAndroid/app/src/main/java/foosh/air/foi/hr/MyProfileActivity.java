@@ -115,26 +115,20 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity implements o
 
     private void showReviewData(DataSnapshot dataSnapshot) {
 
-        Map<String, Integer> numPeopleUserHired = new HashMap<>();
-        Map<String, Integer> numPeopleEmployedUser = new HashMap<>();
-
         int numHired = 0, numEmployed = 0;
-        float sumHired = 0;
-        float sumEmployed = 0;
+        int numHiredPeople = 0, numPeopleEmployed = 0;
+        float sumHired = 0, sumEmployed = 0;
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
-            String listingId = ds.getKey();
             float rating = ds.child("rating").getValue(float.class);
             if(ds.child("hired").getValue(boolean.class)){
                 sumHired = sumHired + rating;
                 numHired++;
-                numPeopleUserHired.put(listingId, 1);
 
             }else{
                 sumEmployed = sumEmployed + rating;
                 numEmployed++;
-                numPeopleEmployedUser.put(listingId, 1);
-            }
 
+            }
         }
 
         RatingBar ratingHired = (RatingBar) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.ratingHired);
@@ -154,11 +148,11 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity implements o
 
         hiredNumJobs.setText(numHired + hiredNumJobsText);
         //TODO: change to the number of people employed
-        hiredNumPeople.setText(numPeopleUserHired.size() + hiredNumPeopleText);
+        hiredNumPeople.setText(numHired + hiredNumPeopleText);
 
         employedNumJobs.setText(numEmployed + employedNumJobsText);
         //TODO: change to the number of people who hired the user
-        employedNumPeople.setText(numPeopleEmployedUser.size() + employedNumPeopleText);
+        employedNumPeople.setText(numEmployed + employedNumPeopleText);
 
     }
 }
