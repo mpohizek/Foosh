@@ -1,1 +1,1 @@
-include ':app', ':firebase'
+include ':app', ':firebase', ':core'
