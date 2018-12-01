@@ -6,4 +6,6 @@
     <string name="nav_home">Home</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+
+    <string name="sign_in">Sign in</string>
 </resources>
