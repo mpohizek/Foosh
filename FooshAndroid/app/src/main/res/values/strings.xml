@@ -8,4 +8,9 @@
     <string name="close">Close</string>
 
     <string name="sign_in">Sign in</string>
+    <string name="listing_date">Date published:</string>
+    <string name="listing_description">Description</string>
+    <string name="listing_price">Price:</string>
+    <string name="interested">I am interested</string>
+
 </resources>
