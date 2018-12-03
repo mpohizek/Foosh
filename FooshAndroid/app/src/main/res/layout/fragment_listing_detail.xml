@@ -11,7 +11,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:grid="http://schemas.android.com/apk/res-auto"
@@ -33,28 +33,18 @@
             <TextView
                 android:id="@+id/listingTitle"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="Tražim košnju trave"
+                android:text="Title"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                grid:layout_columnSpan="2"
+                grid:layout_columnSpan="3"
                 grid:layout_rowWeight="1" />
-
-            <TextView
-                android:id="@+id/listingDateTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/listing_date"
-                grid:layout_columnSpan="1"
-                grid:layout_gravity="right"
-                grid:layout_rowWeight="2" />
 
             <TextView
                 android:id="@+id/listingCategory"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="Kategorija"
                 grid:layout_columnSpan="2"
@@ -234,7 +224,7 @@
             android:id="@+id/descriptionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
             android:gravity="start"
             android:text="@string/listing_description"
@@ -247,10 +237,10 @@
 
         <TextView
             android:id="@+id/listingDescription"
-            android:layout_width="367dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
             android:text="Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusant doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis."
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
