@@ -38,7 +38,7 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
 
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         actionbar.setTitle("Moji oglasi");
 
         mAdsManager = new AdsManager(this);
@@ -56,11 +56,11 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem item1 = menu.add(0, MenuItem_FilterAds, 0, "Filter");
-        item1.setIcon(R.drawable.ic_filter_list_black_24dp);
+        item1.setIcon(R.drawable.ic_filter_list_white_24dp);
         item1.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         MenuItem item2 = menu.add(0, MenuItem_ExpandOpt, 1, "More");
-        item2.setIcon(R.drawable.ic_more_vert_black_24dp);
+        item2.setIcon(R.drawable.ic_more_vert_white_24dp);
         item2.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         return super.onCreateOptionsMenu(menu);
