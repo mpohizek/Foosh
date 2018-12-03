@@ -21,15 +21,19 @@
             android:name=".SignInActivity"
             android:permission="android.permission.ACCESS_NETWORK_STATE"
             android:theme="@style/AppTheme.Fullscreen">
+
+        </activity>
+        <activity android:name=".NavigationDrawerBaseActivity" />
+        <activity
+            android:name=".MyProfileActivity"
+            android:launchMode="singleTop"></activity>
+        <activity
+            android:name=".MyAdActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".NavigationDrawerBaseActivity" />
-        <activity android:name=".MyProfileActivity"
-            android:launchMode = "singleTop">
         </activity>
     </application>
 
