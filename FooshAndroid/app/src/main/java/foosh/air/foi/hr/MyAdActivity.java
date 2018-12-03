@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -73,6 +74,9 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
                 return true;
             case MenuItem_ExpandOpt:
                 //
+                return true;
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
                 return true;
 
             default:
