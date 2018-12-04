@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,14 +37,15 @@ public class MyProfileViewFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         contentLayout = (ConstraintLayout) container;
+
+
+
         return inflater.inflate(R.layout.fragment_my_profile_view, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -54,8 +56,13 @@ public class MyProfileViewFragment extends Fragment {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                showData(dataSnapshot);
-            }
+
+             try {
+                 showData(dataSnapshot);
+             }catch (Exception e){
+                Exception a = e;
+             }
+        }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -110,10 +117,19 @@ public class MyProfileViewFragment extends Fragment {
         bio.setText(user.getBio());
 
         contentLayout.setVisibility(ConstraintLayout.VISIBLE);
+
+        TextView editLink = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.editProfileLink);
+        editLink.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                openEditMyProfileFragment();
+            }
+        });
     }
 
     private void showReviewData(DataSnapshot dataSnapshot) {
-
         int numHired = 0, numEmployed = 0;
         int numHiredPeople = 0, numPeopleEmployed = 0;
         float sumHired = 0, sumEmployed = 0;
@@ -122,11 +138,9 @@ public class MyProfileViewFragment extends Fragment {
             if(ds.child("hired").getValue(boolean.class)){
                 sumHired = sumHired + rating;
                 numHired++;
-
             }else{
                 sumEmployed = sumEmployed + rating;
                 numEmployed++;
-
             }
         }
 
@@ -153,6 +167,24 @@ public class MyProfileViewFragment extends Fragment {
         //TODO: change to the number of people who hired the user
         employedNumPeople.setText(numEmployed + employedNumPeopleText);
 
+    }
+
+    private void openEditMyProfileFragment(){
+
+        Bundle userDataBundle = new Bundle();
+        userDataBundle.putString("ProfileImgPath",user.getProfileImgPath());
+        userDataBundle.putString("DisplayName",user.getDisplayName());
+        userDataBundle.putString("Location",user.getLocation());
+        userDataBundle.putString("Bio",user.getBio());
+
+        EditMyProfileFragment mEditMyProfileFragment = new EditMyProfileFragment();
+        mEditMyProfileFragment.setArguments(userDataBundle);
+
+        FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
+        mFragmentManager.beginTransaction()
+                .replace(R.id.main_layout, mEditMyProfileFragment )
+                .addToBackStack("profileEdit")
+                .commit();
     }
 
 }

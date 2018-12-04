@@ -6,4 +6,11 @@
     <string name="nav_home">Home</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="label_edit"><u>Uredi</u></string>
+    <string name="label_about_me">O MENI</string>
+    <string name="label_reviews">RECENZIJE</string>
+    <string name="label_more">VIŠE</string>
+    <string name="label_active_listings">AKTIVNI OGLASI</string>
+    <string name="label_hiring">ZAPOŠLJAVANJE</string>
+    <string name="label_work">RAD</string>
 </resources>
