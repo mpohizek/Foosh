@@ -10,7 +10,19 @@
     <string name="sign_in">Sign in</string>
     <string name="listing_date">Date published:</string>
     <string name="listing_description">Description</string>
+    <string name="listing_description_add">Add listing description</string>
     <string name="listing_price">Price:</string>
     <string name="interested">I am interested</string>
+    <string name="listing_add_new">Add new listing</string>
+    <string name="paying">Paying for service</string>
+    <string name="earning">I want to earn</string>
+    <string name="listing_title">Listing title</string>
+    <string name="listing_location">Location</string>
+    <string name="listing_category">Listing Category</string>
+    <string name="listing_category_pick">Pick listing Category</string>
+    <string name="add_listing_photos">Add photos</string>
+    <string name="currency">HRK</string>
+
+
 
 </resources>

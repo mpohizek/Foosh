@@ -26,4 +26,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="FirebaseUI.AuthMethodPicker.Logo">
+        <item name="android:layout_width">190dp</item>
+        <item name="android:layout_height">190dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:paddingTop">50dp</item>
+
+    </style>
+
 </resources>
