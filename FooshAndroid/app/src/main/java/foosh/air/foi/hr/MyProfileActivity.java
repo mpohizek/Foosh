@@ -32,7 +32,7 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
 
         mFragmentManager.beginTransaction()
              .replace(R.id.main_layout, new MyProfileViewFragment())
-             .addToBackStack("test")
+             
              .commit();
     }
 

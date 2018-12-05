@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,7 +108,8 @@ public class EditMyProfileFragment extends Fragment {
                     public void onClick(View v)
                     {
                         saveProfileChanges();
-                        getActivity().getFragmentManager().popBackStack();
+                        FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
+                        mFragmentManager.popBackStackImmediate();
                     }
                 }
         );
