@@ -40,9 +40,10 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Ads ad = myAds.get(position);
+        viewBinderHelper.setOpenOnlyOne(true);
         viewBinderHelper.bind(holder.swipeRevealLayout, String.valueOf(ad.getId()));
 
-        holder.status.setText(ad.getStatus().second);
+        holder.status.setText(ad.getStatus());
         StringBuilder kategorije = new StringBuilder(ad.getKategorije().get(0));
         for (String s : ad.getKategorije().subList(1, ad.getKategorije().size())) {
             kategorije.append(", " + s);
@@ -53,7 +54,7 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
         Picasso.get().load(ad.getSlike().get(0)).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(holder.slika);
 
         if (ad.isZaposljavam()){
-            if (ad.getStatus().second == "OBJAVLJEN"){
+            if (ad.getStatus() == "OBJAVLJEN"){
                 holder.prvi.setText("Obriši");
                 holder.prvi.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -69,7 +70,7 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
                     }
                 });
             }
-            else if (ad.getStatus().second == "U DOGOVORU"){
+            else if (ad.getStatus() == "U DOGOVORU"){
                 holder.prvi.setText("Poruke");
                 holder.prvi.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -103,7 +104,7 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
             }
         }
         else{
-            if (ad.getStatus().second == "U DOGOVORU"){
+            if (ad.getStatus() == "U DOGOVORU"){
                 holder.prvi.setText("Poruke");
                 holder.prvi.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -119,7 +120,7 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
                     }
                 });
             }
-            else if (ad.getStatus().second == "DOGOVOREN"){
+            else if (ad.getStatus() == "DOGOVOREN"){
                 holder.prvi.setText("Poruke");
                 holder.prvi.setOnClickListener(new View.OnClickListener() {
                     @Override

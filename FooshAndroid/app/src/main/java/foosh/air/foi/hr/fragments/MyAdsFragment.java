@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import foosh.air.foi.hr.MyAdActivity;
+import foosh.air.foi.hr.MyAdsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.MyAdsRecyclerViewAdapter;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.AdsManager;
@@ -46,24 +48,29 @@ public class MyAdsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(
                 R.layout.fragment_my_ads, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.id_recycle_view);
-        Log.d("mType", mType);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        MyAdsRecyclerViewAdapter myAdsRecyclerViewAdapter;
+        final MyAdsEndlessRecyclerViewAdapter myAdsEndlessRecyclerViewAdapter;
         if (mType == "OBJAVLJENI"){
-            myAdsRecyclerViewAdapter = new MyAdsRecyclerViewAdapter(adsManager.getAllAds(true));
+            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), adsManager.getAllAds(), recyclerView, 10);
         }
         else if (mType == "PRIJAVLJENI"){
-            myAdsRecyclerViewAdapter = new MyAdsRecyclerViewAdapter(adsManager.getAllAds(false));
+            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), adsManager.getAllAds(), recyclerView, 10);
         }
         else {
-            myAdsRecyclerViewAdapter = new MyAdsRecyclerViewAdapter(adsManager.getAllAds(true));
+            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), adsManager.getAllAds(), recyclerView, 10);
         }
-        recyclerView.setAdapter(myAdsRecyclerViewAdapter);
+        recyclerView.setAdapter(myAdsEndlessRecyclerViewAdapter);
+        myAdsEndlessRecyclerViewAdapter.setOnLoadMoreListener(new MyAdsEndlessRecyclerViewAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                adsManager.getAdsByUserId(adsManager.getLastKey(), 10,true,
+                        adsManager.getAllAds(), myAdsEndlessRecyclerViewAdapter);
+            }
+        });
 
         return recyclerView;
     }

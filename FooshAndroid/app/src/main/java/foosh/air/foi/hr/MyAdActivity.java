@@ -1,5 +1,6 @@
 package foosh.air.foi.hr;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
@@ -10,6 +11,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.ArrayList;
 
 import foosh.air.foi.hr.fragments.MyAdsFragment;
 import foosh.air.foi.hr.model.Ads;
@@ -42,7 +45,8 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
         actionbar.setTitle("Moji oglasi");
 
         mAdsManager = new AdsManager(this);
-        mAdsManager.setUpDummyData();
+        //mAdsManager.setUpDummyData();
+        //mAdsManager.createFirebaseListings(50);
 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager = contentLayout.findViewById(R.id.id_viewpager);
@@ -85,8 +89,8 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
     }
 
     @Override
-    public void fetchAds(Ads newData) {
-        return;
+    public ArrayList<Ads> fetchAds(Context context){
+        return null;
     }
 
     @Override

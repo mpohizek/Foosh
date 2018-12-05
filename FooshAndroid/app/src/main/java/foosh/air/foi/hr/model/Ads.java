@@ -1,35 +1,34 @@
 package foosh.air.foi.hr.model;
 
-import android.net.Uri;
 import android.support.v4.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Ads {
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    private int id;
+    private String id;
     private String naziv;
     private String opis;
     private String lokacija;
     private int vlasnik;
     private ArrayList<String> kategorije;
-    private ArrayList<Uri> slike;
+    private ArrayList<String> slike;
     private Date vrijemeKreiranja;
     private String qrCode;
     private boolean zaposljavam;
-    private Pair<Date, String> status;
+    private String status;
     public Ads() {
     }
 
-    public Ads(int id, String naziv, String opis, String lokacija, int vlasnik, ArrayList<String> kategorije, ArrayList<Uri> slike, Date vrijemeKreiranja, String qrCode, boolean zaposljavam, Pair<Date, String> status) {
+    public Ads(String id, String naziv, String opis, String lokacija, int vlasnik, ArrayList<String> kategorije, ArrayList<String> slike, Date vrijemeKreiranja, String qrCode, boolean zaposljavam, String status) {
         this.id = id;
         this.naziv = naziv;
         this.opis = opis;
@@ -83,11 +82,11 @@ public class Ads {
         this.kategorije = kategorije;
     }
 
-    public ArrayList<Uri> getSlike() {
+    public ArrayList<String> getSlike() {
         return slike;
     }
 
-    public void setSlike(ArrayList<Uri> slike) {
+    public void setSlike(ArrayList<String> slike) {
         this.slike = slike;
     }
 
@@ -115,11 +114,11 @@ public class Ads {
         this.zaposljavam = zaposljavam;
     }
 
-    public Pair<Date, String> getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Pair<Date, String> status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }
