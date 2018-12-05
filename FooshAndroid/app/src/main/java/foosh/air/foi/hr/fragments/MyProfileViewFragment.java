@@ -30,7 +30,7 @@ public class MyProfileViewFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private User user;
-    Object a;
+
     private Picasso imageLoader;
     private ConstraintLayout contentLayout;
 
