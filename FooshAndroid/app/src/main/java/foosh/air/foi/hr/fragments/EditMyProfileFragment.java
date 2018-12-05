@@ -6,9 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -17,7 +20,7 @@ import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.User;
 
 public class EditMyProfileFragment extends Fragment {
-    private ConstraintLayout contentLayout;
+    private ScrollView contentLayout;
     private User user;
 
     @Override
@@ -33,20 +36,7 @@ public class EditMyProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        contentLayout = (ConstraintLayout) container;
 
-        CircleImageView profilePhoto = contentLayout.findViewById(R.id.userProfileImage);
-        TextInputEditText displayName = contentLayout.findViewById(R.id.userDisplayName);
-        // TextInputEditText city = contentLayout.findViewById(R.id.userCity);
-        TextInputEditText bio = contentLayout.findViewById(R.id.userDescription);
-
-        Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
-        displayName.setText(user.getDisplayName());
-        if(user.getLocation() != null){
-            // city.setText(user.getLocation());
-        }
-
-        bio.setText(user.getBio());
 
         return inflater.inflate(R.layout.fragment_edit_profile, container, false);
     }
@@ -54,5 +44,21 @@ public class EditMyProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ScrollView scrollView = (ScrollView) view;
+
+        CircleImageView profilePhoto =  scrollView.findViewById(R.id.userProfileImage);
+        TextInputEditText displayName = scrollView.findViewById(R.id.userDisplayName);
+        TextInputEditText city = scrollView.findViewById(R.id.userCity);
+        TextInputEditText bio = scrollView.findViewById(R.id.userDescription);
+
+        Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+        displayName.setText(user.getDisplayName());
+        bio.setText(user.getBio());
+        if(user.getLocation() != null){
+            city.setText(user.getLocation());
+        }
+
+        
+
     }
 }

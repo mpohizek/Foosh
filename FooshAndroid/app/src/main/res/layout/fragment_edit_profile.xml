@@ -25,7 +25,7 @@
             app:layout_rowSpan="3" />
 
         <TextView
-            android:id="@+id/textChangeProfilePhoto"
+            android:id="@+id/linkChangeProfilePhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:hintEnabled="true"
-            app:layout_constraintTop_toBottomOf="@+id/textChangeProfilePhoto">
+            app:layout_constraintTop_toBottomOf="@+id/linkChangeProfilePhoto">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/userDisplayName"
