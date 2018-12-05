@@ -16,14 +16,12 @@ import java.util.ArrayList;
 
 import foosh.air.foi.hr.fragments.MyAdsFragment;
 import foosh.air.foi.hr.model.Ads;
-import foosh.air.foi.hr.model.AdsManager;
 
-public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsDelivered, MyAdsFragment.OnFragmentInteractionListener {
+public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsDelivered, MyAdsFragment.onFragmentInteractionListener {
 
     private ConstraintLayout contentLayout;
 
     private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
-    private AdsManager mAdsManager;
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     //what happens with layout when selected tab changes
@@ -43,10 +41,6 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         actionbar.setTitle("Moji oglasi");
-
-        mAdsManager = new AdsManager(this);
-        //mAdsManager.setUpDummyData();
-        //mAdsManager.createFirebaseListings(50);
 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager = contentLayout.findViewById(R.id.id_viewpager);
@@ -94,7 +88,5 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
     }
 
     @Override
-    public AdsManager onFragmentInteraction(Fragment fragment) {
-        return mAdsManager;
-    }
+    public void onFragmentInteraction(Fragment fragment) { }
 }

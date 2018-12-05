@@ -7,6 +7,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -19,9 +20,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import foosh.air.foi.hr.model.Ads;
-import foosh.air.foi.hr.model.AdsManager;
 
-public class MyAdsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements AdsManager.onDataFetched {
+public class MyAdsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
     private ArrayList<Ads> mDataset;
@@ -29,33 +29,13 @@ public class MyAdsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     private int mPostsPerPage;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
-    private OnLoadMoreListener onLoadMoreListener;
 
-    private boolean isLoading;
-    private int visibleThreshold = 5;
-    private int lastVisibleItem, totalItemCount;
-
-    @Override
-    public void adapter_success(boolean first_time) {
-        if (first_time){
-            notifyItemRangeInserted(0, mPostsPerPage);
+    public Ads getLastItem(){
+        if (mDataset.size() > 0 && mDataset.get(mDataset.size() - 1) != null){
+            return mDataset.get(mDataset.size() - 1);
         }
-        else {
-            mDataset.remove(mDataset.size() - 1);
-            notifyDataSetChanged();
-            setLoaded();
-        }
+        return null;
     }
-
-    @Override
-    public void adapter_failure() {
-        setLoaded();
-    }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore();
-    }
-
     public void add(int position, Ads item) {
         mDataset.add(position, item);
         notifyItemInserted(position);
@@ -67,29 +47,11 @@ public class MyAdsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
         notifyItemRemoved(position);
     }
 
-    public MyAdsEndlessRecyclerViewAdapter(Context context, ArrayList<Ads> myDataset, RecyclerView recyclerView, int mPostsPerPage) {
+    public MyAdsEndlessRecyclerViewAdapter(Context context, ArrayList<Ads> ads, int mPostsPerPage) {
 
         mcontext = context;
-        mDataset = myDataset;
+        mDataset = ads;
         this.mPostsPerPage = mPostsPerPage;
-
-        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                totalItemCount = linearLayoutManager.getItemCount();
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    if (onLoadMoreListener != null) {
-                        mDataset.add(null);
-                        notifyItemInserted(mDataset.size() - 1);
-                        onLoadMoreListener.onLoadMore();
-                    }
-                    isLoading = true;
-                }
-            }
-        });
     }
 
     @Override
@@ -122,7 +84,7 @@ public class MyAdsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
                 kategorije.append(", " + s);
             }
             viewHolderRow.kategorije.setText(kategorije);
-            viewHolderRow.naslov.setText(ad.getNaziv());
+            viewHolderRow.naslov.setText(ad.getId());
             viewHolderRow.opis.setText(ad.getOpis());
             Picasso.get().load(ad.getSlike().get(0)).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(viewHolderRow.slika);
 
@@ -238,20 +200,9 @@ public class MyAdsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
         return mDataset == null ? 0 : mDataset.size();
     }
 
-    public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
-        this.onLoadMoreListener = mOnLoadMoreListener;
-        if (onLoadMoreListener != null){
-            mOnLoadMoreListener.onLoadMore();
-        }
-    }
-
     @Override
     public int getItemViewType(int position) {
         return mDataset.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
-    }
-
-    public void setLoaded() {
-        isLoading = false;
     }
 
     private class ViewHolderLoading extends RecyclerView.ViewHolder {
