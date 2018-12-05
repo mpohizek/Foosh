@@ -5,26 +5,25 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 public class ListingDetailActivity extends NavigationDrawerBaseActivity {
+    private static final String KEY_PREFIX = "foosh.air.foi.hr.MyAdsFragment.";
+    private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";
+
+    private String fragmentKey;
     private String mListingId;
-    //private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //TODO: fetch the listing id from the previous activity
-        /*
-        mListingId = savedInstanceState.getString("listing_id");
-        if (mListingId == null) {
-            throw new IllegalArgumentException("Must pass listing_id");
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            fragmentKey = b.getString(ARG_TYPE_KEY);
+            //TODO: fetch the listing id from the previous activity
+            //mListingId = b.getString("listingId");
         }
-        */
-
-        //TODO: check if the current user is the owner, if true add the edit option
-        //mAuth = FirebaseAuth.getInstance();
-
         //TODO: remove temporary id
         mListingId = "l0004";
+        fragmentKey = "listingDetail";
 
         Bundle bundle = new Bundle();
         bundle.putString("listingId", mListingId);
@@ -32,7 +31,7 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity {
         // Create new fragment and transaction
         Fragment listingDetailFragment = new ListingDetailFragment();
         listingDetailFragment.setArguments(bundle);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().add(R.id.main_layout, listingDetailFragment, "listingDetail");
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().add(R.id.main_layout, listingDetailFragment, fragmentKey);
         //transaction.addToBackStack(null);
 
         // Commit the transaction

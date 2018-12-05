@@ -1,21 +1,22 @@
 package foosh.air.foi.hr;
 
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,13 +24,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import foosh.air.foi.hr.adapters.SlidingImageAdapter;
 import foosh.air.foi.hr.model.Listing;
 import foosh.air.foi.hr.model.User;
 
 public class ListingDetailFragment extends Fragment {
+
     private String mListingId;
     private Listing mListing;
     private User mOwner;
@@ -41,7 +47,7 @@ public class ListingDetailFragment extends Fragment {
     private TextView listingTitle;
     private TextView listingCategory;
     private TextView listingDescription;
-    private List<ImageView> listingPictures;
+    //private List<ImageView> listingPictures;
     private TextView listingPrice;
     private TextView listingLocation;
     private TextView listingDate;
@@ -49,6 +55,10 @@ public class ListingDetailFragment extends Fragment {
     private CircleImageView userProfilePhoto;
     private RatingBar userRating;
     private FrameLayout imageLayout;
+    
+    private ArrayList<Drawable> listingFetchedImages;
+
+    private static ViewPager mPager;
 
     public ListingDetailFragment() {
     }
@@ -59,31 +69,25 @@ public class ListingDetailFragment extends Fragment {
         if (getArguments() != null) {
             mListingId = getArguments().getString("listingId");
         }
-        return inflater.inflate(R.layout.fragment_listing_detail, container, false);
-    }
+        ScrollView scrollView = (ScrollView) inflater.inflate(R.layout.fragment_listing_detail, container, false);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        contentLayout = (ConstraintLayout) getActivity().findViewById(R.id.main_layout);
+        contentLayout = (ConstraintLayout) scrollView.findViewById(R.id.main_layout);
+        //contentLayout = (ConstraintLayout) scrollView.findViewById(R.id.main_layout);
         mListingReference = FirebaseDatabase.getInstance().getReference().child("listings").child(mListingId);
 
-        listingTitle = (TextView) getActivity().findViewById(R.id.listingTitle);
-        //TODO: list of categories
-        //listingCategory = findViewById(R.id.listingCategory);
-        listingDescription = (TextView) getActivity().findViewById(R.id.listingDescription);
+        listingTitle = (TextView) scrollView.findViewById(R.id.listingTitle);
+        listingCategory = (TextView) scrollView.findViewById(R.id.listingCategory);
+        listingDescription = (TextView) scrollView.findViewById(R.id.listingDescription);
 
-        //TODO list of pictures
-        imageLayout = (FrameLayout) getActivity().findViewById(R.id.imageLayout);
+        mPager = (ViewPager) scrollView.findViewById(R.id.viewpager);
 
-        
-        listingPrice = (TextView) getActivity().findViewById(R.id.ListingPrice);
-        listingLocation = (TextView) getActivity().findViewById(R.id.listingLocation);
-        listingDate = (TextView) getActivity().findViewById(R.id.listingDate);
-        userName = (TextView) getActivity().findViewById(R.id.listingOwner);
-        userProfilePhoto = (CircleImageView) getActivity().findViewById(R.id.userProfileImage);
-        userRating = (RatingBar) getActivity().findViewById(R.id.ratingHired);
+
+        listingPrice = (TextView) scrollView.findViewById(R.id.ListingPrice);
+        listingLocation = (TextView) scrollView.findViewById(R.id.listingLocation);
+        listingDate = (TextView) scrollView.findViewById(R.id.listingDate);
+        userName = (TextView) scrollView.findViewById(R.id.listingOwner);
+        userProfilePhoto = (CircleImageView) scrollView.findViewById(R.id.userProfileImage);
+        userRating = (RatingBar) scrollView.findViewById(R.id.ratingHired);
 
 
         mListingReference.addValueEventListener(new ValueEventListener() {
@@ -112,19 +116,36 @@ public class ListingDetailFragment extends Fragment {
 
             }
         });
+
+        return scrollView;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+    }
 
     private void showListingDetailData() {
         listingTitle.setText(mListing.getTitle());
-        //TODO: list of categories
-        //listingCategory.setText(listing.getCategory());
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy"); // here set the pattern as you date in string was containing like date/month/year
+            Date d = sdf.parse(mListing.getDateCreated());
+            sdf.applyPattern("dd.MM.yyyy.");
+            Log.d("datumm",sdf.format(d));
+            listingDate.setText(sdf.format(d));
+        } catch (ParseException e) {
+            listingDate.setText(mListing.getDateCreated());
+            e.printStackTrace();
+        }
+        listingCategory.setText(mListing.getCategory());
         listingDescription.setText(mListing.getDescription());
-        //TODO: list of pictures
-        //
+
+        mPager.setAdapter(new SlidingImageAdapter(getActivity(), mListing.getImages()));
+
         listingPrice.setText(mListing.getPrice()+" kn");
         listingLocation.setText(mListing.getLocation());
-        listingDate.setText(mListing.getDateCreated());
     }
 
     //sets the owner display name, profile image and the owners rating based on the type of listing

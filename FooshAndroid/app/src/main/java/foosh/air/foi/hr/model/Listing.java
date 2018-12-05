@@ -1,17 +1,17 @@
 package foosh.air.foi.hr.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Listing {
-    private List<String> category;
+    private String category;
     private String dateCreated;
     private String description;
     private boolean hiring;
-    private List<String> images;
+    private ArrayList<String> images;
 
     private String ownerId;
-
     private String qrCode;
     private String title;
     private String location;
@@ -20,7 +20,7 @@ public class Listing {
     public Listing() {
     }
 
-    public Listing(List<String> category, String dateCreated, String description, boolean hiring, List<String> images, String ownerId, String qrCode, String title, String location, int price) {
+    public Listing(String category, String dateCreated, String description, boolean hiring, ArrayList<String> images, String ownerId, String qrCode, String title, String location, int price) {
         this.category = category;
         this.dateCreated = dateCreated;
         this.description = description;
@@ -49,11 +49,11 @@ public class Listing {
         this.price = price;
     }
 
-    public List<String> getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(List<String> category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
@@ -81,11 +81,11 @@ public class Listing {
         this.hiring = hiring;
     }
 
-    public List<String> getImages() {
+    public ArrayList<String> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(ArrayList<String> images) {
         this.images = images;
     }
 
