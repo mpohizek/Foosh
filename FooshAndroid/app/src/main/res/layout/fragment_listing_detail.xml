@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="22.10.2018."
+                android:text="Datum"
                 grid:layout_columnSpan="1"
                 grid:layout_gravity="right" />
 
@@ -184,7 +184,8 @@
                 android:progressBackgroundTintMode="src_atop"
                 android:progressTint="@color/colorPrimaryDark"
                 android:progressTintMode="src_atop"
-                grid:layout_gravity="center_vertical"/>
+                grid:layout_gravity="center_vertical"
+                />
 
 
 

@@ -50,6 +50,7 @@ public class ListingDetailFragment extends Fragment {
     private DatabaseReference mOwnerReference;
     ConstraintLayout contentLayout;
 
+    private ScrollView scrollView;
     private TextView listingTitle;
     private TextView listingCategory;
     private TextView listingDescription;
@@ -73,7 +74,7 @@ public class ListingDetailFragment extends Fragment {
         if (getArguments() != null) {
             mListingId = getArguments().getString("listingId");
         }
-        ScrollView scrollView = (ScrollView) inflater.inflate(R.layout.fragment_listing_detail, container, false);
+        scrollView = (ScrollView) inflater.inflate(R.layout.fragment_listing_detail, container, false);
 
         mAuth = FirebaseAuth.getInstance();
         authOwner = false;
@@ -169,7 +170,7 @@ public class ListingDetailFragment extends Fragment {
         if(mListing.getImages() == null){
             behindImages.setText("Vlasnik oglasa nije dodao sliku");
         }else{
-            mPager.setAdapter(new SlidingImageAdapter(getActivity(), mListing.getImages()));
+            mPager.setAdapter(new SlidingImageAdapter(scrollView.getContext(), mListing.getImages()));
         }
 
         listingPrice.setText(mListing.getPrice()+" kn");
