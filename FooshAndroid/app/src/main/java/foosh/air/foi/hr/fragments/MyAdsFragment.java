@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,6 +25,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
+import foosh.air.foi.hr.LoadCompletedListener;
+import foosh.air.foi.hr.LoadMoreListener;
 import foosh.air.foi.hr.MyAdsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Ads;
@@ -34,18 +37,52 @@ public class MyAdsFragment extends Fragment{
         void onFragmentInteraction(Fragment fragment);
     }
 
-    private ArrayList<Ads> mDataset = new ArrayList<>();
-
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyAdsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "type-key";
 
     private MyAdsEndlessRecyclerViewAdapter myAdsEndlessRecyclerViewAdapter;
     private onFragmentInteractionListener mListener;
     private String mType;
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private LoadMoreListener loadMoreListener = new LoadMoreListener() {
+        @Override
+        public void loadMore(Ads id, int mPostsPerPage, final LoadCompletedListener loadCompletedListener) {
+            Query query;
+            final String key = id != null ? id.getId() : null;
+            if (key == null)
+                query = FirebaseDatabase.getInstance().getReference()
+                        .child("ads")
+                        .orderByKey()
+                        .limitToLast(mPostsPerPage);
+            else
+                query = FirebaseDatabase.getInstance().getReference()
+                        .child("ads")
+                        .orderByKey()
+                        .endAt(key)
+                        .limitToLast(mPostsPerPage);
 
-    private boolean isLoading;
-    private int visibleThreshold = 3;
-    private int lastVisibleItem, totalItemCount;
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ArrayList<Ads> ads = new ArrayList<>();
+                    if (dataSnapshot.exists()){
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            Log.d("key-id", userSnapshot.getValue(Ads.class).getId());
+                            if (!userSnapshot.getValue(Ads.class).getId().equals(key))
+                                ads.add(0, userSnapshot.getValue(Ads.class));
+                        }
+                        loadCompletedListener.onLoadCompleted(ads);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    loadCompletedListener.onLoadCompleted(new ArrayList<Ads>());
+                }
+            });
+        }
+    };
 
     public MyAdsFragment() {
         // Required empty public constructor
@@ -69,52 +106,26 @@ public class MyAdsFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(
+        swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(
                 R.layout.fragment_my_ads, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.id_recycle_view);
+        recyclerView = swipeRefreshLayout.findViewById(R.id.id_recycle_view);
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) new LinearLayoutManager(getContext());
+        linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        if (mType == "OBJAVLJENI"){
-            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), mDataset, 10);
+
+        if (mType.equals("OBJAVLJENI")){
+            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), recyclerView,
+                    swipeRefreshLayout, 10, loadMoreListener);
         }
-        else if (mType == "PRIJAVLJENI"){
-            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), mDataset, 10);
+        else if (mType.equals("PRIJAVLJENI")){
+            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), recyclerView,
+                    swipeRefreshLayout, 10, loadMoreListener);
         }
         else {
-            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), mDataset, 10);
+            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), recyclerView,
+                    swipeRefreshLayout, 10, loadMoreListener);
         }
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                totalItemCount = linearLayoutManager.getItemCount();
-                Log.d("totalItemCount", String.valueOf(totalItemCount));
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                Log.d("lastVisibleItem", String.valueOf(lastVisibleItem));
-                for (Ads ads : mDataset) {
-                    Log.d("mDataset", ads != null ? ads.getNaziv() : "null");
-                }
-                Log.d("mDataset", mDataset.toString());
-                Log.d("lastItem", myAdsEndlessRecyclerViewAdapter.getLastItem() != null ? myAdsEndlessRecyclerViewAdapter.getLastItem().getId() : "null");
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    recyclerView.post(new Runnable() {
-                        public void run() {
-                            String last = myAdsEndlessRecyclerViewAdapter.getLastItem() != null ? myAdsEndlessRecyclerViewAdapter.getLastItem().getId() : null;
-                            mDataset.add(null);
-                            myAdsEndlessRecyclerViewAdapter.notifyItemInserted(mDataset.size() - 1);
-                            isLoading = true;
-                            getAdsById(last, 10);
-                        }
-                    });
-                }
-            }
-        });
         recyclerView.setAdapter(myAdsEndlessRecyclerViewAdapter);
-        mDataset.add(null);
-        myAdsEndlessRecyclerViewAdapter.notifyItemInserted(mDataset.size() - 1);
-        isLoading = true;
-        getAdsById(null, 10);
         return recyclerView;
     }
 
@@ -140,8 +151,6 @@ public class MyAdsFragment extends Fragment{
     @Override
     public void onDetach() {
         super.onDetach();
-        mDataset.clear();
-        mDataset = null;
         mListener = null;
     }
 
@@ -171,42 +180,5 @@ public class MyAdsFragment extends Fragment{
             ad.setId(key);
             databaseReference.child(key).setValue(ad);
         }
-    }
-    public void getAdsById(final String id, final int mPostsPerPage) {
-        Query query;
-        if (id == null)
-            query = FirebaseDatabase.getInstance().getReference()
-                    .child("ads")
-                    .orderByKey()
-                    .limitToLast(mPostsPerPage);
-        else
-            query = FirebaseDatabase.getInstance().getReference()
-                    .child("ads")
-                    .orderByKey()
-                    .endAt(id)
-                    .limitToLast(mPostsPerPage);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("string_id", id != null ? id : "null");
-                mDataset.remove(mDataset.size() - 1);
-                myAdsEndlessRecyclerViewAdapter.notifyItemRemoved(mDataset.size());
-                int oldSize = mDataset.size();
-                if (dataSnapshot.exists()){
-                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        mDataset.add(oldSize != 0 ? oldSize - 1 : oldSize, userSnapshot.getValue(Ads.class));
-                    }
-
-                    myAdsEndlessRecyclerViewAdapter.notifyItemRangeInserted(oldSize, (int)dataSnapshot.getChildrenCount());
-                    isLoading = false;
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                isLoading = false;
-            }
-        });
     }
 }
