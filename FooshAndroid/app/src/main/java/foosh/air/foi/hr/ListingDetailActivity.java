@@ -18,8 +18,7 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity {
         Bundle b = getIntent().getExtras();
         if (b != null) {
             fragmentKey = b.getString(ARG_TYPE_KEY);
-            //TODO: fetch the listing id from the previous activity
-            //mListingId = b.getString("listingId");
+            mListingId = b.getString("listingId");
         }
         //TODO: remove temporary id
         mListingId = "l0004";
