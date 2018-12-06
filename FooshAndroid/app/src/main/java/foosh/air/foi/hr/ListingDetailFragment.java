@@ -1,6 +1,7 @@
 package foosh.air.foi.hr;
 
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -74,6 +75,75 @@ public class ListingDetailFragment extends Fragment {
         if (getArguments() != null) {
             mListingId = getArguments().getString("listingId");
         }
+
+        init(inflater, container);
+
+        //fetch listing data
+        mListingReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mListing = dataSnapshot.getValue(Listing.class);
+
+                if (mAuth.getCurrentUser().getUid().equals(mListing.getOwnerId())){
+                    listingInterested.setText("Uredi oglas");
+                    authOwner = true;
+                }
+                listingInterested.setEnabled(true);
+
+                showListingDetailData();
+
+                //fetch listing owner data
+                mOwnerReference = FirebaseDatabase.getInstance().getReference().child("users").child(mListing.getOwnerId());
+                mOwnerReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mOwner = dataSnapshot.getValue(User.class);
+                        showListingOwnerData();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        listingInterested.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(authOwner){
+                    //TODO: link to the edit listing fragment
+                    Log.d("ListingDetailFragment","Go to edit listing");
+                }else{
+                    //TODO: set the status for interested
+                    //TODO: if the user already clicked and the status is interested?
+                    Log.d("ListingDetailFragment","Set to interested");
+                }
+            }
+        });
+
+        View.OnClickListener profileOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("ListingDetailFragment","Go to profile " + mListing.getOwnerId());
+                Intent intent = new Intent(scrollView.getContext(), MyProfileActivity.class);
+                //TODO: sync with the MyProfileActivity tag
+                intent.putExtra("userId", mListing.getOwnerId());
+                startActivity(intent);
+            }
+        };
+        userProfilePhoto.setOnClickListener(profileOnClickListener);
+        userName.setOnClickListener(profileOnClickListener);
+
+        return scrollView;
+    }
+
+    private void init(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         scrollView = (ScrollView) inflater.inflate(R.layout.fragment_listing_detail, container, false);
 
         mAuth = FirebaseAuth.getInstance();
@@ -95,55 +165,6 @@ public class ListingDetailFragment extends Fragment {
         userProfilePhoto = (CircleImageView) scrollView.findViewById(R.id.userProfileImage);
         userRating = (RatingBar) scrollView.findViewById(R.id.ratingHired);
         behindImages = (TextView) scrollView.findViewById(R.id.behindImages);
-
-        mListingReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mListing = dataSnapshot.getValue(Listing.class);
-
-                if (mAuth.getCurrentUser().getUid().equals(mListing.getOwnerId())){
-                    listingInterested.setText("Uredi oglas");
-                    authOwner = true;
-                }
-                listingInterested.setEnabled(true);
-
-                showListingDetailData();
-                mOwnerReference = FirebaseDatabase.getInstance().getReference().child("users").child(mListing.getOwnerId());
-                mOwnerReference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        mOwner = dataSnapshot.getValue(User.class);
-                        Log.d("listing owner",mOwner.getDisplayName());
-
-                        showListingOwnerData();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        listingInterested.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(authOwner){
-                    //TODO: link to the edit listing fragment
-                    Log.d("authOwner","Go to edit listing");
-                }else{
-                    //TODO: set the status for interested
-                    //TODO: if the user already clicked and the status is interested
-                    Log.d("authOwner","Set to interested");
-                }
-            }
-        });
-        return scrollView;
     }
 
     @Override
