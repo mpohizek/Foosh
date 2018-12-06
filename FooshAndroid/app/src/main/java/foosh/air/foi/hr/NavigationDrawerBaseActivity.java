@@ -12,17 +12,25 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import foosh.air.foi.hr.model.User;
 
 public class NavigationDrawerBaseActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
-
+    FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
@@ -30,6 +38,9 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View navigationHeader = navigationView.getHeaderView(0);
+
+        setUserNameListener(navigationHeader);
+
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,10 +51,7 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
             }
         });
 
-        TextView displayNameText = (TextView) navigationHeader.findViewById(R.id.displayNameText);
-        displayNameText.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-        TextView emailText = (TextView) navigationHeader.findViewById(R.id.emailText);
-        emailText.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -74,5 +82,29 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
 
         actionBarDrawerToggle.syncState();
+    }
+
+    private void setUserNameListener(final View header){
+
+
+        DatabaseReference userRef;
+        userRef = FirebaseDatabase.getInstance().getReference("users/" + mUser.getUid());
+
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+
+                TextView displayNameText = (TextView) header.findViewById(R.id.displayNameText);
+                displayNameText.setText(user.getDisplayName());
+                TextView emailText = (TextView) header.findViewById(R.id.emailText);
+                emailText.setText(user.getEmail());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

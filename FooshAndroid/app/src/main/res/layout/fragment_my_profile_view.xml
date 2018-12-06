@@ -3,7 +3,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_my_profile"
+    android:id="@+id/fragment_my_profile_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout_editor_absoluteY="81dp">
@@ -19,15 +19,14 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:paddingTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
 
             grid:columnCount="3"
-            grid:rowCount="3">
+            grid:layout_constraintHorizontal_bias="0.0"
+            grid:rowCount="4">
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/userProfileImage"
@@ -93,6 +92,18 @@
                 app:layout_constraintStart_toEndOf="@id/locationIcon"
                 app:layout_constraintTop_toBottomOf="@id/userEmail"
                 grid:layout_rowWeight="1" />
+
+            <TextView
+                android:id="@+id/editProfileLink"
+
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:text="@string/label_edit"
+
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                grid:layout_rowWeight="1" />
+
         </android.support.v7.widget.GridLayout>
 
         <LinearLayout
@@ -112,9 +123,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="O MENI"
+                android:text="@string/label_about_me"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
 
             <TextView
                 android:id="@+id/userAboutMe"
@@ -150,7 +162,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="RECENZIJE"
+                    android:text="@string/label_reviews"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -161,7 +173,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="VIŠE"
+                    android:text="@string/label_more"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/moreArrow1"
@@ -195,7 +207,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_column="0"
-                        android:text="ZAPOŠLJAVANJE"
+                        android:text="@string/label_hiring"
                         android:textColor="@color/colorAccent"
                         android:textStyle="bold" />
 
@@ -231,7 +243,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_column="0"
-                        android:text="RAD"
+                        android:text="@string/label_work"
                         android:textColor="@color/colorAccent"
                         android:textStyle="bold" />
 
@@ -287,7 +299,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="AKTIVNI OGLASI"
+                    android:text="@string/label_active_listings"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -298,7 +310,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="VIŠE"
+                    android:text="@string/label_more"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/moreArrow2"
