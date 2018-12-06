@@ -31,6 +31,9 @@
         <activity android:name=".MyProfileActivity"
             android:launchMode = "singleTop">
         </activity>
+        <activity android:name=".ListingDetailActivity"
+            android:launchMode = "singleTop">
+        </activity>
     </application>
 
 </manifest>

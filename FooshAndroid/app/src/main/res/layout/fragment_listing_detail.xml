@@ -6,12 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout_editor_absoluteY="81dp">
-
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:grid="http://schemas.android.com/apk/res-auto"
@@ -33,60 +32,54 @@
             <TextView
                 android:id="@+id/listingTitle"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="Tražim košnju trave"
+                android:text="Title"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                grid:layout_columnSpan="2"
-                grid:layout_rowWeight="1" />
-
-            <TextView
-                android:id="@+id/listingDateTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/listing_date"
-                grid:layout_columnSpan="1"
-                grid:layout_gravity="right"
-                grid:layout_rowWeight="2" />
+                grid:layout_columnSpan="3" />
 
             <TextView
                 android:id="@+id/listingCategory"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="Kategorija"
-                grid:layout_columnSpan="2"
-                grid:layout_rowWeight="1" />
-
+                grid:layout_columnSpan="2" />
 
             <TextView
                 android:id="@+id/listingDate"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="22.10.2018."
+                android:text="Datum"
                 grid:layout_columnSpan="1"
-                grid:layout_gravity="right"
-                grid:layout_rowWeight="2" />
+                grid:layout_gravity="right" />
 
         </android.support.v7.widget.GridLayout>
 
         <FrameLayout
             android:id="@+id/imageLayout"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="200dp"
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/topLayout">
 
+
+            <TextView
+                android:id="@+id/behindImages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=""/>
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewpager"
                 android:layout_width="wrap_content"
-                android:layout_height="160dp"
+                android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             <ImageView
@@ -106,20 +99,23 @@
 
         </FrameLayout>
 
-        <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.v7.widget.GridLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:grid="http://schemas.android.com/apk/res-auto"
             android:id="@+id/gridLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
             android:background="@color/colorAccentBackground"
-            grid:columnCount="2"
+            grid:columnCount="5"
             grid:layout_constraintEnd_toEndOf="parent"
             grid:layout_constraintHorizontal_bias="1.0"
             grid:layout_constraintStart_toStartOf="parent"
             grid:layout_constraintTop_toBottomOf="@+id/imageLayout"
-            grid:rowCount="2">
+            grid:rowCount="2"
+            >
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/userProfileImage"
@@ -131,100 +127,78 @@
                 android:layout_marginBottom="4dp"
                 android:src="@drawable/avatar"
                 app:civ_border_color="#FF000000"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_rowSpan="2" />
+                app:layout_rowSpan="2"
+                app:layout_column="0"/>
 
             <TextView
                 android:id="@+id/listingOwner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="0dp"
                 android:text="Ime Prezime"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gridLayout"
-                grid:layout_gravity="start"
-                grid:layout_rowWeight="1" />
-
-            <RatingBar
-                android:id="@+id/ratingHired"
-                style="@style/Widget.AppCompat.RatingBar.Small"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:progressBackgroundTint="@color/colorBlack"
-                android:progressBackgroundTintMode="src_atop"
-                android:progressTint="@color/colorPrimaryDark"
-                android:progressTintMode="src_atop"
-                grid:layout_gravity="start"
-                grid:layout_rowWeight="2" />
+                grid:layout_gravity="start|center_vertical"
+                grid:layout_rowWeight="1"
+                grid:layout_column="1"
+                grid:layout_columnWeight="1"/>
 
 
-        </android.support.v7.widget.GridLayout>
-
-
-        <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:grid="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/gridLocationPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            grid:columnCount="4"
-            grid:layout_constraintEnd_toEndOf="parent"
-            grid:layout_constraintHorizontal_bias="1.0"
-            grid:layout_constraintStart_toStartOf="parent"
-            grid:layout_constraintTop_toBottomOf="@+id/gridLayout"
-            grid:rowCount="2">
-
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorWhite"
+                grid:layout_rowSpan="2"
+                grid:layout_column="2"
+                grid:layout_gravity="center_horizontal"/>
 
             <android.support.v7.widget.AppCompatImageView
-                android:layout_marginTop="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:layout_marginEnd="0dp"
                 android:src="@drawable/ic_outline_location_on_24px"
-                grid:layout_gravity="left"
-                grid:layout_rowWeight="1" />
+                grid:layout_column="3"
+                grid:layout_gravity="center_vertical|right"
+                grid:layout_columnWeight="2"
+                />
 
             <TextView
                 android:id="@+id/listingLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Varaždin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gridLayout"
-                grid:layout_gravity="left"
-                grid:layout_rowWeight="1" />
+                android:text="Location"
+                android:textSize="18sp"
+                grid:layout_column="4"
+                grid:layout_gravity="end|center_vertical"
+                />
 
-            <TextView
-                android:id="@+id/priceTitle"
+
+
+            <RatingBar
+                android:id="@+id/ratingHired"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="4dp"
-                android:gravity="end"
-                android:text="@string/listing_price"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_marginBottom="8dp"
+                android:progressBackgroundTint="@color/colorBlack"
+                android:progressBackgroundTintMode="src_atop"
+                android:progressTint="@color/colorPrimaryDark"
+                android:progressTintMode="src_atop"
+                grid:layout_gravity="center_vertical"
+                />
+
+
 
             <TextView
                 android:id="@+id/ListingPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:gravity="end"
-                android:text="100HRK"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
+                android:text="0"
+                android:textSize="18sp"
+                grid:layout_column="4"
+                grid:layout_gravity="end|center_vertical"
+                />
 
 
         </android.support.v7.widget.GridLayout>
@@ -234,28 +208,27 @@
             android:id="@+id/descriptionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
             android:gravity="start"
-            android:text="@string/listing_description"
+            android:text="Opis"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gridLocationPrice" />
+            app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
 
-        <TextView
+        <me.biubiubiu.justifytext.library.JustifyTextView
             android:id="@+id/listingDescription"
-            android:layout_width="367dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusant doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis."
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:text="Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusant doloremque laudantium, totam rem aperiam eaque ipsa.\n"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/descriptionTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTitle"/>
 
         <Button
             android:id="@+id/buttonInterested"
@@ -264,8 +237,9 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
             android:backgroundTint="@color/colorPrimary"
-            android:text="@string/interested"
+            android:text="zanima me"
             android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -274,5 +248,7 @@
             app:layout_constraintTop_toBottomOf="@+id/listingDescription" />
 
 
+
     </android.support.constraint.ConstraintLayout>
+
 </ScrollView>

@@ -10,14 +10,18 @@ public class User {
     private String bio;
     private String email;
     private String location;
+    private float ratingHired;
+    private float ratingEmployed;
 
-    public User(String displayName, String profileImgPath, List<String> contact, String bio, String email, String location) {
+    public User(String displayName, String profileImgPath, List<String> contact, String bio, String email, String location, float ratingHired, float ratingEmployed) {
         this.displayName = displayName;
         this.profileImgPath = profileImgPath;
         this.contact = contact;
         this.bio = bio;
         this.email = email;
         this.location = location;
+        this.ratingHired = ratingHired;
+        this.ratingEmployed = ratingEmployed;
     }
 
     public User() {
@@ -71,6 +75,19 @@ public class User {
         this.email = email;
     }
 
+    public float getRatingHired() {
+        return ratingHired;
+    }
 
+    public void setRatingHired(float ratingHired) {
+        this.ratingHired = ratingHired;
+    }
 
+    public float getRatingEmployed() {
+        return ratingEmployed;
+    }
+
+    public void setRatingEmployed(float ratingEmployed) {
+        this.ratingEmployed = ratingEmployed;
+    }
 }
