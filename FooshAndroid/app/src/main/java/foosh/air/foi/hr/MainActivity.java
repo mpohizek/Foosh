@@ -21,8 +21,6 @@ public class MainActivity extends NavigationDrawerBaseActivity {
     private static final int RC_MAIN = 1001;
     private FirebaseAuth mAuth;
     Button signOutButton;
-    //TODO: remove
-    Button listingDetailButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +50,6 @@ public class MainActivity extends NavigationDrawerBaseActivity {
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
-
-
-        //TODO: remove
-        listingDetailButton = (Button) findViewById(R.id.listingDetailButton);
-        listingDetailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ListingDetailActivity.class));
-            }
-        });
-
     }
     public void callSignInActivity(){
         List<AuthUI.IdpConfig> providers = Arrays.asList(
