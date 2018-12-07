@@ -27,7 +27,7 @@ import java.util.Random;
 
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.LoadMoreListener;
-import foosh.air.foi.hr.MyAdsEndlessRecyclerViewAdapter;
+import foosh.air.foi.hr.adapters.MyAdsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Ads;
 

@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.adapters;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
@@ -22,6 +22,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import foosh.air.foi.hr.LoadCompletedListener;
+import foosh.air.foi.hr.LoadMoreListener;
+import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Ads;
 
 public class MyAdsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

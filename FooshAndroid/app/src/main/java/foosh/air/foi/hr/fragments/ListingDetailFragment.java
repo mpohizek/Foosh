@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.fragments;
 
 
 import android.content.Intent;
@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import foosh.air.foi.hr.MyProfileActivity;
+import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.SlidingImageAdapter;
 import foosh.air.foi.hr.model.Listing;
 import foosh.air.foi.hr.model.User;

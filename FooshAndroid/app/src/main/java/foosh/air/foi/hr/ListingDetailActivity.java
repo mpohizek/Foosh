@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
+import foosh.air.foi.hr.fragments.ListingDetailFragment;
+
 public class ListingDetailActivity extends NavigationDrawerBaseActivity {
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyAdsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";

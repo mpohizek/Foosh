@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Ads;
 
 public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecyclerViewAdapter.ViewHolder> {
