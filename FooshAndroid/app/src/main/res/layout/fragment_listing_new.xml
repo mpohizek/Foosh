@@ -183,8 +183,7 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:hint="@string/listing_price"
                 android:inputType="numberDecimal"
-                android:text=""
-                app:allow_negative_values="false" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/text_currency"
