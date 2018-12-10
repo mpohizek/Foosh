@@ -177,16 +177,10 @@ public class ListingDetailFragment extends Fragment {
     private void showListingDetailData() {
         listingTitle.setText(mListing.getTitle());
 
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy"); // here set the pattern as you date in string was containing like date/month/year
-            Date d = sdf.parse(mListing.getDateCreated());
-            sdf.applyPattern("dd.MM.yyyy.");
-            Log.d("datumm",sdf.format(d));
-            listingDate.setText(sdf.format(d));
-        } catch (ParseException e) {
-            listingDate.setText(mListing.getDateCreated());
-            e.printStackTrace();
-        }
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy.");
+        Date d = mListing.getDateCreated();
+        listingDate.setText(sdf.format(d));
+
         listingCategory.setText(mListing.getCategory());
         listingDescription.setText(mListing.getDescription()+"\n");
 
