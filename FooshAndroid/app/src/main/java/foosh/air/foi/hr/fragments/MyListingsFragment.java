@@ -27,20 +27,20 @@ import java.util.Random;
 
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.LoadMoreListener;
-import foosh.air.foi.hr.adapters.MyAdsEndlessRecyclerViewAdapter;
+import foosh.air.foi.hr.adapters.MyListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Ads;
 
-public class MyAdsFragment extends Fragment{
+public class MyListingsFragment extends Fragment{
 
     public interface onFragmentInteractionListener{
         void onFragmentInteraction(Fragment fragment);
     }
 
-    private static final String KEY_PREFIX = "foosh.air.foi.hr.MyAdsFragment.";
+    private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "type-key";
 
-    private MyAdsEndlessRecyclerViewAdapter myAdsEndlessRecyclerViewAdapter;
+    private MyListingsEndlessRecyclerViewAdapter myListingsEndlessRecyclerViewAdapter;
     private onFragmentInteractionListener mListener;
     private String mType;
     private RecyclerView recyclerView;
@@ -84,12 +84,12 @@ public class MyAdsFragment extends Fragment{
         }
     };
 
-    public MyAdsFragment() {
+    public MyListingsFragment() {
         // Required empty public constructor
     }
 
-    public static MyAdsFragment getInstance(String type) {
-        MyAdsFragment fragment = new MyAdsFragment();
+    public static MyListingsFragment getInstance(String type) {
+        MyListingsFragment fragment = new MyListingsFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(ARG_TYPE_KEY, type);
@@ -114,18 +114,18 @@ public class MyAdsFragment extends Fragment{
         recyclerView.setLayoutManager(linearLayoutManager);
 
         if (mType.equals("OBJAVLJENI")){
-            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), recyclerView,
+            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(getContext(), recyclerView,
                     swipeRefreshLayout, 10, loadMoreListener);
         }
         else if (mType.equals("PRIJAVLJENI")){
-            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), recyclerView,
+            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(getContext(), recyclerView,
                     swipeRefreshLayout, 10, loadMoreListener);
         }
         else {
-            myAdsEndlessRecyclerViewAdapter = new MyAdsEndlessRecyclerViewAdapter(getContext(), recyclerView,
+            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(getContext(), recyclerView,
                     swipeRefreshLayout, 10, loadMoreListener);
         }
-        recyclerView.setAdapter(myAdsEndlessRecyclerViewAdapter);
+        recyclerView.setAdapter(myListingsEndlessRecyclerViewAdapter);
         return recyclerView;
     }
 
@@ -133,7 +133,7 @@ public class MyAdsFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         /*mDataset.add(null);
-        myAdsEndlessRecyclerViewAdapter.notifyItemInserted(mDataset.size() - 1);
+        myListingsEndlessRecyclerViewAdapter.notifyItemInserted(mDataset.size() - 1);
         getAdsById(null, 10);*/
     }
 

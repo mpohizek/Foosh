@@ -6,6 +6,6 @@ import java.util.ArrayList;
 
 import foosh.air.foi.hr.model.Ads;
 
-public interface onAdsDelivered {
+public interface onListingsDelivered {
     ArrayList<Ads> fetchAds(Context context);
 }

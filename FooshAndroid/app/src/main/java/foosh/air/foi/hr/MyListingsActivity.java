@@ -1,11 +1,9 @@
 package foosh.air.foi.hr;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -16,10 +14,10 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
-import foosh.air.foi.hr.fragments.MyAdsFragment;
+import foosh.air.foi.hr.fragments.MyListingsFragment;
 import foosh.air.foi.hr.model.Ads;
 
-public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsDelivered, MyAdsFragment.onFragmentInteractionListener {
+public class MyListingsActivity extends NavigationDrawerBaseActivity implements onListingsDelivered, MyListingsFragment.onFragmentInteractionListener {
 
     private ConstraintLayout contentLayout;
 

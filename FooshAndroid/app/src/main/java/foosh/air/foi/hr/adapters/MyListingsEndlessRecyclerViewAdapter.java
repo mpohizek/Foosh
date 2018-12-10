@@ -27,7 +27,7 @@ import foosh.air.foi.hr.LoadMoreListener;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Ads;
 
-public class MyAdsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
     private ArrayList<Ads> mDataset = new ArrayList<>();
@@ -89,8 +89,8 @@ public class MyAdsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
         notifyDataSetChanged();
     }
 
-    public MyAdsEndlessRecyclerViewAdapter(final Context context, RecyclerView recyclerView, final SwipeRefreshLayout swipeRefreshLayout,
-                                           final int mPostsPerPage, final LoadMoreListener loadMoreListener) {
+    public MyListingsEndlessRecyclerViewAdapter(final Context context, RecyclerView recyclerView, final SwipeRefreshLayout swipeRefreshLayout,
+                                                final int mPostsPerPage, final LoadMoreListener loadMoreListener) {
         mcontext = context;
         this.mPostsPerPage = mPostsPerPage;
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

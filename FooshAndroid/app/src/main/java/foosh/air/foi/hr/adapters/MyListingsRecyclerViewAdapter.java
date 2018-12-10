@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Ads;
 
-public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecyclerViewAdapter.ViewHolder> {
+public class MyListingsRecyclerViewAdapter extends RecyclerView.Adapter<MyListingsRecyclerViewAdapter.ViewHolder> {
 
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
     private ArrayList<Ads> myAds;
 
-    public MyAdsRecyclerViewAdapter(ArrayList<Ads> myAds) {
+    public MyListingsRecyclerViewAdapter(ArrayList<Ads> myAds) {
         this.myAds = myAds;
     }
     public void removeItem(int position) {
