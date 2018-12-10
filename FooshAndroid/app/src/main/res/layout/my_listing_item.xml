@@ -59,7 +59,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/my_ad_picture"
+                    android:id="@+id/my_listing_picture"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
                     android:layout_marginStart="8dp"
@@ -74,7 +74,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:text="TextView"
-                    app:layout_constraintStart_toEndOf="@+id/my_ad_picture"
+                    app:layout_constraintStart_toEndOf="@+id/my_listing_picture"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -84,7 +84,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:text="TextView"
-                    app:layout_constraintStart_toEndOf="@+id/my_ad_picture"
+                    app:layout_constraintStart_toEndOf="@+id/my_listing_picture"
                     app:layout_constraintTop_toBottomOf="@+id/textView" />
 
                 <TextView
@@ -95,7 +95,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:text="TextView"
-                    app:layout_constraintStart_toEndOf="@+id/my_ad_picture"
+                    app:layout_constraintStart_toEndOf="@+id/my_listing_picture"
                     app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
                 <TextView
@@ -106,7 +106,7 @@
                     android:layout_marginTop="8dp"
                     android:text="Za sad prazno!"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/my_ad_picture" />
+                    app:layout_constraintTop_toBottomOf="@+id/my_listing_picture" />
 
 
             </android.support.constraint.ConstraintLayout>

@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
@@ -25,12 +24,12 @@ import java.util.ArrayList;
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.LoadMoreListener;
 import foosh.air.foi.hr.R;
-import foosh.air.foi.hr.model.Ads;
+import foosh.air.foi.hr.model.Listing;
 
 public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
-    private ArrayList<Ads> mDataset = new ArrayList<>();
+    private ArrayList<Listing> mDataset = new ArrayList<Listing>();
     private Context mcontext;
     private int mPostsPerPage;
     private final int VIEW_TYPE_ITEM = 0;
@@ -59,27 +58,27 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     private boolean stopScrolling = false;
 
 
-    public ArrayList<Ads> getDataSet(){
+    public ArrayList<Listing> getDataSet(){
         return mDataset;
     }
 
-    public Ads getLastItem(){
+    public Listing getLastItem(){
         if (mDataset.size() > 0){
             return mDataset.get(mDataset.size() - 1);
         }
         return null;
     }
-    public void add(Ads item) {
+    public void add(Listing item) {
         mDataset.add(item);
         notifyItemInserted(mDataset.size() - 1);
     }
-    public void addList(ArrayList<Ads> ads){
+    public void addList(ArrayList<Listing> listings){
         int oldSize = mDataset.size();
-        mDataset.addAll(ads);
+        mDataset.addAll(listings);
         notifyItemRangeInserted(oldSize, mDataset.size());
     }
 
-    public void remove(Ads item) {
+    public void remove(Listing item) {
         int position = mDataset.indexOf(item);
         mDataset.remove(position);
         notifyItemRemoved(position);
@@ -105,9 +104,9 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 setLoading(true);
                 loadMoreListener.loadMore(null, mPostsPerPage, new LoadCompletedListener() {
                     @Override
-                    public void onLoadCompleted(ArrayList<Ads> newAds) {
-                        if (newAds.size() > 0){
-                            addList(newAds);
+                    public void onLoadCompleted(ArrayList<Listing> newListings) {
+                        if (newListings.size() > 0){
+                            addList(newListings);
                         }
                         setLoading(false);
                         setStopScrolling(false);
@@ -128,8 +127,8 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 Log.d("totalItemCount", String.valueOf(totalItemCount));
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 Log.d("lastVisibleItem", String.valueOf(lastVisibleItem));
-                for (Ads ads : mDataset) {
-                    Log.d("mDataset", ads != null ? ads.getNaziv() : "null");
+                for (Listing listings : mDataset) {
+                    Log.d("mDataset", listings != null ? listings.getTitle() : "null");
                 }
                 Log.d("lastItem", getLastItem() != null ? getLastItem().getId() : "null");
                 if (!isLoading && totalItemCount <= (lastVisibleItem + 1 + visibleThreshold)) {
@@ -137,14 +136,14 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                     recyclerView.post(new Runnable() {
                         @Override
                         public void run() {
-                            Ads lastAd = getLastItem();
+                            Listing lastAd = getLastItem();
                             add(null);
                             loadMoreListener.loadMore(lastAd, mPostsPerPage, new LoadCompletedListener() {
                                 @Override
-                                public void onLoadCompleted(ArrayList<Ads> newAds) {
+                                public void onLoadCompleted(ArrayList<Listing> newListings) {
                                     remove(null);
-                                    if (newAds.size() > 0){
-                                        addList(newAds);
+                                    if (newListings.size() > 0){
+                                        addList(newListings);
                                     }
                                     else{
                                         Snackbar.make(recyclerView, "Kraj", Snackbar.LENGTH_LONG)
@@ -173,10 +172,10 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 setLoading(true);
                 loadMoreListener.loadMore(null, mPostsPerPage, new LoadCompletedListener() {
                     @Override
-                    public void onLoadCompleted(ArrayList<Ads> newAds) {
+                    public void onLoadCompleted(ArrayList<Listing> newListings) {
                         remove(null);
-                        if (newAds.size() > 0){
-                            addList(newAds);
+                        if (newListings.size() > 0){
+                            addList(newListings);
                         }
                         setLoading(false);
                     }
@@ -188,7 +187,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_ad_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_listing_item, parent, false);
             return new ViewHolderRow(view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_bar_item, parent, false);
@@ -204,24 +203,22 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolderRow){
-            Ads ad = mDataset.get(position);
+            Listing listing = mDataset.get(position);
             ViewHolderRow viewHolderRow = (ViewHolderRow)holder;
             viewBinderHelper.setOpenOnlyOne(true);
-            viewBinderHelper.bind(viewHolderRow.swipeRevealLayout, String.valueOf(ad.getId()));
+            viewBinderHelper.bind(viewHolderRow.swipeRevealLayout, String.valueOf(listing.getId()));
 
-            viewHolderRow.status.setText(ad.getStatus());
-            StringBuilder kategorije = new StringBuilder(ad.getKategorije().get(0));
-            for (String s : ad.getKategorije().subList(1, ad.getKategorije().size())) {
-                kategorije.append(", " + s);
+            viewHolderRow.status.setText(listing.getStatus());
+            viewHolderRow.kategorije.setText(listing.getCategory());
+            viewHolderRow.naslov.setText(listing.getId());
+            viewHolderRow.opis.setText(listing.getDescription());
+            if(listing.getImages()!= null){
+                Picasso.get().load(listing.getImages().get(0)).centerCrop().fit().placeholder(R.drawable.avatar)
+                        .error(R.drawable.ic_launcher_foreground).into(viewHolderRow.slika);
             }
-            viewHolderRow.kategorije.setText(kategorije);
-            viewHolderRow.naslov.setText(ad.getId());
-            viewHolderRow.opis.setText(ad.getOpis());
-            Picasso.get().load(ad.getSlike().get(0)).placeholder(R.drawable.avatar)
-                    .error(R.drawable.ic_launcher_foreground).into(viewHolderRow.slika);
 
-            if (ad.isZaposljavam()){
-                if (ad.getStatus().equals("OBJAVLJEN")){
+            if (listing.isHiring()){
+                if (listing.getStatus().equals("OBJAVLJEN")){
                     viewHolderRow.prvi.setText("Obriši");
                     viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -237,7 +234,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                         }
                     });
                 }
-                else if (ad.getStatus().equals("U DOGOVORU")){
+                else if (listing.getStatus().equals("U DOGOVORU")){
                     viewHolderRow.prvi.setText("Poruke");
                     viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -271,7 +268,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 }
             }
             else{
-                if (ad.getStatus().equals("U DOGOVORU")){
+                if (listing.getStatus().equals("U DOGOVORU")){
                     viewHolderRow.prvi.setText("Poruke");
                     viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -287,7 +284,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                         }
                     });
                 }
-                else if (ad.getStatus().equals("DOGOVOREN")){
+                else if (listing.getStatus().equals("DOGOVOREN")){
                     viewHolderRow.prvi.setText("Poruke");
                     viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -357,7 +354,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             swipeRevealLayout = itemView.findViewById(R.id.id_swipe);
             prvi = itemView.findViewById(R.id.info_button);
             drugi = itemView.findViewById(R.id.edit_button);
-            slika = itemView.findViewById(R.id.my_ad_picture);
+            slika = itemView.findViewById(R.id.my_listing_picture);
             naslov = itemView.findViewById(R.id.textView);
             kategorije = itemView.findViewById(R.id.textView2);
             opis = itemView.findViewById(R.id.textView3);

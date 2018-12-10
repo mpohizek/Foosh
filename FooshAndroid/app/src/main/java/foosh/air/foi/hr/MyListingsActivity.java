@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 
 import foosh.air.foi.hr.fragments.MyListingsFragment;
-import foosh.air.foi.hr.model.Ads;
+import foosh.air.foi.hr.model.Listing;
 
 public class MyListingsActivity extends NavigationDrawerBaseActivity implements onListingsDelivered, MyListingsFragment.onFragmentInteractionListener {
 
@@ -38,7 +38,7 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         contentLayout = findViewById(R.id.main_layout);
-        getLayoutInflater().inflate(R.layout.activity_my_ad_base, contentLayout);
+        getLayoutInflater().inflate(R.layout.activity_my_listing_base, contentLayout);
 
         toolbar = findViewById(R.id.id_toolbar);
         setSupportActionBar(toolbar);
@@ -89,7 +89,7 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity implements 
     }
 
     @Override
-    public ArrayList<Ads> fetchAds(Context context){
+    public ArrayList<Listing> fetchListings(Context context){
         return null;
     }
 

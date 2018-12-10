@@ -4,8 +4,8 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-import foosh.air.foi.hr.model.Ads;
+import foosh.air.foi.hr.model.Listing;
 
 public interface onListingsDelivered {
-    ArrayList<Ads> fetchAds(Context context);
+    ArrayList<Listing> fetchListings(Context context);
 }

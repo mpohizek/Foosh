@@ -21,7 +21,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
@@ -29,7 +28,7 @@ import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.LoadMoreListener;
 import foosh.air.foi.hr.adapters.MyListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.R;
-import foosh.air.foi.hr.model.Ads;
+import foosh.air.foi.hr.model.Listing;
 
 public class MyListingsFragment extends Fragment{
 
@@ -47,17 +46,17 @@ public class MyListingsFragment extends Fragment{
     private SwipeRefreshLayout swipeRefreshLayout;
     private LoadMoreListener loadMoreListener = new LoadMoreListener() {
         @Override
-        public void loadMore(Ads id, int mPostsPerPage, final LoadCompletedListener loadCompletedListener) {
+        public void loadMore(Listing id, int mPostsPerPage, final LoadCompletedListener loadCompletedListener) {
             Query query;
             final String key = id != null ? id.getId() : null;
             if (key == null)
                 query = FirebaseDatabase.getInstance().getReference()
-                        .child("ads")
+                        .child("listings")
                         .orderByKey()
                         .limitToLast(mPostsPerPage);
             else
                 query = FirebaseDatabase.getInstance().getReference()
-                        .child("ads")
+                        .child("listings")
                         .orderByKey()
                         .endAt(key)
                         .limitToLast(mPostsPerPage);
@@ -65,20 +64,20 @@ public class MyListingsFragment extends Fragment{
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    ArrayList<Ads> ads = new ArrayList<>();
+                    ArrayList<Listing> listings = new ArrayList<>();
                     if (dataSnapshot.exists()){
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            Log.d("key-id", userSnapshot.getValue(Ads.class).getId());
-                            if (!userSnapshot.getValue(Ads.class).getId().equals(key))
-                                ads.add(0, userSnapshot.getValue(Ads.class));
+                            Log.d("key-id", userSnapshot.getValue(Listing.class).getId());
+                            if (!userSnapshot.getValue(Listing.class).getId().equals(key))
+                                listings.add(0, userSnapshot.getValue(Listing.class));
                         }
-                        loadCompletedListener.onLoadCompleted(ads);
+                        loadCompletedListener.onLoadCompleted(listings);
                     }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    loadCompletedListener.onLoadCompleted(new ArrayList<Ads>());
+                    loadCompletedListener.onLoadCompleted(new ArrayList<foosh.air.foi.hr.model.Listing>());
                 }
             });
         }
@@ -107,7 +106,7 @@ public class MyListingsFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(
-                R.layout.fragment_my_ads, container, false);
+                R.layout.fragment_my_listings, container, false);
         recyclerView = swipeRefreshLayout.findViewById(R.id.id_recycle_view);
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) new LinearLayoutManager(getContext());
         linearLayoutManager.setSmoothScrollbarEnabled(true);
@@ -165,20 +164,20 @@ public class MyListingsFragment extends Fragment{
         helper.add("https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Aspen-PopulusTremuloides-2001-09-27.jpg/220px-Aspen-PopulusTremuloides-2001-09-27.jpg");
 
         for (int i = 0; i < n; i++) {
-            Ads ad = new Ads();
-            ad.setNaziv("Oglas" + i);
-            ad.setOpis("Opis oglasa " + i);
-            ad.setKategorije(new ArrayList<String>(Arrays.asList("-LRlRviJIaUK7LbFHUv-", "-LRlS6iopNAcV66UL-Sb")));
-            ad.setStatus("DOGOVOREN");
-            ad.setLokacija("Lokacija" + 1);
-            ad.setVrijemeKreiranja(new Date());
-            ad.setQrCode("QR");
-            ad.setZaposljavam(new Random().nextInt() % 2 == 0);
-            ad.setId("testni");
-            ad.setSlike(helper);
+            Listing listing = new Listing();
+            listing.setTitle("Oglas" + i);
+            listing.setDescription("Opis oglasa " + i);
+            listing.setCategory("kategorija");
+            listing.setStatus("DOGOVOREN");
+            listing.setLocation("Lokacija" + 1);
+            listing.setDateCreated(new Date());
+            listing.setQrCode("QR");
+            listing.setHiring(new Random().nextInt() % 2 == 0);
+            listing.setId("testni");
+            listing.setImages(helper);
             String key = databaseReference.push().getKey();
-            ad.setId(key);
-            databaseReference.child(key).setValue(ad);
+            listing.setId(key);
+            databaseReference.child(key).setValue(listing);
         }
     }
 }
