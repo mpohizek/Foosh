@@ -1,9 +1,11 @@
 package foosh.air.foi.hr;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -21,12 +23,21 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
 
     private ConstraintLayout contentLayout;
 
+    public static final int id=1;
     private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     //what happens with layout when selected tab changes
     private TabLayout mTabLayout;
     private Toolbar toolbar;
+
+    //used in the NavigationDrawerBaseActivity for the menu item id
+    public static int getId() {
+        return id;
+    }
+    public static String getMenuTitle(){
+        return "Moji oglasi";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
