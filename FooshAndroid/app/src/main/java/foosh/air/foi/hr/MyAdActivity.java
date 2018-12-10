@@ -23,6 +23,7 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
 
     private ConstraintLayout contentLayout;
 
+    //used in the NavigationDrawerBaseActivity for the menu item id
     public static final int id=1;
     private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
     private PagerAdapter mPagerAdapter;
@@ -31,10 +32,6 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
     private TabLayout mTabLayout;
     private Toolbar toolbar;
 
-    //used in the NavigationDrawerBaseActivity for the menu item id
-    public static int getId() {
-        return id;
-    }
     public static String getMenuTitle(){
         return "Moji oglasi";
     }
