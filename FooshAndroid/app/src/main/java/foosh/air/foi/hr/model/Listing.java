@@ -2,11 +2,10 @@ package foosh.air.foi.hr.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Listing {
     private String category;
-    private Date dateCreated;
+    private String dateCreated;
     private String description;
     private boolean hiring;
     private String id;
@@ -22,7 +21,7 @@ public class Listing {
     public Listing() {
     }
 
-    public Listing(String category, Date dateCreated, String description, boolean hiring, String id, ArrayList<String> images, String location, String ownerId, int price, String qrCode, String status, String title) {
+    public Listing(String category, String dateCreated, String description, boolean hiring, String id, ArrayList<String> images, String location, String ownerId, int price, String qrCode, String status, String title) {
         this.category = category;
         this.dateCreated = dateCreated;
         this.description = description;
@@ -45,11 +44,11 @@ public class Listing {
         this.category = category;
     }
 
-    public Date getDateCreated() {
+    public String getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
     }
 

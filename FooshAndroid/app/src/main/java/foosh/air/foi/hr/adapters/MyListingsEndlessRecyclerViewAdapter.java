@@ -1,8 +1,10 @@
 package foosh.air.foi.hr.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
@@ -21,8 +24,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import foosh.air.foi.hr.ListingDetailActivity;
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.LoadMoreListener;
+import foosh.air.foi.hr.MainActivity;
+import foosh.air.foi.hr.MyListingsActivity;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Listing;
 
@@ -34,6 +40,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     private int mPostsPerPage;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
+    private final int descriptionLength = 100;
 
     public boolean isLoading() {
         return isLoading;
@@ -201,21 +208,42 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolderRow){
-            Listing listing = mDataset.get(position);
-            ViewHolderRow viewHolderRow = (ViewHolderRow)holder;
+            final Listing listing = mDataset.get(position);
+            final ViewHolderRow viewHolderRow = (ViewHolderRow)holder;
             viewBinderHelper.setOpenOnlyOne(true);
             viewBinderHelper.bind(viewHolderRow.swipeRevealLayout, String.valueOf(listing.getId()));
 
             viewHolderRow.status.setText(listing.getStatus());
             viewHolderRow.kategorije.setText(listing.getCategory());
             viewHolderRow.naslov.setText(listing.getId());
-            viewHolderRow.opis.setText(listing.getDescription());
+
+            if(listing.getDescription().length()<descriptionLength){
+                viewHolderRow.opis.setText(listing.getDescription());
+            }else{
+                String opis = listing.getDescription().substring(0,descriptionLength);
+                viewHolderRow.opis.setText(opis.trim() + "...");
+            }
+
             if(listing.getImages()!= null){
                 Picasso.get().load(listing.getImages().get(0)).centerCrop().fit().placeholder(R.drawable.avatar)
                         .error(R.drawable.ic_launcher_foreground).into(viewHolderRow.slika);
             }
+            viewHolderRow.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Log.d("recycler","click "+listing.getTitle());
+                    //TODO: figure out why the onclick doesn't work for the description of the listing
+                    Intent intent = new Intent(mcontext, ListingDetailActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","listingDetail");
+                    intent.putExtra("listingId", listing.getId());
+                    mcontext.startActivity(intent);
+                }
+            });
 
             if (listing.isHiring()){
                 if (listing.getStatus().equals("OBJAVLJEN")){
@@ -322,6 +350,8 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             ViewHolderLoading loadingViewHolder = (ViewHolderLoading) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
         }
+
+
     }
 
     @Override
@@ -348,6 +378,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
         private Button prvi, drugi;
         private ImageView slika;
         private TextView naslov, kategorije, opis, status;
+        private CardView cardView;
 
         public ViewHolderRow(View itemView) {
             super(itemView);
@@ -360,6 +391,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             opis = itemView.findViewById(R.id.textView3);
             opis.setMovementMethod(new ScrollingMovementMethod());
             status = itemView.findViewById(R.id.textView4);
+            cardView = itemView.findViewById(R.id.listingCardView);
         }
     }
 }

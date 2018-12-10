@@ -170,7 +170,7 @@ public class MyListingsFragment extends Fragment{
             listing.setCategory("kategorija");
             listing.setStatus("DOGOVOREN");
             listing.setLocation("Lokacija" + 1);
-            listing.setDateCreated(new Date());
+            //listing.setDateCreated(new Date());
             listing.setQrCode("QR");
             listing.setHiring(new Random().nextInt() % 2 == 0);
             listing.setId("testni");

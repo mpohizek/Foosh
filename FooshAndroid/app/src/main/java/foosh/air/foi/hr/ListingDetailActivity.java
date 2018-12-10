@@ -22,9 +22,6 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity {
             fragmentKey = b.getString(ARG_TYPE_KEY);
             mListingId = b.getString("listingId");
         }
-        //TODO: remove temporary id
-        mListingId = "l0004";
-        fragmentKey = "listingDetail";
 
         Bundle bundle = new Bundle();
         bundle.putString("listingId", mListingId);

@@ -177,9 +177,15 @@ public class ListingDetailFragment extends Fragment {
     private void showListingDetailData() {
         listingTitle.setText(mListing.getTitle());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy.");
-        Date d = mListing.getDateCreated();
-        listingDate.setText(sdf.format(d));
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
+            Date d = sdf.parse(mListing.getDateCreated());
+            sdf.applyPattern("dd.MM.yyyy.");
+            listingDate.setText(sdf.format(d));
+        }catch (Exception ex){
+            Log.e("ListingDetailFragment",ex.toString());
+            listingDate.setText(mListing.getDateCreated());
+        }
 
         listingCategory.setText(mListing.getCategory());
         listingDescription.setText(mListing.getDescription()+"\n");
