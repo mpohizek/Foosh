@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -58,6 +59,9 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         //displayNameText.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         TextView emailText = (TextView) navigationHeader.findViewById(R.id.emailText);
         //emailText.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+        navigationView.getMenu().add(Menu.NONE,NewListingActivity.id,Menu.NONE, NewListingActivity.getMenuTitle()).setIcon(R.drawable.ic_add_black_24dp);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -68,6 +72,14 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
                         startActivity(anIntent);
                         drawerLayout.closeDrawers();
                         break;*/
+
+                    case NewListingActivity.id:
+                        Intent intent = new Intent(NavigationDrawerBaseActivity.this, NewListingActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        drawerLayout.closeDrawer(Gravity.START, true);
+                        break;
 
                 }
                 return false;
