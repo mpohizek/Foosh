@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.fragments;
 
 
 import android.content.Intent;
@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import foosh.air.foi.hr.MyProfileActivity;
+import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.SlidingImageAdapter;
 import foosh.air.foi.hr.model.Listing;
 import foosh.air.foi.hr.model.User;
@@ -132,7 +134,8 @@ public class ListingDetailFragment extends Fragment {
             public void onClick(View v) {
                 Log.d("ListingDetailFragment","Go to profile " + mListing.getOwnerId());
                 Intent intent = new Intent(scrollView.getContext(), MyProfileActivity.class);
-                //TODO: sync with the MyProfileActivity tag
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","listingOwnerProfile");
                 intent.putExtra("userId", mListing.getOwnerId());
                 startActivity(intent);
             }
@@ -175,16 +178,16 @@ public class ListingDetailFragment extends Fragment {
     private void showListingDetailData() {
         listingTitle.setText(mListing.getTitle());
 
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy"); // here set the pattern as you date in string was containing like date/month/year
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
             Date d = sdf.parse(mListing.getDateCreated());
             sdf.applyPattern("dd.MM.yyyy.");
-            Log.d("datumm",sdf.format(d));
             listingDate.setText(sdf.format(d));
-        } catch (ParseException e) {
+        }catch (Exception ex){
+            Log.e("ListingDetailFragment",ex.toString());
             listingDate.setText(mListing.getDateCreated());
-            e.printStackTrace();
         }
+
         listingCategory.setText(mListing.getCategory());
         listingDescription.setText(mListing.getDescription()+"\n");
 

@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import foosh.air.foi.hr.fragments.MyAdsFragment;
+import foosh.air.foi.hr.fragments.MyListingsFragment;
 
 public class PagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
@@ -18,9 +18,9 @@ public class PagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return MyAdsFragment.getInstance("OBJAVLJENI");
+                return MyListingsFragment.getInstance("OBJAVLJENI");
             case 1:
-                return MyAdsFragment.getInstance("PRIJAVLJENI");
+                return MyListingsFragment.getInstance("PRIJAVLJENI");
             default:
                 return null;
         }

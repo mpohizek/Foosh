@@ -3,6 +3,7 @@ package foosh.air.foi.hr;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -11,28 +12,45 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 
-import foosh.air.foi.hr.fragments.MyAdsFragment;
-import foosh.air.foi.hr.model.Ads;
+import foosh.air.foi.hr.fragments.MyListingsFragment;
+import foosh.air.foi.hr.model.Listing;
 
-public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsDelivered, MyAdsFragment.onFragmentInteractionListener {
+public class MyListingsActivity extends NavigationDrawerBaseActivity implements onListingsDelivered, MyListingsFragment.onFragmentInteractionListener {
 
     private ConstraintLayout contentLayout;
 
+    //used in the NavigationDrawerBaseActivity for the menu item id
+    public static final int id=1;
     private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     //what happens with layout when selected tab changes
     private TabLayout mTabLayout;
     private Toolbar toolbar;
+    private AppBarLayout appBarLayoutMain;
+
+    public static String getMenuTitle(){
+        return "Moji oglasi";
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        overridePendingTransition(0, 0);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         contentLayout = findViewById(R.id.main_layout);
-        getLayoutInflater().inflate(R.layout.activity_my_ad_base, contentLayout);
+        getLayoutInflater().inflate(R.layout.activity_my_listing_base, contentLayout);
+
+        appBarLayoutMain = findViewById(R.id.id_appbar_main);
+        appBarLayoutMain.setVisibility(View.GONE);
 
         toolbar = findViewById(R.id.id_toolbar);
         setSupportActionBar(toolbar);
@@ -83,7 +101,7 @@ public class MyAdActivity extends NavigationDrawerBaseActivity implements onAdsD
     }
 
     @Override
-    public ArrayList<Ads> fetchAds(Context context){
+    public ArrayList<Listing> fetchListings(Context context){
         return null;
     }
 
