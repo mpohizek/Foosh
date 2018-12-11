@@ -25,6 +25,7 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
 
     private String fragmentKey;
     private String mUserId;
+    private Boolean firstTime = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +34,6 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
     }
 
     public void startProfileView(){
-        mFragmentManager = getSupportFragmentManager();
-
         Bundle b = getIntent().getExtras();
         if (b != null) {
             fragmentKey = b.getString(ARG_TYPE_KEY);
@@ -47,11 +46,30 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
             b.putString(ARG_TYPE_KEY, fragmentKey);
             b.putString("userId", mUserId);
         }
+        startFragment(b);
+    }
+
+    public void startFragment(Bundle b) {
+        mFragmentManager = getSupportFragmentManager();
 
         // Create new fragment and transaction
         Fragment myProfileViewFragment = new MyProfileViewFragment();
         myProfileViewFragment.setArguments(b);
-        mFragmentManager.beginTransaction().replace(R.id.main_layout, myProfileViewFragment, fragmentKey).commit();
+        if(!firstTime){
+            firstTime = true;
+            mFragmentManager.beginTransaction().replace(R.id.main_layout, myProfileViewFragment, fragmentKey).commit();
+        }else{
+            mFragmentManager.beginTransaction().replace(R.id.main_layout, myProfileViewFragment, fragmentKey).addToBackStack(null).commit();
+        }
+    }
 
+    @Override
+    public void onBackPressed() {
+        if(mFragmentManager.getBackStackEntryCount() == 0){
+            super.onBackPressed();
+            finish();
+        }else {
+            mFragmentManager.popBackStack();
+        }
     }
 }

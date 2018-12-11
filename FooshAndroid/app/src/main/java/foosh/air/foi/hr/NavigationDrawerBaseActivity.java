@@ -45,13 +45,22 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(NavigationDrawerBaseActivity.this, MyProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","myProfile");
-                intent.putExtra("userId", FirebaseAuth.getInstance().getUid());
-                startActivity(intent);
+                if(NavigationDrawerBaseActivity.this instanceof MyProfileActivity){
+                    String fragmentKey = "myProfile";
+                    String mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    Bundle b = new Bundle();
+                    b.putString("foosh.air.foi.hr.MyListingsFragment.fragment-key", fragmentKey);
+                    b.putString("userId", mUserId);
+                    ((MyProfileActivity) NavigationDrawerBaseActivity.this).startFragment(b);
+                }else{
+                    Intent intent = new Intent(NavigationDrawerBaseActivity.this, MyProfileActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","myProfile");
+                    intent.putExtra("userId", FirebaseAuth.getInstance().getUid());
+                    startActivity(intent);
+                }
                 drawerLayout.closeDrawer(Gravity.START, true);
             }
         });
