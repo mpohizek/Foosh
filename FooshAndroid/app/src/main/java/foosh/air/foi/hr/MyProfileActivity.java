@@ -16,10 +16,15 @@ import foosh.air.foi.hr.fragments.EditMyProfileFragment;
 import foosh.air.foi.hr.fragments.MyProfileViewFragment;
 
 public class MyProfileActivity extends NavigationDrawerBaseActivity {
+    private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
+    private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";
 
     private FirebaseAuth mAuth;
     private ConstraintLayout contentLayout;
     private FragmentManager mFragmentManager;
+
+    private String fragmentKey;
+    private String mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +35,23 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
     public void startProfileView(){
         mFragmentManager = getSupportFragmentManager();
 
-        mFragmentManager.beginTransaction()
-             .replace(R.id.main_layout, new MyProfileViewFragment())
-             
-             .commit();
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            fragmentKey = b.getString(ARG_TYPE_KEY);
+            mUserId = b.getString("userId");
+        }
+        else{
+            fragmentKey = "myProfile";
+            mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            b = new Bundle();
+            b.putString(ARG_TYPE_KEY, fragmentKey);
+            b.putString("userId", mUserId);
+        }
+
+        // Create new fragment and transaction
+        Fragment myProfileViewFragment = new MyProfileViewFragment();
+        myProfileViewFragment.setArguments(b);
+        mFragmentManager.beginTransaction().replace(R.id.main_layout, myProfileViewFragment, fragmentKey).commit();
+
     }
-
-
 }

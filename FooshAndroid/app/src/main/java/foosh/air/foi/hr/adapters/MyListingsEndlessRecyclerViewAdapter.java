@@ -234,7 +234,6 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 @Override
                 public void onClick(View v) {
                     //Log.d("recycler","click "+listing.getTitle());
-                    //TODO: figure out why the onclick doesn't work for the description of the listing
                     Intent intent = new Intent(mcontext, ListingDetailActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -389,7 +388,6 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             naslov = itemView.findViewById(R.id.textView);
             kategorije = itemView.findViewById(R.id.textView2);
             opis = itemView.findViewById(R.id.textView3);
-            opis.setMovementMethod(new ScrollingMovementMethod());
             status = itemView.findViewById(R.id.textView4);
             cardView = itemView.findViewById(R.id.listingCardView);
         }

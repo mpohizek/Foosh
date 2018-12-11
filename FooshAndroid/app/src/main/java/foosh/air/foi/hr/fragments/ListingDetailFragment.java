@@ -134,7 +134,10 @@ public class ListingDetailFragment extends Fragment {
             public void onClick(View v) {
                 Log.d("ListingDetailFragment","Go to profile " + mListing.getOwnerId());
                 Intent intent = new Intent(scrollView.getContext(), MyProfileActivity.class);
-                //TODO: sync with the MyProfileActivity tag
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","listingOwnerProfile");
                 intent.putExtra("userId", mListing.getOwnerId());
                 startActivity(intent);
             }
