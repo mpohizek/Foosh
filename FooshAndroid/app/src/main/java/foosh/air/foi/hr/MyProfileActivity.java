@@ -5,6 +5,10 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +30,8 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
     private String fragmentKey;
     private String mUserId;
     private Boolean firstTime = false;
+    private Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,13 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
     }
 
     public void startProfileView(){
+        toolbar = findViewById(R.id.id_toolbar_main);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+
         Bundle b = getIntent().getExtras();
         if (b != null) {
             fragmentKey = b.getString(ARG_TYPE_KEY);
@@ -70,6 +83,18 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
             finish();
         }else {
             mFragmentManager.popBackStack();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+
+            default:
+                return false;
         }
     }
 }

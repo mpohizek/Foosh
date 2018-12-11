@@ -235,9 +235,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 public void onClick(View v) {
                     //Log.d("recycler","click "+listing.getTitle());
                     Intent intent = new Intent(mcontext, ListingDetailActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","listingDetail");
                     intent.putExtra("listingId", listing.getId());
                     mcontext.startActivity(intent);
