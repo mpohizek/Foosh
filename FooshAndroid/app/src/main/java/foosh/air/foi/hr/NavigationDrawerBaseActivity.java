@@ -3,12 +3,9 @@ package foosh.air.foi.hr;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,9 +45,20 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(NavigationDrawerBaseActivity.this, MyProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                if(NavigationDrawerBaseActivity.this instanceof MyProfileActivity){
+                    String fragmentKey = "myProfile";
+                    String mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    Bundle b = new Bundle();
+                    b.putString("foosh.air.foi.hr.MyListingsFragment.fragment-key", fragmentKey);
+                    b.putString("userId", mUserId);
+                    ((MyProfileActivity) NavigationDrawerBaseActivity.this).startFragment(b);
+                }else{
+                    Intent intent = new Intent(NavigationDrawerBaseActivity.this, MyProfileActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","myProfile");
+                    intent.putExtra("userId", FirebaseAuth.getInstance().getUid());
+                    startActivity(intent);
+                }
                 drawerLayout.closeDrawer(Gravity.START, true);
             }
         });
@@ -62,19 +70,23 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
 
         navigationView.getMenu().add(Menu.NONE,NewListingActivity.id,Menu.NONE, NewListingActivity.getMenuTitle()).setIcon(R.drawable.ic_add_black_24dp);
 
+        navigationView.getMenu().add(Menu.NONE,MyListingsActivity.id,Menu.NONE, MyListingsActivity.getMenuTitle()).setIcon(R.drawable.ic_star_white_24dp);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
+                Intent intent;
                 switch (item.getItemId()) {
 
-                    /*case R.id.nav_home:
-                        Intent anIntent = new Intent(getApplicationContext(), TheClassYouWantToLoad.class);
-                        startActivity(anIntent);
-                        drawerLayout.closeDrawers();
-                        break;*/
+                    case MyListingsActivity.id:
+                        intent = new Intent(NavigationDrawerBaseActivity.this, MyListingsActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(intent);
+                        drawerLayout.closeDrawer(Gravity.START, true);
+                        break;
 
                     case NewListingActivity.id:
-                        Intent intent = new Intent(NavigationDrawerBaseActivity.this, NewListingActivity.class);
+                        intent = new Intent(NavigationDrawerBaseActivity.this, NewListingActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(intent);

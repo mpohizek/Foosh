@@ -37,7 +37,7 @@
             android:name=".MyProfileActivity"
             android:launchMode="singleTop"></activity>
         <activity
-            android:name=".MyAdActivity">
+            android:name=".MyListingsActivity">
         </activity>
         
         <activity android:name=".ListingDetailActivity"

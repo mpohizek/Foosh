@@ -28,10 +28,10 @@ import foosh.air.foi.hr.model.User;
 
 public class MyProfileViewFragment extends Fragment {
 
-    private FirebaseAuth mAuth;
     private User user;
+    private String mUserId;
+    private Boolean listingOwner;
 
-    private Picasso imageLoader;
     private ConstraintLayout contentLayout;
 
     @Override
@@ -39,30 +39,36 @@ public class MyProfileViewFragment extends Fragment {
         contentLayout = (ConstraintLayout) container;
 
 
+        if (getArguments() != null) {
+            mUserId = getArguments().getString("userId");
+            if (mUserId.equals(FirebaseAuth.getInstance().getUid())){
+                listingOwner = false;
+            }
+            else{
+                listingOwner = true;
+            }
+        }
+        else{
+            mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            listingOwner = false;
+        }
 
-        return inflater.inflate(R.layout.fragment_my_profile_view, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mAuth = FirebaseAuth.getInstance();
+        //mAuth = FirebaseAuth.getInstance();
 
         //Fetching the user data
         DatabaseReference userRef;
-        userRef = FirebaseDatabase.getInstance().getReference("users/" + mAuth.getCurrentUser().getUid());
+        userRef = FirebaseDatabase.getInstance().getReference("users/" + mUserId);
 
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-             try {
-                 showData(dataSnapshot);
-             }catch (Exception e){
-                Exception a = e;
-             }
-        }
+                try {
+                    showData(dataSnapshot);
+                }catch (Exception e){
+                    Exception a = e;
+                }
+            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -74,7 +80,7 @@ public class MyProfileViewFragment extends Fragment {
         DatabaseReference reviewsRef;
         reviewsRef = FirebaseDatabase.getInstance().getReference("reviews");
 
-        Query reviewsQuery = reviewsRef.orderByChild("aboutUser").equalTo(mAuth.getCurrentUser().getUid());
+        Query reviewsQuery = reviewsRef.orderByChild("aboutUser").equalTo(mUserId);
         reviewsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -86,6 +92,17 @@ public class MyProfileViewFragment extends Fragment {
 
             }
         });
+
+
+
+        return inflater.inflate(R.layout.fragment_my_profile_view, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
     }
 
     private void showData(DataSnapshot dataSnapshot) {
@@ -119,14 +136,18 @@ public class MyProfileViewFragment extends Fragment {
         contentLayout.setVisibility(ConstraintLayout.VISIBLE);
 
         TextView editLink = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.editProfileLink);
-        editLink.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                openEditMyProfileFragment();
-            }
-        });
+        if(!listingOwner) {
+            editLink.setVisibility(View.VISIBLE);
+            editLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openEditMyProfileFragment();
+                }
+            });
+        }
+        else{
+            editLink.setVisibility(View.GONE);
+        }
     }
 
     private void showReviewData(DataSnapshot dataSnapshot) {
@@ -187,4 +208,12 @@ public class MyProfileViewFragment extends Fragment {
                 .commit();
     }
 
+    @Override
+    public void onDestroyView() {
+        if (getView() != null) {
+            ViewGroup parent = (ViewGroup) getView().getParent();
+            parent.removeAllViews();
+        }
+        super.onDestroyView();
+    }
 }

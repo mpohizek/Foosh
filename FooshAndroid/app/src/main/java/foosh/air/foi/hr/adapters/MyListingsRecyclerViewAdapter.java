@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,45 +16,42 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import foosh.air.foi.hr.model.Ads;
+import foosh.air.foi.hr.R;
+import foosh.air.foi.hr.model.Listing;
 
-public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecyclerViewAdapter.ViewHolder> {
+public class MyListingsRecyclerViewAdapter extends RecyclerView.Adapter<MyListingsRecyclerViewAdapter.ViewHolder> {
 
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
-    private ArrayList<Ads> myAds;
+    private ArrayList<Listing> myListings;
 
-    public MyAdsRecyclerViewAdapter(ArrayList<Ads> myAds) {
-        this.myAds = myAds;
+    public MyListingsRecyclerViewAdapter(ArrayList<Listing> myListings) {
+        this.myListings = myListings;
     }
     public void removeItem(int position) {
-        this.myAds.remove(position);
+        this.myListings.remove(position);
         notifyItemRemoved(position);
     }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_ad_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_listing_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        Ads ad = myAds.get(position);
+        Listing listing = myListings.get(position);
         viewBinderHelper.setOpenOnlyOne(true);
-        viewBinderHelper.bind(holder.swipeRevealLayout, String.valueOf(ad.getId()));
+        viewBinderHelper.bind(holder.swipeRevealLayout, String.valueOf(listing.getId()));
 
-        holder.status.setText(ad.getStatus());
-        StringBuilder kategorije = new StringBuilder(ad.getKategorije().get(0));
-        for (String s : ad.getKategorije().subList(1, ad.getKategorije().size())) {
-            kategorije.append(", " + s);
-        }
-        holder.kategorije.setText(kategorije);
-        holder.naslov.setText(ad.getNaziv());
-        holder.opis.setText(ad.getOpis());
-        Picasso.get().load(ad.getSlike().get(0)).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(holder.slika);
+        holder.status.setText(listing.getStatus());
+        holder.kategorije.setText(listing.getCategory());
+        holder.naslov.setText(listing.getTitle());
+        holder.opis.setText(listing.getDescription());
+        Picasso.get().load(listing.getImages().get(0)).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(holder.slika);
 
-        if (ad.isZaposljavam()){
-            if (ad.getStatus() == "OBJAVLJEN"){
+        if (listing.isHiring()){
+            if (listing.getStatus() == "OBJAVLJEN"){
                 holder.prvi.setText("Obriši");
                 holder.prvi.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -70,7 +67,7 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
                     }
                 });
             }
-            else if (ad.getStatus() == "U DOGOVORU"){
+            else if (listing.getStatus() == "U DOGOVORU"){
                 holder.prvi.setText("Poruke");
                 holder.prvi.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -104,7 +101,7 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
             }
         }
         else{
-            if (ad.getStatus() == "U DOGOVORU"){
+            if (listing.getStatus() == "U DOGOVORU"){
                 holder.prvi.setText("Poruke");
                 holder.prvi.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -120,7 +117,7 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
                     }
                 });
             }
-            else if (ad.getStatus() == "DOGOVOREN"){
+            else if (listing.getStatus() == "DOGOVOREN"){
                 holder.prvi.setText("Poruke");
                 holder.prvi.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -157,7 +154,7 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
 
     @Override
     public int getItemCount() {
-        return myAds.size();
+        return myListings.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -170,7 +167,7 @@ public class MyAdsRecyclerViewAdapter extends RecyclerView.Adapter<MyAdsRecycler
             swipeRevealLayout = itemView.findViewById(R.id.id_swipe);
             prvi = itemView.findViewById(R.id.info_button);
             drugi = itemView.findViewById(R.id.edit_button);
-            slika = itemView.findViewById(R.id.my_ad_picture);
+            slika = itemView.findViewById(R.id.my_listing_picture);
             naslov = itemView.findViewById(R.id.textView);
             kategorije = itemView.findViewById(R.id.textView2);
             opis = itemView.findViewById(R.id.textView3);

@@ -52,14 +52,15 @@
             app:cardElevation="5dp"
             app:cardCornerRadius="8dp"
             android:layout_margin="5dp"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:id="@+id/listingCardView">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/my_ad_picture"
+                    android:id="@+id/my_listing_picture"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
                     android:layout_marginStart="8dp"
@@ -69,34 +70,35 @@
 
                 <TextView
                     android:id="@+id/textView"
-                    android:layout_width="231dp"
-                    android:layout_height="28dp"
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:text="TextView"
-                    app:layout_constraintStart_toEndOf="@+id/my_ad_picture"
+                    app:layout_constraintStart_toEndOf="@+id/my_listing_picture"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView2"
-                    android:layout_width="238dp"
-                    android:layout_height="22dp"
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:text="TextView"
-                    app:layout_constraintStart_toEndOf="@+id/my_ad_picture"
+                    app:layout_constraintStart_toEndOf="@+id/my_listing_picture"
                     app:layout_constraintTop_toBottomOf="@+id/textView" />
 
                 <TextView
                     android:id="@+id/textView3"
-                    android:layout_width="242dp"
-                    android:scrollbars = "vertical"
-                    android:layout_height="118dp"
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
                     android:text="TextView"
-                    app:layout_constraintStart_toEndOf="@+id/my_ad_picture"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                    app:layout_constraintStart_toEndOf="@+id/my_listing_picture"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2"
+                    android:ellipsize="end"/>
 
                 <TextView
                     android:id="@+id/textView4"
@@ -106,7 +108,7 @@
                     android:layout_marginTop="8dp"
                     android:text="Za sad prazno!"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/my_ad_picture" />
+                    app:layout_constraintTop_toBottomOf="@+id/my_listing_picture" />
 
 
             </android.support.constraint.ConstraintLayout>
