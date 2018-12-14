@@ -8,13 +8,24 @@ public class Category {
 
     }
 
+    public Category(String name, Integer listingCounter) {
+        this.name = name;
+        this.listingCounter = listingCounter;
+    }
+
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public Integer getListingCounter() { return  listingCounter;}
-    public void setListingCounter(Integer listingCounter) {this.listingCounter=listingCounter;}
+    public Integer getListingCounter() {
+        return listingCounter;
+    }
+
+    public void setListingCounter(Integer listingCounter) {
+        this.listingCounter = listingCounter;
+    }
 }
