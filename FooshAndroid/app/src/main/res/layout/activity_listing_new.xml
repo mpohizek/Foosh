@@ -30,16 +30,17 @@
                 android:id="@+id/buttonPaying"
                 android:layout_width="162dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorPrimary"
+                android:background="@color/colorPrimary"
                 android:text="@string/paying"
                 android:textColor="@color/colorWhite"
-                grid:layout_columnSpan="1" />
+                grid:layout_columnSpan="1"
+                tools:background="@color/colorPrimary" />
 
             <Button
                 android:id="@+id/buttonEarning"
                 android:layout_width="162dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorTextLightGray"
+                android:background="@color/colorTextLightGray"
                 android:text="@string/earning"
                 android:textColor="@color/colorWhite"
                 grid:layout_columnSpan="1" />

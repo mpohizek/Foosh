@@ -1,6 +1,9 @@
 package foosh.air.foi.hr;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.view.GravityCompat;
@@ -9,11 +12,20 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import foosh.air.foi.hr.model.Listing;
 
@@ -34,8 +46,13 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
     private TextInputEditText listingLocation;
 
     private Button buttonAddNewListing;
+    private Button buttonPayingForService;
+    private Button buttonIWantToEarn;
+    private Spinner categoriesSpinner;
 
-    private Listing listing;
+    private DatabaseReference mDatabase;
+
+    private Listing listing = new Listing();
 
     public static String getMenuTitle(){
         return "Dodaj oglas";
@@ -52,16 +69,80 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
         buttonAddNewListing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listing = new Listing();
-                listing.setTitle(listingTitle.getText().toString());
-                listing.setDescription(listingDescription.getText().toString());
-                listing.setPrice(Integer.parseInt(listingPrice.getText().toString()));
-                listing.setLocation(listingLocation.getText().toString());
+                if (listingTitle.getText().length()==0
+                        || listingDescription.getText().length()==0
+                        || listingPrice.getText().length()==0
+                        || listingLocation.getText().length()==0) {
+                    Toast.makeText(NewListingActivity.this, "Nisu uneseni svi potrebni podaci!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    listing.setTitle(listingTitle.getText().toString());
+                    listing.setDescription(listingDescription.getText().toString());
+                    listing.setPrice(Integer.parseInt(listingPrice.getText().toString()));
+                    listing.setLocation(listingLocation.getText().toString());
 
-                createFirebaseListings(listing);
+                    createFirebaseListings(listing);
 
-                Toast.makeText(NewListingActivity.this, "Uspješno kreiran oglas", Toast.LENGTH_LONG).show();
-                finish();
+                    Toast.makeText(NewListingActivity.this, "Uspješno kreiran oglas", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
+        });
+
+       buttonPayingForService.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                buttonPayingForService.setBackgroundColor(Color.rgb(114, 79, 175));
+                buttonIWantToEarn.setBackgroundColor(Color.rgb(132, 146, 166));
+                listing.setHiring(false);
+            }
+        });
+
+        buttonIWantToEarn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                buttonIWantToEarn.setBackgroundColor(Color.rgb(114, 79, 175));
+                buttonPayingForService.setBackgroundColor(Color.rgb(132, 146, 166));
+                listing.setHiring(true);
+            }
+        });
+
+        final List<String> categories = new ArrayList<>();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("categorys");
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot item: dataSnapshot.getChildren()) {
+                        categories.add(item.getKey().toString());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(NewListingActivity.this, android.R.layout.simple_spinner_item, categories);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                categoriesSpinner.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String itemValue = adapterView.getItemAtPosition(i).toString();
+                Toast.makeText(NewListingActivity.this, "Odabrana kategorija: " + itemValue, Toast.LENGTH_LONG).show();
+                listing.setCategory(itemValue);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
     }
@@ -80,8 +161,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
         listingLocation = findViewById(R.id.listingLocation);
 
         buttonAddNewListing = contentLayout.findViewById(R.id.buttonAddListing);
-    }
+        buttonPayingForService = contentLayout.findViewById(R.id.buttonPaying);
+        buttonIWantToEarn = contentLayout.findViewById(R.id.buttonEarning);
 
+        categoriesSpinner = contentLayout.findViewById(R.id.spinner_categories);
+    }
 
     public void createFirebaseListings(Listing listing){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ads");
@@ -106,9 +190,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
         databaseReference.child(key).setValue(listing);
 
     }
-
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
