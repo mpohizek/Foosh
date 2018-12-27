@@ -1,7 +1,9 @@
 package foosh.air.foi.hr;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -15,9 +17,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,9 +29,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import foosh.air.foi.hr.model.Listing;
+import foosh.air.foi.hr.model.User;
 
 public class NewListingActivity extends NavigationDrawerBaseActivity{
 
@@ -51,6 +58,9 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
     private Spinner categoriesSpinner;
 
     private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private String mUserId;
+
 
     private Listing listing = new Listing();
 
@@ -80,6 +90,13 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
                     listing.setDescription(listingDescription.getText().toString());
                     listing.setPrice(Integer.parseInt(listingPrice.getText().toString()));
                     listing.setLocation(listingLocation.getText().toString());
+
+                    listing.setOwnerId(FirebaseAuth.getInstance().getUid());
+
+                    Calendar cal = Calendar.getInstance();
+                    Date currentDate = cal.getTime();
+
+                    listing.setDateCreated(currentDate.toString());
 
                     createFirebaseListings(listing);
 
@@ -130,13 +147,10 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
             }
         });
 
-
-
         categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String itemValue = adapterView.getItemAtPosition(i).toString();
-                Toast.makeText(NewListingActivity.this, "Odabrana kategorija: " + itemValue, Toast.LENGTH_LONG).show();
                 listing.setCategory(itemValue);
             }
 
@@ -168,23 +182,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
     }
 
     public void createFirebaseListings(Listing listing){
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ads");
-        /*ArrayList<String> helper = new ArrayList<>();
-        helper.add("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Arbres.jpg/250px-Arbres.jpg");
-        helper.add("https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Aspen-PopulusTremuloides-2001-09-27.jpg/220px-Aspen-PopulusTremuloides-2001-09-27.jpg");
-
-        Listing listing = new Listing();
-        listing.setTitle("Oglas");
-        listing.setDescription("Opis oglasa ");
-        listing.setCategory("kategorija");
-        listing.setStatus("DOGOVOREN");
-        listing.setLocation("Lokacija");
-        //listing.setDateCreated(new Date());
-        listing.setQrCode("QR");
-        listing.setHiring(new Random().nextInt() % 2 == 0);
-        listing.setId("testni");
-        listing.setImages(helper);
-        */
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("listings");
         String key = databaseReference.push().getKey();
         listing.setId(key);
         databaseReference.child(key).setValue(listing);
