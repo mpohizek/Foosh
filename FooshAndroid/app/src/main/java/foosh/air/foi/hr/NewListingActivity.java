@@ -1,10 +1,14 @@
 package foosh.air.foi.hr;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
@@ -17,8 +21,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,7 +52,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     private Toolbar toolbar;
-
     private TextInputEditText listingTitle;
     private TextInputEditText listingDescription;
     private TextInputEditText listingPrice;
@@ -56,6 +61,9 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
     private Button buttonPayingForService;
     private Button buttonIWantToEarn;
     private Spinner categoriesSpinner;
+
+    private Button buttonAddImageFromGallery;
+    private Button buttonTakePhoto;
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
@@ -68,6 +76,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
         return "Dodaj oglas";
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +84,20 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
         getLayoutInflater().inflate(R.layout.activity_listing_new, contentLayout);
 
         init();
+
+        buttonAddImageFromGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        buttonTakePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         buttonAddNewListing.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +149,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
             }
         });
 
+
         final List<String> categories = new ArrayList<>();
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("categorys");
@@ -159,6 +183,8 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
 
             }
         });
+
+
     }
 
     private void init() {
@@ -179,6 +205,9 @@ public class NewListingActivity extends NavigationDrawerBaseActivity{
         buttonIWantToEarn = contentLayout.findViewById(R.id.buttonEarning);
 
         categoriesSpinner = contentLayout.findViewById(R.id.spinner_categories);
+
+        buttonAddImageFromGallery = contentLayout.findViewById(R.id.buttonAddImagesFromGalery);
+        buttonTakePhoto = contentLayout.findViewById(R.id.buttonAddImagesCamera);
     }
 
     public void createFirebaseListings(Listing listing){
