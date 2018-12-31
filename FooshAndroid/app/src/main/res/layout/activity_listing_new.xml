@@ -10,7 +10,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:grid="http://schemas.android.com/apk/res-auto"
@@ -122,46 +122,52 @@
                 android:maxLength="200" />
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/appCompatImageViewLibrary"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_outline_add_photo_alternate_24px"
+            app:layout_constraintBottom_toTopOf="@+id/gridLayout2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/appCompatImageViewCamera"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_add_a_photo_24dp"
+            app:layout_constraintBottom_toTopOf="@+id/gridLayout2"
+            app:layout_constraintStart_toEndOf="@+id/appCompatImageViewLibrary" />
+
         <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:grid="http://schemas.android.com/apk/res-auto"
 
             android:id="@+id/gridLayout2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="34dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="34dp"
-            android:background="@drawable/rectangle_outer"
+            android:layout_height="110dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="8dp"
             android:gravity="center"
             android:paddingBottom="6dp"
-            app:columnCount="4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
-            app:rowCount="3">
+            grid:layout_constraintHorizontal_bias="0.0">
 
-            <TextView
-                android:id="@+id/textAddPhotos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="start"
-                android:text="@string/add_listing_photos"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/id_recycle_view"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:scrollbars="horizontal">
 
-            <android.support.v7.widget.AppCompatImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="4dp"
-                android:src="@drawable/ic_outline_add_photo_alternate_24px"
-                grid:layout_gravity="right" />
-
+            </android.support.v7.widget.RecyclerView>
         </android.support.v7.widget.GridLayout>
 
 
