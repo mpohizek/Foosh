@@ -127,27 +127,27 @@
 
             android:id="@+id/gridLayout2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:numColumns="3"
-            android:gravity="center"
-            android:stretchMode="columnWidth"
+            android:layout_height="wrap_content"
             android:layout_marginStart="34dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="34dp"
             android:background="@drawable/rectangle_outer"
+            android:gravity="center"
             android:paddingBottom="6dp"
+            app:columnCount="4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
-            >
+            app:rowCount="3">
 
             <TextView
                 android:id="@+id/textAddPhotos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="10dp"
-                android:clickable="false"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
                 android:focusable="true"
                 android:gravity="start"
                 android:text="@string/add_listing_photos"
@@ -155,33 +155,12 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/buttonAddImagesFromGalery"
-                android:layout_width="77dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="Galerija"
-                android:textColor="@color/colorAccent"
-                android:textSize="11sp" />
-
-            <Button
-                android:id="@+id/buttonAddImagesCamera"
-                android:layout_width="77dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="Kamera"
-                android:textColor="@color/colorAccent"
-                android:textSize="11sp"
-                grid:layout_column="2"
-                grid:layout_row="0" />
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/ic_outline_add_photo_alternate_24px"
+                grid:layout_gravity="right" />
 
         </android.support.v7.widget.GridLayout>
 
