@@ -60,6 +60,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private final int PICK_IMAGES_FOR_LISTING = 1500;
     private final int REQUEST_IMAGE_CAPTURE = 1501;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
+    private final int NUMBER_OF_IMAGES = 20;
     private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
@@ -150,6 +151,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         appCompatImageViewLibrary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!canAddListingImageBefore()){
+                    Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
+                            " images can be added!", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -162,6 +168,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             appCompatImageViewCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (!canAddListingImageBefore()){
+                        Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
+                                " images can be added!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -278,12 +289,21 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         if (requestCode == PICK_IMAGES_FOR_LISTING && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.getData() != null){
+                    if (!canAddListingImageAfter(1)){
+                        Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
+                                " images can be added!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     imagesRecyclerViewAdapter.addImageToDataset(data.getData());
                 }
                 else{
                     List<Object> imagesList = new ArrayList<>();
                     ClipData mClipData = data.getClipData();
-
+                    if (!canAddListingImageAfter(mClipData.getItemCount())){
+                        Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
+                                " images can be added!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     for (int i=0;i<mClipData.getItemCount();i++){
                         imagesList.add(mClipData.getItemAt(i).getUri());
                     }
@@ -293,6 +313,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         }
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
             if (data != null && data.getExtras() != null) {
+                if (!canAddListingImageAfter(1)){
+                    Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
+                            " images can be added!", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
                 imagesRecyclerViewAdapter.addImageToDataset(imageBitmap);
             }
@@ -328,10 +353,18 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Camera permission granted", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Camera permission granted!", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Camera permission denied!", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private boolean canAddListingImageBefore(){
+        return imagesRecyclerViewAdapter.getmDataset().size() < NUMBER_OF_IMAGES;
+    }
+
+    private boolean canAddListingImageAfter(int plusNumberOfImages){
+        return imagesRecyclerViewAdapter.getmDataset().size() + plusNumberOfImages <= NUMBER_OF_IMAGES;
     }
 }
