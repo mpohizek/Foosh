@@ -17,6 +17,9 @@ public class Listing {
     private String status;
     private String title;
 
+    {
+        images = new ArrayList<>();
+    }
 
     public Listing() {
     }

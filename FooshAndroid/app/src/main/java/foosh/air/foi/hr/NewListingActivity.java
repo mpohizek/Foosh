@@ -2,11 +2,9 @@ package foosh.air.foi.hr;
 
 import android.app.Activity;
 import android.content.ClipData;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.AppCompatImageView;
@@ -30,24 +29,31 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
-import foosh.air.foi.hr.adapters.MyListingsRecyclerViewAdapter;
 import foosh.air.foi.hr.helper.RecyclerItemTouchHelper;
 import foosh.air.foi.hr.model.Listing;
 
@@ -56,11 +62,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private ConstraintLayout contentLayout;
 
     //used in the NavigationDrawerBaseActivity for the menu item id
-    public static final int id=2;
+    public static final int id = 2;
     private final int PICK_IMAGES_FOR_LISTING = 1500;
     private final int REQUEST_IMAGE_CAPTURE = 1501;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
-    private final int NUMBER_OF_IMAGES = 20;
+    private final int NUMBER_OF_IMAGES = 10;
     private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
@@ -78,18 +84,53 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private AppCompatImageView appCompatImageViewLibrary;
     private AppCompatImageView appCompatImageViewCamera;
 
-    private DatabaseReference mDatabase;
+    private TextView textViewUploadImages;
+
+
+    private DatabaseReference mDatabaseListings;
+    private DatabaseReference mDatabaseCategorys;
     private FirebaseAuth mAuth;
     private String mUserId;
 
     private ImagesRecyclerViewAdapter imagesRecyclerViewAdapter;
 
-    private Listing listing = new Listing();
+    private Listing listing;
+
+    private List<UploadTask> uploadTask;
+    private int currentTaskPosition;
+    {
+        listing = new Listing();
+        mDatabaseListings = FirebaseDatabase.getInstance().getReference().child("listings");
+        mDatabaseCategorys = FirebaseDatabase.getInstance().getReference().child("categorys");
+        uploadTask = new ArrayList<>();
+    }
 
     public static String getMenuTitle(){
         return "Dodaj oglas";
     }
 
+    private void fillListingPartial(){
+        listing.setTitle(listingTitle.getText().toString());
+        listing.setDescription(listingDescription.getText().toString());
+        listing.setPrice(Integer.parseInt(listingPrice.getText().toString()));
+        listing.setLocation(listingLocation.getText().toString());
+
+        listing.setOwnerId(FirebaseAuth.getInstance().getUid());
+
+        Calendar cal = Calendar.getInstance();
+        Date currentDate = cal.getTime();
+        listing.setDateCreated(currentDate.toString());
+
+        String key = mDatabaseListings.push().getKey();
+        listing.setId(key);
+    }
+
+    private void setUpProgress(int stepsNumber){
+
+
+        textViewUploadImages.setText("Uploading images...");
+        textViewUploadImages.setVisibility(View.VISIBLE);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,25 +146,101 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                         || listingDescription.getText().length()==0
                         || listingPrice.getText().length()==0
                         || listingLocation.getText().length()==0) {
-                    Toast.makeText(NewListingActivity.this, "Nisu uneseni svi potrebni podaci!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(NewListingActivity.this, "Not all fileds have been populated!", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    listing.setTitle(listingTitle.getText().toString());
-                    listing.setDescription(listingDescription.getText().toString());
-                    listing.setPrice(Integer.parseInt(listingPrice.getText().toString()));
-                    listing.setLocation(listingLocation.getText().toString());
+                    fillListingPartial();
+                    setUpProgress(imagesRecyclerViewAdapter.getmDataset().size());
+                    for (int i = 0; i < imagesRecyclerViewAdapter.getmDataset().size(); i++){
+                        String imageName = listing.getId() + "_image_" + (i + 1);
+                        final StorageReference listingImageRef = FirebaseStorage.getInstance().getReference()
+                            .child("listings/" + listing.getOwnerId() + "/" + listing.getId() + "/" + imageName);
+                        StorageMetadata metadata = new StorageMetadata.Builder()
+                                .setContentType("image/jpeg")
+                                .build();
+                        if (imagesRecyclerViewAdapter.getmDataset().get(i) instanceof Uri){
+                            Uri imageUri = (Uri) imagesRecyclerViewAdapter.getmDataset().get(i);
+                            uploadTask.add(listingImageRef.putFile(imageUri, metadata));
+                            currentTaskPosition = uploadTask.size() - 1;
+                            uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    System.out.println("Upload is " + progress + "% done");
+                                }
+                            }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                                    System.out.println("Upload is paused");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle unsuccessful uploads
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    listing.setOwnerId(FirebaseAuth.getInstance().getUid());
+                                    listingImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            listing.getImages().add(uri.toString());
+                                            checkNewListing();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
 
-                    Calendar cal = Calendar.getInstance();
-                    Date currentDate = cal.getTime();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else if (imagesRecyclerViewAdapter.getmDataset().get(i) instanceof Bitmap){
+                            Bitmap imageBitmap = (Bitmap) imagesRecyclerViewAdapter.getmDataset().get(i);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            byte[] data = baos.toByteArray();
 
-                    listing.setDateCreated(currentDate.toString());
+                            uploadTask.add(listingImageRef.putBytes(data, metadata));
+                            currentTaskPosition = uploadTask.size() - 1;
+                            uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    System.out.println("Upload is " + progress + "% done");
+                                }
+                            }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                                    System.out.println("Upload is paused");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle unsuccessful uploads
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    createFirebaseListings(listing);
+                                    listingImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            listing.getImages().add(uri.toString());
+                                            checkNewListing();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
 
-                    Toast.makeText(NewListingActivity.this, "Uspješno kreiran oglas", Toast.LENGTH_LONG).show();
-                    finish();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
                 }
             }
         });
@@ -135,6 +252,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                 buttonPayingForService.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(132, 146, 166));
                 listing.setHiring(false);
+                listing.setStatus("KREIRAN");
             }
         });
 
@@ -145,6 +263,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonPayingForService.setBackgroundColor(Color.rgb(132, 146, 166));
                 listing.setHiring(true);
+                listing.setStatus("OBJAVLJEN");
             }
         });
 
@@ -196,9 +315,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
         final List<String> categories = new ArrayList<>();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("categorys");
-
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabaseCategorys.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
@@ -229,6 +346,15 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         });
     }
 
+    private void checkNewListing(){
+        if (uploadTask.size() != imagesRecyclerViewAdapter.getmDataset().size()){
+            return;
+        }
+        createFirebaseListing(listing);
+        Toast.makeText(NewListingActivity.this, "New listing has been successfully added!", Toast.LENGTH_LONG).show();
+        finish();
+    }
+
     private void init() {
         toolbar = findViewById(R.id.id_toolbar_main);
         setSupportActionBar(toolbar);
@@ -251,6 +377,9 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         appCompatImageViewLibrary = contentLayout.findViewById(R.id.appCompatImageViewLibrary);
         appCompatImageViewCamera = contentLayout.findViewById(R.id.appCompatImageViewCamera);
 
+        textViewUploadImages = contentLayout.findViewById(R.id.textUploadImage);
+
+
         imagesRecyclerViewAdapter = new ImagesRecyclerViewAdapter(this);
 
         recyclerView = contentLayout.findViewById(R.id.id_recycle_view);
@@ -263,12 +392,8 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
-    public void createFirebaseListings(Listing listing){
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("listings");
-        String key = databaseReference.push().getKey();
-        listing.setId(key);
-        databaseReference.child(key).setValue(listing);
-
+    public void createFirebaseListing(Listing listing){
+        mDatabaseListings.child(listing.getId()).setValue(listing);
     }
 
     @Override
@@ -366,5 +491,31 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
     private boolean canAddListingImageAfter(int plusNumberOfImages){
         return imagesRecyclerViewAdapter.getmDataset().size() + plusNumberOfImages <= NUMBER_OF_IMAGES;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (uploadTask.size() != 0 && uploadTask.get(currentTaskPosition).isInProgress()){
+            uploadTask.get(currentTaskPosition).pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (uploadTask.size() != 0 && uploadTask.get(currentTaskPosition).isPaused()){
+            uploadTask.get(currentTaskPosition).resume();
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (imagesRecyclerViewAdapter.getmDataset().size() > uploadTask.size() ||
+                (imagesRecyclerViewAdapter.getmDataset().size() == uploadTask.size() && uploadTask.get(currentTaskPosition).isInProgress())){
+            uploadTask.get(currentTaskPosition).cancel();
+        }
     }
 }
