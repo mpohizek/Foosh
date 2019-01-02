@@ -48,8 +48,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -117,9 +118,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
         listing.setOwnerId(FirebaseAuth.getInstance().getUid());
 
-        Calendar cal = Calendar.getInstance();
-        Date currentDate = cal.getTime();
-        listing.setDateCreated(currentDate.toString());
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
+        StringBuffer stringBuffer = new StringBuffer();
+        sdf.format(date, stringBuffer, new FieldPosition(0));
+        listing.setDateCreated(stringBuffer.toString());
 
         String key = mDatabaseListings.push().getKey();
         listing.setId(key);
@@ -512,10 +515,14 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if (imagesRecyclerViewAdapter.getmDataset().size() > uploadTask.size() ||
-                (imagesRecyclerViewAdapter.getmDataset().size() == uploadTask.size() && uploadTask.get(currentTaskPosition).isInProgress())){
-            uploadTask.get(currentTaskPosition).cancel();
+        if (uploadTask.size() > 0){
+            for (UploadTask task: uploadTask) {
+                if (task.isInProgress() || task.isPaused()){
+                    task.cancel();
+                }
+            }
+            uploadTask.clear();
         }
+        super.onBackPressed();
     }
 }
