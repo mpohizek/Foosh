@@ -54,6 +54,7 @@ import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
@@ -99,6 +100,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private ImagesRecyclerViewAdapter imagesRecyclerViewAdapter;
 
     private Listing listing;
+    private HashMap<String, Long> categories;
 
     private List<UploadTask> uploadTask;
     private int currentTaskPosition;
@@ -108,6 +110,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         mDatabaseCategorys = FirebaseDatabase.getInstance().getReference().child("categorys");
         uploadTask = new ArrayList<>();
         progressBars = new ArrayList<>();
+        categories = new HashMap<>();
     }
 
     public static String getMenuTitle(){
@@ -340,15 +343,14 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             });
         }
 
-        final List<String> categories = new ArrayList<>();
-
         mDatabaseCategorys.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
-                        categories.add(item.getKey().toString());
+                    categories.put(item.getKey().toString(), (long)item.getValue());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(NewListingActivity.this, android.R.layout.simple_spinner_item, categories);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(NewListingActivity.this,
+                        android.R.layout.simple_spinner_item, new ArrayList<>(categories.keySet()));
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 categoriesSpinner.setAdapter(adapter);
             }
@@ -383,8 +385,13 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             }
         }
         createFirebaseListing(listing);
+        updateCategorys();
         Toast.makeText(NewListingActivity.this, "New listing has been successfully added!", Toast.LENGTH_LONG).show();
         finish();
+    }
+
+    private void updateCategorys() {
+        mDatabaseCategorys.child(listing.getCategory()).setValue(categories.get(listing.getCategory()) + 1);
     }
 
     private void init() {
