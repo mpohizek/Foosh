@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -13,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.AppCompatImageView;
@@ -28,6 +28,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,7 +88,8 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private AppCompatImageView appCompatImageViewCamera;
 
     private TextView textViewUploadImages;
-
+    private LinearLayout linearLayout;
+    private List<ProgressBar> progressBars;
 
     private DatabaseReference mDatabaseListings;
     private DatabaseReference mDatabaseCategorys;
@@ -104,6 +107,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         mDatabaseListings = FirebaseDatabase.getInstance().getReference().child("listings");
         mDatabaseCategorys = FirebaseDatabase.getInstance().getReference().child("categorys");
         uploadTask = new ArrayList<>();
+        progressBars = new ArrayList<>();
     }
 
     public static String getMenuTitle(){
@@ -128,8 +132,15 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         listing.setId(key);
     }
 
-    private void setUpProgress(int stepsNumber){
+    private void setUpProgress(int progressBarNumber){
+        linearLayout.setVisibility(View.VISIBLE);
+        linearLayout.setWeightSum((float)progressBarNumber);
 
+        for (int i = 0; i < progressBarNumber; i++){
+            progressBars.get(i).setVisibility(View.VISIBLE);
+            progressBars.get(i).setProgress(0);
+            progressBars.get(i).setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+        }
 
         textViewUploadImages.setText("Uploading images...");
         textViewUploadImages.setVisibility(View.VISIBLE);
@@ -165,11 +176,17 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                             Uri imageUri = (Uri) imagesRecyclerViewAdapter.getmDataset().get(i);
                             uploadTask.add(listingImageRef.putFile(imageUri, metadata));
                             currentTaskPosition = uploadTask.size() - 1;
+                            final int j = i;
                             uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                    System.out.println("Upload is " + progress + "% done");
+                                    /*final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    progressBars.get(j).post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            setProgress((int)Math.round(progress));
+                                        }
+                                    });*/
                                 }
                             }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -179,12 +196,13 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    // Handle unsuccessful uploads
+                                    progressBars.get(j).setProgressTintList(ColorStateList.valueOf(Color.RED));
+                                    progressBars.get(j).setProgress(100);
                                 }
                             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                                    progressBars.get(j).setProgress(100);
                                     listingImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {
@@ -205,14 +223,19 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                             byte[] data = baos.toByteArray();
-
+                            final int j = i;
                             uploadTask.add(listingImageRef.putBytes(data, metadata));
                             currentTaskPosition = uploadTask.size() - 1;
                             uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                    System.out.println("Upload is " + progress + "% done");
+                                    /*final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    progressBars.get(j).post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            setProgress((int)Math.round(progress));
+                                        }
+                                    });*/
                                 }
                             }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -222,12 +245,13 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    // Handle unsuccessful uploads
+                                    progressBars.get(j).setIndeterminateTintList(ColorStateList.valueOf(Color.RED));
+                                    progressBars.get(j).setProgress(100);
                                 }
                             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                                    progressBars.get(j).setProgress(100);
                                     listingImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {
@@ -353,6 +377,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         if (uploadTask.size() != imagesRecyclerViewAdapter.getmDataset().size()){
             return;
         }
+        for (UploadTask task: uploadTask) {
+            if (task.isInProgress()){
+                return;
+            }
+        }
         createFirebaseListing(listing);
         Toast.makeText(NewListingActivity.this, "New listing has been successfully added!", Toast.LENGTH_LONG).show();
         finish();
@@ -381,7 +410,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         appCompatImageViewCamera = contentLayout.findViewById(R.id.appCompatImageViewCamera);
 
         textViewUploadImages = contentLayout.findViewById(R.id.textUploadImage);
-
+        linearLayout = contentLayout.findViewById(R.id.imageProgresBarLinearLayout);
+        for (int i = 0; i < NUMBER_OF_IMAGES; i++){
+            progressBars.add((ProgressBar) contentLayout.findViewById(getResources()
+                    .getIdentifier("imageUploadProgressBar" + (i + 1), "id", getPackageName())));
+        }
 
         imagesRecyclerViewAdapter = new ImagesRecyclerViewAdapter(this);
 
@@ -499,17 +532,24 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     @Override
     protected void onPause() {
         super.onPause();
-        if (uploadTask.size() != 0 && uploadTask.get(currentTaskPosition).isInProgress()){
-            uploadTask.get(currentTaskPosition).pause();
+        if (uploadTask.size() > 0){
+            for (UploadTask task: uploadTask) {
+                if (task.isInProgress()){
+                    task.pause();
+                }
+            }
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (uploadTask.size() != 0 && uploadTask.get(currentTaskPosition).isPaused()){
-            uploadTask.get(currentTaskPosition).resume();
-
+        if (uploadTask.size() > 0){
+            for (UploadTask task: uploadTask) {
+                if (task.isPaused()){
+                    task.resume();
+                }
+            }
         }
     }
 
