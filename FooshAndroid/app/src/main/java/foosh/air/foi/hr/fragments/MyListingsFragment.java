@@ -1,6 +1,7 @@
 package foosh.air.foi.hr.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -105,9 +106,11 @@ public class MyListingsFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(
+        View view = inflater.inflate(
                 R.layout.fragment_my_listings, container, false);
-        recyclerView = swipeRefreshLayout.findViewById(R.id.id_recycle_view);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.YELLOW, Color.RED, Color.GREEN);
+        recyclerView = view.findViewById(R.id.id_recycle_view);
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) new LinearLayoutManager(getContext());
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -125,7 +128,7 @@ public class MyListingsFragment extends Fragment{
                     swipeRefreshLayout, 10, loadMoreListener);
         }
         recyclerView.setAdapter(myListingsEndlessRecyclerViewAdapter);
-        return recyclerView;
+        return swipeRefreshLayout;
     }
 
     @Override
