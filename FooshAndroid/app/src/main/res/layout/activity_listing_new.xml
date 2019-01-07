@@ -14,7 +14,6 @@
 
         <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:grid="http://schemas.android.com/apk/res-auto"
-
             android:id="@+id/topLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,7 +43,6 @@
                 android:text="@string/earning"
                 android:textColor="@color/colorWhite"
                 grid:layout_columnSpan="1" />
-
         </android.support.v7.widget.GridLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -74,32 +72,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:columnCount="1"
+            android:rowCount="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:rowCount="2"
-            android:columnCount="1"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
             <TextView
                 android:id="@+id/text_category"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_row="0"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:layout_row="0"
-                android:text="@string/listing_category_pick"/>
+                android:text="@string/listing_category_pick" />
 
             <android.support.v7.widget.AppCompatSpinner
                 android:id="@+id/spinner_categories"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_row="1"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_row="1"
-                android:paddingStart="0dp"
-                />
-
+                android:paddingStart="0dp" />
         </GridLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -126,157 +122,18 @@
                 android:maxLength="200" />
         </android.support.design.widget.TextInputLayout>
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/appCompatImageViewLibrary"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="28dp"
-            android:paddingStart="2dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_outline_add_photo_alternate_24px"
-            app:layout_constraintBottom_toTopOf="@+id/gridLayout2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/appCompatImageViewCamera"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_add_a_photo_24dp"
-            app:layout_constraintBottom_toTopOf="@+id/gridLayout2"
-            app:layout_constraintStart_toEndOf="@+id/appCompatImageViewLibrary" />
-
-        <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:grid="http://schemas.android.com/apk/res-auto"
-
-            android:id="@+id/gridLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="48dp"
-            android:layout_marginEnd="8dp"
-            android:gravity="center"
-            android:paddingBottom="6dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
-            grid:layout_constraintHorizontal_bias="0.0">
-
-            <android.support.v7.widget.RecyclerView
-
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:id="@+id/id_recycle_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="horizontal">
-
-            </android.support.v7.widget.RecyclerView>
-        </android.support.v7.widget.GridLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/textInputLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gridLayout2">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/ListingPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="0dp"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:hint="@string/listing_price"
-                android:inputType="numberDecimal"
-                android:text="" />
-
-            <TextView
-                android:id="@+id/text_currency"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="28dp"
-                android:text="@string/currency" />
-
-        </RelativeLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayout4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/listingLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:hint="@string/listing_location"
-                android:inputType="text"
-                android:text="" />
-
-        </android.support.design.widget.TextInputLayout>
-
-
-        <Button
-            android:id="@+id/buttonAddListing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="@string/listing_add_new"
-            android:textColor="@color/colorWhite"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
-            app:layout_constraintVertical_bias="0.3" />
-
-        <TextView
-            android:id="@+id/textUploadImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonAddListing" />
-
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/imageProgresBarLinearLayout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:foregroundGravity="center_horizontal|center"
+            android:visibility="visible"
             android:weightSum="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textUploadImage"
-            android:visibility="invisible">
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
             <ProgressBar
                 android:id="@+id/imageUploadProgressBar1"
@@ -367,9 +224,145 @@
                 android:layout_weight="1"
                 android:max="100"
                 android:visibility="gone" />
-
         </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/textUploadImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageProgresBarLinearLayout" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/appCompatImageViewLibrary"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="2dp"
+            android:src="@drawable/ic_outline_add_photo_alternate_24px"
+            app:layout_constraintBottom_toTopOf="@+id/gridLayout2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textUploadImage"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/appCompatImageViewCamera"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_add_a_photo_24dp"
+            app:layout_constraintBottom_toTopOf="@+id/gridLayout2"
+            app:layout_constraintStart_toEndOf="@+id/appCompatImageViewLibrary"
+            app:layout_constraintTop_toBottomOf="@+id/textUploadImage" />
+
+        <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:grid="http://schemas.android.com/apk/res-auto"
+
+            android:id="@+id/gridLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:paddingBottom="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textUploadImage"
+            grid:layout_constraintHorizontal_bias="0.0">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/id_recycle_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:scrollbars="horizontal"></android.support.v7.widget.RecyclerView>
+        </android.support.v7.widget.GridLayout>
+
+        <RelativeLayout
+            android:id="@+id/textInputLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gridLayout2">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/ListingPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:hint="@string/listing_price"
+                android:inputType="numberDecimal"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/text_currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="28dp"
+                android:text="@string/currency" />
+
+        </RelativeLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/listingLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:hint="@string/listing_location"
+                android:inputType="text"
+                android:text="" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/buttonAddListing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/listing_add_new"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
+            app:layout_constraintVertical_bias="0.3" />
     </android.support.constraint.ConstraintLayout>
 
 </ScrollView>
