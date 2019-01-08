@@ -245,53 +245,32 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="28dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:paddingStart="2dp"
             android:src="@drawable/ic_outline_add_photo_alternate_24px"
-            app:layout_constraintBottom_toTopOf="@+id/gridLayout2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textUploadImage"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/textUploadImage" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/appCompatImageViewCamera"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
             android:src="@drawable/ic_add_a_photo_24dp"
-            app:layout_constraintBottom_toTopOf="@+id/gridLayout2"
             app:layout_constraintStart_toEndOf="@+id/appCompatImageViewLibrary"
             app:layout_constraintTop_toBottomOf="@+id/textUploadImage" />
 
-        <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:grid="http://schemas.android.com/apk/res-auto"
-
-            android:id="@+id/gridLayout2"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/id_recycle_view"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="48dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginEnd="28dp"
             android:gravity="center"
             android:paddingBottom="6dp"
+            android:scrollbars="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textUploadImage"
-            grid:layout_constraintHorizontal_bias="0.0">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/id_recycle_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:scrollbars="horizontal"></android.support.v7.widget.RecyclerView>
-        </android.support.v7.widget.GridLayout>
+            app:layout_constraintTop_toBottomOf="@+id/textUploadImage" />
 
         <RelativeLayout
             android:id="@+id/textInputLayout3"
@@ -302,7 +281,7 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gridLayout2">
+            app:layout_constraintTop_toBottomOf="@+id/id_recycle_view">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/ListingPrice"

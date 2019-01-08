@@ -24,12 +24,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,6 +79,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
+    private ScrollView scrollView;
 
     private TextInputEditText listingTitle;
     private TextInputEditText listingDescription;
@@ -97,6 +100,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
     private DatabaseReference mDatabaseListings;
     private DatabaseReference mDatabaseCategorys;
+    private DatabaseReference mDatabaseCities;
     private FirebaseAuth mAuth;
     private String mUserId;
 
@@ -104,6 +108,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
     private Listing listing;
     private HashMap<String, Long> categories;
+    private List<String> cities;
 
     private List<UploadTask> uploadTask;
     private int finished;
@@ -112,9 +117,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         listing = new Listing();
         mDatabaseListings = FirebaseDatabase.getInstance().getReference().child("listings");
         mDatabaseCategorys = FirebaseDatabase.getInstance().getReference().child("categorys");
+        mDatabaseCities = FirebaseDatabase.getInstance().getReference().child("cities");
         uploadTask = new ArrayList<>();
         progressBars = new ArrayList<>();
         categories = new HashMap<>();
+        cities = new ArrayList<>();
     }
 
     public static String getMenuTitle(){
@@ -398,6 +405,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
 
+        scrollView = findViewById(R.id.fragment_listing_add);
         listingTitle = findViewById(R.id.listingTitle);
         listingDescription = findViewById(R.id.ListingDescription);
         listingPrice = findViewById(R.id.ListingPrice);
@@ -429,6 +437,24 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.DOWN, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                recyclerView.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
     }
 
     public void createFirebaseListing(Listing listing){
