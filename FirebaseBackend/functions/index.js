@@ -1,11 +1,22 @@
 const functions = require('firebase-functions');
+const admin = require("firebase-admin");
+const cors = require("cors")
+const express = require("express")
+
+const bodyParser = require("body-parser");
+
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-const admin = require('firebase-admin');
+
 admin.initializeApp();
 const database = admin.database();
+
+
+const app = express();
+const api = functions.https.onRequest(app);
+
+
 
 
 
@@ -35,3 +46,16 @@ exports.createBlankUserDocument = functions.auth.user().onCreate( userCreate => 
     
     return null;    
 });
+
+// Web API functions
+
+app.get("", (req, res) => {
+  res.send("GET funkcija")
+})
+app.post("/mainfeed", (req, res) => {
+  res.send("POST funkcija mainfeed")
+})
+
+module.exports = {
+  api
+}
