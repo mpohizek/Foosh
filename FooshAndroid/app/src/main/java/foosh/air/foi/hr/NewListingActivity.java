@@ -36,6 +36,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
 import foosh.air.foi.hr.helper.RecyclerItemTouchHelper;
@@ -103,7 +106,8 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private HashMap<String, Long> categories;
 
     private List<UploadTask> uploadTask;
-    private int currentTaskPosition;
+    private int finished;
+
     {
         listing = new Listing();
         mDatabaseListings = FirebaseDatabase.getInstance().getReference().child("listings");
@@ -168,6 +172,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                 else {
                     fillListingPartial();
                     setUpProgress(imagesRecyclerViewAdapter.getmDataset().size());
+                    finished = 0;
                     for (int i = 0; i < imagesRecyclerViewAdapter.getmDataset().size(); i++){
                         String imageName = listing.getId() + "_image_" + (i + 1);
                         final StorageReference listingImageRef = FirebaseStorage.getInstance().getReference()
@@ -178,18 +183,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                         if (imagesRecyclerViewAdapter.getmDataset().get(i) instanceof Uri){
                             Uri imageUri = (Uri) imagesRecyclerViewAdapter.getmDataset().get(i);
                             uploadTask.add(listingImageRef.putFile(imageUri, metadata));
-                            currentTaskPosition = uploadTask.size() - 1;
                             final int j = i;
                             uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                    /*final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                    progressBars.get(j).post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            setProgress((int)Math.round(progress));
-                                        }
-                                    });*/
+
                                 }
                             }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -210,6 +208,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             listing.getImages().add(uri.toString());
+                                            finished++;
                                             checkNewListing();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
@@ -228,17 +227,10 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                             byte[] data = baos.toByteArray();
                             final int j = i;
                             uploadTask.add(listingImageRef.putBytes(data, metadata));
-                            currentTaskPosition = uploadTask.size() - 1;
                             uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                    /*final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                    progressBars.get(j).post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            setProgress((int)Math.round(progress));
-                                        }
-                                    });*/
+
                                 }
                             }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -259,6 +251,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             listing.getImages().add(uri.toString());
+                                            finished++;
                                             checkNewListing();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
@@ -380,12 +373,15 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             return;
         }
         for (UploadTask task: uploadTask) {
-            if (task.isInProgress()){
+            if (task.isInProgress() || task.isCanceled()){
                 return;
             }
         }
+        if (uploadTask.size() != finished){
+            return;
+        }
+
         createFirebaseListing(listing);
-        updateCategorys();
         Toast.makeText(NewListingActivity.this, "New listing has been successfully added!", Toast.LENGTH_LONG).show();
         finish();
     }
@@ -436,7 +432,12 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     }
 
     public void createFirebaseListing(Listing listing){
-        mDatabaseListings.child(listing.getId()).setValue(listing);
+        mDatabaseListings.child(listing.getId()).setValue(listing).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                updateCategorys();
+            }
+        });
     }
 
     @Override
@@ -563,13 +564,10 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     @Override
     public void onBackPressed() {
         if (uploadTask.size() > 0){
-            for (UploadTask task: uploadTask) {
-                if (task.isInProgress() || task.isPaused()){
-                    task.cancel();
-                }
-            }
-            uploadTask.clear();
+            Toast.makeText(this, "Uploading images... Please wait!", Toast.LENGTH_LONG).show();
         }
-        super.onBackPressed();
+        else{
+            super.onBackPressed();
+        }
     }
 }
