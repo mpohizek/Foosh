@@ -116,8 +116,12 @@ public class MyProfileViewFragment extends Fragment {
         TextView location = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userLocationName);
         TextView bio = (TextView) contentLayout.findViewById(R.id.linearLayout4).findViewById(R.id.userAboutMe);
 
+        if(user.getProfileImgPath() == null || user.getProfileImgPath().equals("")){
+            Picasso.get().load(R.drawable.avatar).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+        }else{
+            Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+        }
 
-        Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
         displayName.setText(user.getDisplayName());
         email.setText(user.getEmail());
 

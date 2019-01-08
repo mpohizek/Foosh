@@ -83,7 +83,11 @@ public class EditMyProfileFragment extends Fragment {
         city = scrollView.findViewById(R.id.userCity);
         bio = scrollView.findViewById(R.id.userDescription);
 
-        Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+        if(user.getProfileImgPath() == null || user.getProfileImgPath().equals("")){
+            Picasso.get().load(R.drawable.avatar).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+        }else{
+            Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+        }
         displayName.setText(user.getDisplayName());
         bio.setText(user.getBio());
         if(user.getLocation() != null){

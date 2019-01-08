@@ -105,11 +105,12 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-
-                TextView displayNameText = (TextView) header.findViewById(R.id.displayNameText);
-                displayNameText.setText(user.getDisplayName());
-                TextView emailText = (TextView) header.findViewById(R.id.emailText);
-                emailText.setText(user.getEmail());
+                if (user != null){
+                    TextView displayNameText = (TextView) header.findViewById(R.id.displayNameText);
+                    displayNameText.setText(user.getDisplayName());
+                    TextView emailText = (TextView) header.findViewById(R.id.emailText);
+                    emailText.setText(user.getEmail());
+                }
             }
 
             @Override
