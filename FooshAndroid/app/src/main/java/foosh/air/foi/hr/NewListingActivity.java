@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -84,7 +85,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private TextInputEditText listingTitle;
     private TextInputEditText listingDescription;
     private TextInputEditText listingPrice;
-    private TextInputEditText listingLocation;
+    private AutoCompleteTextView autoCompleteTextView;
 
     private Button buttonAddNewListing;
     private Button buttonPayingForService;
@@ -132,7 +133,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         listing.setTitle(listingTitle.getText().toString());
         listing.setDescription(listingDescription.getText().toString());
         listing.setPrice(Integer.parseInt(listingPrice.getText().toString()));
-        listing.setLocation(listingLocation.getText().toString());
 
         listing.setOwnerId(FirebaseAuth.getInstance().getUid());
 
@@ -173,7 +173,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                 if (listingTitle.getText().length()==0
                         || listingDescription.getText().length()==0
                         || listingPrice.getText().length()==0
-                        || listingLocation.getText().length()==0) {
+                        || autoCompleteTextView.getText().length()==0) {
                     Toast.makeText(NewListingActivity.this, "Not all fileds have been populated!", Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -349,10 +349,27 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
                     categories.put(item.getKey().toString(), (long)item.getValue());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(NewListingActivity.this,
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(NewListingActivity.this,
                         android.R.layout.simple_spinner_item, new ArrayList<>(categories.keySet()));
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 categoriesSpinner.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mDatabaseCities.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot item: dataSnapshot.getChildren()){
+                    cities.add(item.getKey().toString());
+                }
+                ArrayAdapter<String> adapter= new ArrayAdapter<>(NewListingActivity.this,
+                        android.R.layout.simple_list_item_1, cities);
+                autoCompleteTextView.setAdapter(adapter);
             }
 
             @Override
@@ -409,7 +426,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         listingTitle = findViewById(R.id.listingTitle);
         listingDescription = findViewById(R.id.ListingDescription);
         listingPrice = findViewById(R.id.ListingPrice);
-        listingLocation = findViewById(R.id.listingLocation);
+        autoCompleteTextView = findViewById(R.id.country_list);
 
         buttonAddNewListing = contentLayout.findViewById(R.id.buttonAddListing);
         buttonPayingForService = contentLayout.findViewById(R.id.buttonPaying);
