@@ -16,9 +16,25 @@ const database = admin.database();
 const app = express();
 const api = functions.https.onRequest(app);
 
-
-
-
+const onListingsCreate = functions.database.ref('/listings-test/{pushId}')
+    .onCreate((snapshot, context) => {
+      var listing = snapshot.val();
+      database.ref("listings-test/").orderByChild("orderNum").limitToLast(1).once('value').then(
+        snap => {   
+          var lastListing;    
+          snap.forEach(el => {     
+            lastListing = el.val();  
+            //console.log(lastListing);
+          })
+          console.log("Last:" + lastListing.orderNum)
+          var num = lastListing.orderNum + 1;
+          console.log(num);
+          var updates = { dateCreated: new Date().toISOString(), orderNum: num}
+          
+          return snapshot.ref.update(updates);   
+        }
+      );
+});
 
 exports.createBlankUserDocument = functions.auth.user().onCreate( userCreate => {
   admin.auth().getUser(userCreate.uid).then(
