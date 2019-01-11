@@ -65,13 +65,55 @@ exports.createBlankUserDocument = functions.auth.user().onCreate( userCreate => 
 
 // Web API functions
 
+var jsonParser = bodyParser.json()
+
 app.get("", (req, res) => {
   res.send("GET funkcija")
 })
-app.post("/mainfeed", (req, res) => {
-  res.send("POST funkcija mainfeed")
+
+app.post("/mainfeed", jsonParser, (req, res) => {  
+ 
+  
+})
+
+app.post("/mylistings", jsonParser, (req, res) => {  
+  var ref = database.ref("listings-test");
+  
+  var ownerId = req.body.ownerId;    
+  var hiring = req.body.hiring;
+  var startAt = req.body.startAt;
+  var limit = req.body.limit; 
+
+  ref.orderByChild("ownerId").equalTo(ownerId).once("value").then(
+      (snapshot) =>{           
+          var listings = [];
+          var finalRes = [];
+          var hiringFalse = [];
+          var hiringTrue = [];                
+          snapshot.forEach(el => {
+              listings.push(el.val())               
+          });
+          console.log(listings);
+          if(hiring == true){
+              hiringTrue = listings.map((listing)=>{                
+                  if(listing.hiring) return listing
+              })
+              finalRes = hiringTrue;
+          } else{
+              hiringFalse = listings.map((listing)=>{
+                  if(!listing.hiring) return listing
+              })
+              finalRes = hiringFalse;
+          }
+          finalRes = finalRes.filter(el => el).sort( (a,b) => b.orderNum-a.orderNum).slice(startAt, startAt + limit);        
+          res.send(finalRes);
+      }
+  )      
 })
 
 module.exports = {
-  api
+  api,
+  onListingsCreate
 }
+
+
