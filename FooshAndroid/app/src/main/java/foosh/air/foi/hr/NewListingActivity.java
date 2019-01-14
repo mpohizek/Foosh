@@ -135,12 +135,8 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         listing.setPrice(Integer.parseInt(listingPrice.getText().toString()));
 
         listing.setOwnerId(FirebaseAuth.getInstance().getUid());
-
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
-        StringBuffer stringBuffer = new StringBuffer();
-        sdf.format(date, stringBuffer, new FieldPosition(0));
-        listing.setDateCreated(stringBuffer.toString());
+        listing.setStatus("OBJAVLJEN");
+        listing.setActive(true);
 
         String key = mDatabaseListings.push().getKey();
         listing.setId(key);
