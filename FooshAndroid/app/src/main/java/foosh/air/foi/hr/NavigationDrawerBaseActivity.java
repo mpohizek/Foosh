@@ -68,16 +68,27 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         TextView emailText = (TextView) navigationHeader.findViewById(R.id.emailText);
         //emailText.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
+        navigationView.getMenu().add(Menu.NONE,NewListingActivity.id,Menu.NONE, NewListingActivity.getMenuTitle()).setIcon(R.drawable.ic_add_black_24dp);
+
         navigationView.getMenu().add(Menu.NONE,MyListingsActivity.id,Menu.NONE, MyListingsActivity.getMenuTitle()).setIcon(R.drawable.ic_star_white_24dp);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
+                Intent intent;
                 switch (item.getItemId()) {
 
                     case MyListingsActivity.id:
-                        Intent intent = new Intent(NavigationDrawerBaseActivity.this, MyListingsActivity.class);
+                        intent = new Intent(NavigationDrawerBaseActivity.this, MyListingsActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(intent);
+                        drawerLayout.closeDrawer(Gravity.START, true);
+                        break;
+
+                    case NewListingActivity.id:
+                        intent = new Intent(NavigationDrawerBaseActivity.this, NewListingActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(intent);
                         drawerLayout.closeDrawer(Gravity.START, true);
                         break;

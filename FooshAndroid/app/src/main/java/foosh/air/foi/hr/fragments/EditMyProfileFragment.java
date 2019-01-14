@@ -60,8 +60,6 @@ public class EditMyProfileFragment extends Fragment {
         user.setLocation(getArguments().getString("Location"));
         user.setBio(getArguments().getString("Bio"));
         user.setProfileImgPath(getArguments().getString("ProfileImgPath"));
-
-
     }
 
     @Nullable

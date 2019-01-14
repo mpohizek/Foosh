@@ -24,7 +24,6 @@
         </activity>
         <activity
             android:name=".SignInActivity"
-            android:permission="android.permission.ACCESS_NETWORK_STATE"
             android:theme="@style/AppTheme.Fullscreen">
 			<intent-filter>
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -43,6 +42,7 @@
         <activity android:name=".ListingDetailActivity"
             android:launchMode = "singleTop">
         </activity>
+        <activity android:name=".NewListingActivity"></activity>
     </application>
 
 </manifest>

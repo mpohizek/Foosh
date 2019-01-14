@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_listing_add"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:grid="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/topLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:foregroundGravity="center_horizontal|center"
+            grid:columnCount="2"
+            grid:layout_constraintEnd_toEndOf="parent"
+            grid:layout_constraintStart_toStartOf="parent"
+            grid:layout_constraintTop_toTopOf="parent"
+            grid:rowCount="1">
+
+            <Button
+                android:id="@+id/buttonPaying"
+                android:layout_width="162dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:text="@string/paying"
+                android:textColor="@color/colorWhite"
+                grid:layout_columnSpan="1"
+                tools:background="@color/colorPrimary" />
+
+            <Button
+                android:id="@+id/buttonEarning"
+                android:layout_width="162dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorTextLightGray"
+                android:text="@string/earning"
+                android:textColor="@color/colorWhite"
+                grid:layout_columnSpan="1" />
+        </android.support.v7.widget.GridLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topLayout">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/listingTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:hint="@string/listing_title"
+                android:inputType="text"
+                android:text="" />
+        </android.support.design.widget.TextInputLayout>
+
+        <GridLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:columnCount="1"
+            android:rowCount="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+
+            <TextView
+                android:id="@+id/text_category"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_row="0"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/listing_category_pick" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spinner_categories"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_row="1"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:paddingStart="0dp" />
+        </GridLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="28dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="200"
+            app:hintEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/ListingDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|start"
+                android:hint="@string/listing_description_add"
+                android:inputType="textMultiLine"
+                android:maxLength="200" />
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/imageProgresBarLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:foregroundGravity="center_horizontal|center"
+            android:visibility="visible"
+            android:weightSum="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar1"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar2"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar3"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar4"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar5"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar6"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar7"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar8"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar9"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgressBar10"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:visibility="gone" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/textUploadImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageProgresBarLinearLayout" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/appCompatImageViewLibrary"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="28dp"
+            android:src="@drawable/ic_outline_add_photo_alternate_24px"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textUploadImage" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/appCompatImageViewCamera"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_add_a_photo_24dp"
+            app:layout_constraintStart_toEndOf="@+id/appCompatImageViewLibrary"
+            app:layout_constraintTop_toBottomOf="@+id/textUploadImage" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/id_recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginEnd="28dp"
+            android:gravity="center"
+            android:paddingBottom="6dp"
+            android:scrollbars="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textUploadImage" />
+
+        <RelativeLayout
+            android:id="@+id/textInputLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/id_recycle_view">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/ListingPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:hint="@string/listing_price"
+                android:inputType="numberDecimal"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/text_currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="28dp"
+                android:text="@string/currency" />
+
+        </RelativeLayout>
+
+        <AutoCompleteTextView
+            android:id="@+id/country_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="28dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout3"
+            android:hint="Location:"
+            android:dropDownAnchor="@id/ListingDescription">
+        </AutoCompleteTextView>
+
+        <Button
+            android:id="@+id/buttonAddListing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/listing_add_new"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/country_list"
+            app:layout_constraintVertical_bias="0.3" />
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>
