@@ -16,19 +16,16 @@ import android.view.ViewGroup;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
 
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.LoadMoreListener;
-import foosh.air.foi.hr.adapters.MyListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.R;
+import foosh.air.foi.hr.adapters.MyListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.model.Listing;
 
 public class MyListingsFragment extends Fragment{
@@ -134,9 +131,6 @@ public class MyListingsFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*mDataset.add(null);
-        myListingsEndlessRecyclerViewAdapter.notifyItemInserted(mDataset.size() - 1);
-        getAdsById(null, 10);*/
     }
 
     @Override
@@ -158,29 +152,5 @@ public class MyListingsFragment extends Fragment{
 
     public String getType() {
         return mType;
-    }
-
-    public void createFirebaseListings(int n){
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ads");
-        ArrayList<String> helper = new ArrayList<>();
-        helper.add("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Arbres.jpg/250px-Arbres.jpg");
-        helper.add("https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Aspen-PopulusTremuloides-2001-09-27.jpg/220px-Aspen-PopulusTremuloides-2001-09-27.jpg");
-
-        for (int i = 0; i < n; i++) {
-            Listing listing = new Listing();
-            listing.setTitle("Oglas" + i);
-            listing.setDescription("Opis oglasa " + i);
-            listing.setCategory("kategorija");
-            listing.setStatus("DOGOVOREN");
-            listing.setLocation("Lokacija" + 1);
-            //listing.setDateCreated(new Date());
-            listing.setQrCode("QR");
-            listing.setHiring(new Random().nextInt() % 2 == 0);
-            listing.setId("testni");
-            listing.setImages(helper);
-            String key = databaseReference.push().getKey();
-            listing.setId(key);
-            databaseReference.child(key).setValue(listing);
-        }
     }
 }

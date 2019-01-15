@@ -1,13 +1,12 @@
 package foosh.air.foi.hr.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -27,19 +27,18 @@ import java.util.ArrayList;
 import foosh.air.foi.hr.ListingDetailActivity;
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.LoadMoreListener;
-import foosh.air.foi.hr.MainActivity;
-import foosh.air.foi.hr.MyListingsActivity;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Listing;
 
 public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
-    private ArrayList<Listing> mDataset = new ArrayList<Listing>();
+    private ArrayList<Listing> mDataset = new ArrayList<>();
     private Context mcontext;
     private int mPostsPerPage;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
+    private final int VIEW_TYPE_AD = 2;
     private final int descriptionLength = 100;
 
     public boolean isLoading() {
@@ -153,15 +152,6 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                                         addList(newListings);
                                     }
                                     else{
-                                        Snackbar.make(recyclerView, "Kraj", Snackbar.LENGTH_LONG)
-                                                .setAction("Početak",
-                                                        new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View view) {
-                                                                recyclerView.smoothScrollToPosition(0);
-                                                            }
-                                                        }).show();
-                                        //Toast.makeText(context, "Kraj", Toast.LENGTH_LONG).show();
                                         stopScrolling = true;
                                     }
                                     setLoading(false);
@@ -230,10 +220,10 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 Picasso.get().load(listing.getImages().get(0)).centerCrop().fit().placeholder(R.drawable.avatar)
                         .error(R.drawable.ic_launcher_foreground).into(viewHolderRow.slika);
             }
+            viewHolderRow.setListingID(listing.getId());
             viewHolderRow.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Log.d("recycler","click "+listing.getTitle());
                     Intent intent = new Intent(mcontext, ListingDetailActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","listingDetail");
@@ -241,114 +231,35 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                     mcontext.startActivity(intent);
                 }
             });
-
-            if (listing.isHiring()){
-                if (listing.getStatus().equals("OBJAVLJEN")){
-                    viewHolderRow.prvi.setText("Obriši");
-                    viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                    viewHolderRow.drugi.setText("Uredi");
-                    viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
+            viewHolderRow.prvi.setText("Obriši");
+            viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mcontext,
+                            R.style.CustomDialog);
+                    builder.setMessage("Jeste li sigurni?").setTitle("Brisanje oglasa")
+                            .setPositiveButton("Da", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    FirebaseDatabase.getInstance().getReference().child("listings/" + listing.getId()).removeValue();
+                                    Toast.makeText(mcontext, "Oglas obrisan!", Toast.LENGTH_LONG).show();
+                                    remove(listing);
+                                }
+                            })
+                            .setNegativeButton("Ne", null).create().show();
                 }
-                else if (listing.getStatus().equals("U DOGOVORU")){
-                    viewHolderRow.prvi.setText("Poruke");
-                    viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+            });
+            viewHolderRow.drugi.setText("Uredi");
+            viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                        }
-                    });
-                    viewHolderRow.drugi.setText("Uredi");
-                    viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
                 }
-                else{
-                    viewHolderRow.prvi.setText("Poruke");
-                    viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                    viewHolderRow.drugi.setText("Zaključi");
-                    viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                }
-            }
-            else{
-                if (listing.getStatus().equals("U DOGOVORU")){
-                    viewHolderRow.prvi.setText("Poruke");
-                    viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                    viewHolderRow.drugi.setText("Odjavi");
-                    viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                }
-                else if (listing.getStatus().equals("DOGOVOREN")){
-                    viewHolderRow.prvi.setText("Poruke");
-                    viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                    viewHolderRow.drugi.setText("Skeniraj QR");
-                    viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                }
-                else{
-                    viewHolderRow.prvi.setText("Poruke");
-                    viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                    viewHolderRow.drugi.setText("Recenziraj");
-                    viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                }
-            }
+            });
         }
         else if (holder instanceof ViewHolderLoading){
             ViewHolderLoading loadingViewHolder = (ViewHolderLoading) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
         }
-
-
     }
 
     @Override
@@ -376,6 +287,16 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
         private ImageView slika;
         private TextView naslov, kategorije, opis, status;
         private CardView cardView;
+
+        public String getListingID() {
+            return listingID;
+        }
+
+        public void setListingID(String listingID) {
+            this.listingID = listingID;
+        }
+
+        private String listingID;
 
         public ViewHolderRow(View itemView) {
             super(itemView);
