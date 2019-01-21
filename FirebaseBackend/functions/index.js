@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const admin = require("firebase-admin");
 const cors = require("cors")
 const express = require("express")
-
+const Fuse = require("fuse.js")
 const bodyParser = require("body-parser");
 
 
@@ -72,8 +72,81 @@ app.get("", (req, res) => {
 })
 
 app.post("/mainfeed", jsonParser, (req, res) => {  
- 
-  
+  var ref = database.ref("listings-test");
+
+    var orderBy = req.body.orderBy;
+    var category = req.body.category;
+    var priceLowBound = req.body.priceLowBound;
+    var priceUpBound = req.body.priceUpBound;
+    var location = req.body.location;
+    var textSearch = req.body.textSearch;
+    var skip = req.body.skip;
+    var limit = req.body.limit;
+
+    ref.orderByChild("orderNum").once("value").then(
+        (snapshot) =>{           
+            var listings = [];              
+            snapshot.forEach(el => {
+                listings.push(el.val())               
+            });
+            listings = listings.reverse();
+            
+            if(orderBy == "priceAsc"){
+                listings = listings.sort((a,b) => {return a.price-b.price});
+            }
+            if(orderBy == "priceDec"){
+                listings = listings.sort((a,b) => {return b.price-a.price});
+            }
+            if(category){
+                listings = listings.filter((el) => {
+                    if(el.category == category){                 
+                        return el;
+                    }
+                })
+            }
+            if(priceLowBound || priceUpBound){
+                priceLowBound = priceLowBound || 0;
+                priceUpBound = priceUpBound || 9999999;
+
+                listings = listings.filter((el) => {                  
+                    if(el.price >= priceLowBound && el.price <= priceUpBound){
+                        return el;
+                    }
+                })
+            }
+            if(location){
+                listings = listings.filter((el) => {
+                    if(el.location == location){
+                        return el;
+                    }
+                })
+            }
+
+            if(textSearch){
+                var options = {                   
+                    threshold: 0.6,
+                    location: 0,
+                    distance: 100,
+                    maxPatternLength: 32,
+                    minMatchCharLength: 1,
+                    keys: [
+                      "description",
+                      "category",
+                      "title"
+                  ]
+                  };
+                  var fuse = new Fuse(listings, options); 
+                  var listings = fuse.search(textSearch);
+            }
+
+            if(skip && limit){
+                listings.slice(skip, skip + limit);
+            }
+
+            res.send({data : listings});
+
+        }
+    ) 
 })
 
 app.post("/mylistings", jsonParser, (req, res) => {  
@@ -106,7 +179,7 @@ app.post("/mylistings", jsonParser, (req, res) => {
               finalRes = hiringFalse;
           }
           finalRes = finalRes.filter(el => el).sort( (a,b) => b.orderNum-a.orderNum).slice(startAt, startAt + limit);        
-          res.send(finalRes);
+          res.send({data : listings});
       }
   )      
 })
