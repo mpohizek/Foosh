@@ -43,5 +43,8 @@
         <item name="android:paddingTop">50dp</item>
 
     </style>
+    <style name="CustomDialog" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">false</item>
+    </style>
 
 </resources>
