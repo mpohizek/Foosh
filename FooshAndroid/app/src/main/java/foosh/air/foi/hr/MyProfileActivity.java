@@ -1,76 +1,100 @@
 package foosh.air.foi.hr;
 
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.widget.TextView;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.PicassoProvider;
+import com.google.gson.Gson;
 
-import java.util.Collection;
+import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-import foosh.air.foi.hr.model.User;
-import foosh.air.foi.hr.model.onDataListener;
+import foosh.air.foi.hr.fragments.EditMyProfileFragment;
+import foosh.air.foi.hr.fragments.MyProfileViewFragment;
 
-public class MyProfileActivity extends NavigationDrawerBaseActivity implements onDataListener {
+public class MyProfileActivity extends NavigationDrawerBaseActivity {
+    private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
+    private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";
+
     private FirebaseAuth mAuth;
-    private User user;
-    Object a;
-    private Picasso imageLoader;
     private ConstraintLayout contentLayout;
+    private FragmentManager mFragmentManager;
+
+    private String fragmentKey;
+    private String mUserId;
+    private Boolean firstTime = false;
+    private Toolbar toolbar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
-        contentLayout = (ConstraintLayout) findViewById(R.id.main_layout);
-        getLayoutInflater().inflate(R.layout.activity_my_profile, contentLayout);
-        contentLayout.setVisibility(ConstraintLayout.GONE);
+        startProfileView();
+    }
 
-        mAuth = FirebaseAuth.getInstance();
+    public void startProfileView(){
+        toolbar = findViewById(R.id.id_toolbar_main);
+        setSupportActionBar(toolbar);
 
-        DatabaseReference ref;
-        ref = FirebaseDatabase.getInstance().getReference("users/" + mAuth.getCurrentUser().getUid());
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
 
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                showData(dataSnapshot);
-            }
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            fragmentKey = b.getString(ARG_TYPE_KEY);
+            mUserId = b.getString("userId");
+        }
+        else{
+            fragmentKey = "myProfile";
+            mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            b = new Bundle();
+            b.putString(ARG_TYPE_KEY, fragmentKey);
+            b.putString("userId", mUserId);
+        }
+        startFragment(b);
+    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+    public void startFragment(Bundle b) {
+        mFragmentManager = getSupportFragmentManager();
 
-            }
-        });
-
+        // Create new fragment and transaction
+        Fragment myProfileViewFragment = new MyProfileViewFragment();
+        myProfileViewFragment.setArguments(b);
+        if(!firstTime){
+            firstTime = true;
+            mFragmentManager.beginTransaction().replace(R.id.main_layout, myProfileViewFragment, fragmentKey).commit();
+        }else{
+            mFragmentManager.beginTransaction().replace(R.id.main_layout, myProfileViewFragment, fragmentKey).addToBackStack(null).commit();
+        }
     }
 
     @Override
-    public void updateUI(User updatedData) {
-
+    public void onBackPressed() {
+        if(mFragmentManager.getBackStackEntryCount() == 0){
+            super.onBackPressed();
+            finish();
+        }else {
+            mFragmentManager.popBackStack();
+        }
     }
 
-    private void showData(DataSnapshot dataSnapshot) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
 
-        user = dataSnapshot.getValue(User.class);
-        TextView displayName = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userDisplayName);
-        TextView email = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userEmail);
-        TextView bio = (TextView) contentLayout.findViewById(R.id.linearLayout4).findViewById(R.id.userAboutMe);
-        CircleImageView profilePhoto = (CircleImageView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userProfileImage);
-        displayName.setText(user.getDisplayName());
-        email.setText(user.getEmail());
-        bio.setText(user.getBio());
-        Picasso.get().load(user.getImageUrl()).into(profilePhoto);
-        //profilePhoto.setdra
-        contentLayout.setVisibility(ConstraintLayout.VISIBLE);
+            default:
+                return false;
+        }
     }
 }

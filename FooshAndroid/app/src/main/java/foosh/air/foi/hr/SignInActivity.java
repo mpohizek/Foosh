@@ -119,6 +119,7 @@ public class SignInActivity extends AppCompatActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
+                        .setLogo(R.drawable.foosh_logo)
                         .build(),
                 RC_SIGN_IN);
     }

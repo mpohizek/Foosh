@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp">
+    android:layout_height="200dp"
+    android:background="@color/colorPrimary">
 
 
     <TextView
@@ -15,7 +16,8 @@
         android:text="TextView"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/colorWhite"/>
 
     <TextView
         android:id="@+id/emailText"
@@ -25,5 +27,6 @@
         android:text="TextView"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/displayNameText"
-        app:layout_constraintTop_toBottomOf="@+id/displayNameText" />
+        app:layout_constraintTop_toBottomOf="@+id/displayNameText"
+        android:textColor="@color/colorWhite"/>
 </android.support.constraint.ConstraintLayout>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_listing_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteY="81dp">
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:grid="http://schemas.android.com/apk/res-auto"
+
+            android:id="@+id/topLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+
+            android:layout_marginEnd="8dp"
+            android:paddingTop="10dp"
+            grid:columnCount="3"
+            grid:layout_constraintEnd_toEndOf="parent"
+            grid:layout_constraintHorizontal_bias="0.0"
+            grid:layout_constraintStart_toStartOf="parent"
+            grid:layout_constraintTop_toTopOf="parent"
+            grid:rowCount="2">
+
+            <TextView
+                android:id="@+id/listingTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="Title"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                grid:layout_columnSpan="3" />
+
+            <TextView
+                android:id="@+id/listingCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="Kategorija"
+                grid:layout_columnSpan="2" />
+
+            <TextView
+                android:id="@+id/listingDate"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Datum"
+                grid:layout_columnSpan="1"
+                grid:layout_gravity="right" />
+
+        </android.support.v7.widget.GridLayout>
+
+        <FrameLayout
+            android:id="@+id/imageLayout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topLayout">
+
+
+            <TextView
+                android:id="@+id/behindImages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=""/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <ImageView
+                android:id="@+id/left_nav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:src="@drawable/ic_baseline_keyboard_arrow_right_24px" />
+
+            <ImageView
+                android:id="@+id/right_nav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:rotation="180"
+                android:src="@drawable/ic_baseline_keyboard_arrow_right_24px" />
+
+        </FrameLayout>
+
+        <android.support.v7.widget.GridLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:grid="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/gridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:background="@color/colorAccentBackground"
+            grid:columnCount="5"
+            grid:layout_constraintEnd_toEndOf="parent"
+            grid:layout_constraintHorizontal_bias="1.0"
+            grid:layout_constraintStart_toStartOf="parent"
+            grid:layout_constraintTop_toBottomOf="@+id/imageLayout"
+            grid:rowCount="2"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/userProfileImage"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/avatar"
+                app:civ_border_color="#FF000000"
+                app:layout_rowSpan="2"
+                app:layout_column="0"/>
+
+            <TextView
+                android:id="@+id/listingOwner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="0dp"
+                android:text="Ime Prezime"
+                grid:layout_gravity="start|center_vertical"
+                grid:layout_rowWeight="1"
+                grid:layout_column="1"
+                grid:layout_columnWeight="1"/>
+
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorWhite"
+                grid:layout_rowSpan="2"
+                grid:layout_column="2"
+                grid:layout_gravity="center_horizontal"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:src="@drawable/ic_outline_location_on_24px"
+                grid:layout_column="3"
+                grid:layout_gravity="center_vertical|right"
+                grid:layout_columnWeight="2"
+                />
+
+            <TextView
+                android:id="@+id/listingLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Location"
+                android:textSize="18sp"
+                grid:layout_column="4"
+                grid:layout_gravity="end|center_vertical"
+                />
+
+
+
+            <RatingBar
+                android:id="@+id/ratingHired"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_marginBottom="8dp"
+                android:progressBackgroundTint="@color/colorBlack"
+                android:progressBackgroundTintMode="src_atop"
+                android:progressTint="@color/colorPrimaryDark"
+                android:progressTintMode="src_atop"
+                grid:layout_gravity="center_vertical"
+                />
+
+
+
+            <TextView
+                android:id="@+id/ListingPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="0"
+                android:textSize="18sp"
+                grid:layout_column="4"
+                grid:layout_gravity="end|center_vertical"
+                />
+
+
+        </android.support.v7.widget.GridLayout>
+
+
+        <TextView
+            android:id="@+id/descriptionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="start"
+            android:text="Opis"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
+
+        <me.biubiubiu.justifytext.library.JustifyTextView
+            android:id="@+id/listingDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:text="Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusant doloremque laudantium, totam rem aperiam eaque ipsa.\n"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTitle"/>
+
+        <Button
+            android:id="@+id/buttonInterested"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="zanima me"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription" />
+
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>
