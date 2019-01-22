@@ -9,11 +9,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.AppCompatImageView;
@@ -55,12 +57,15 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
@@ -114,6 +119,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private List<UploadTask> uploadTask;
     private int finished;
 
+    private String mCurrentPhotoPath;
     {
         listing = new Listing();
         mDatabaseListings = FirebaseDatabase.getInstance().getReference().child("listings");
@@ -320,7 +326,19 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                     }
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                        File photoFile = null;
+                        try {
+                            photoFile = createImageFile();
+                        } catch (IOException ex) {
+                            Toast.makeText(NewListingActivity.this, "Image cannot be saved!", Toast.LENGTH_LONG).show();
+                        }
+                        if (photoFile != null) {
+                            Uri photoURI = FileProvider.getUriForFile(NewListingActivity.this,
+                                    "foosh.air.foi.hr.fileprovider",
+                                    photoFile);
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                        }
                     }
                 }
             });
@@ -386,6 +404,20 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
             }
         });
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     private void checkNewListing(){
@@ -520,15 +552,13 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             }
         }
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
-            if (data != null && data.getExtras() != null) {
-                if (!canAddListingImageAfter(1)){
-                    Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
-                            " images can be added!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-                imagesRecyclerViewAdapter.addImageToDataset(imageBitmap);
+            if (!canAddListingImageAfter(1)){
+                Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
+                        " images can be added!", Toast.LENGTH_LONG).show();
+                return;
             }
+            //Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+            imagesRecyclerViewAdapter.addImageToDataset(Uri.fromFile(new File(mCurrentPhotoPath)));
         }
     }
 
