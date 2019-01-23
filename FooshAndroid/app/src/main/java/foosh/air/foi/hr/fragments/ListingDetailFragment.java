@@ -136,19 +136,6 @@ public class ListingDetailFragment extends Fragment {
             }
         });
 
-        listingInterested.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(authOwner){
-                    //TODO: link to the edit listing fragment
-                    Log.d("ListingDetailFragment","Go to edit listing");
-                }else{
-                    //TODO: set the status for interested
-                    //TODO: if the user already clicked and the status is interested?
-                    Log.d("ListingDetailFragment","Set to interested");
-                }
-            }
-        });
 
         View.OnClickListener profileOnClickListener = new View.OnClickListener() {
             @Override
@@ -176,7 +163,7 @@ public class ListingDetailFragment extends Fragment {
         mListingReference = FirebaseDatabase.getInstance().getReference().child("listings-borna").child(mListingId);
 
         listingInterested = (Button) scrollView.findViewById(R.id.buttonInterested);
-        listingInterested.setEnabled(false);
+        //listingInterested.setEnabled(false);
 
         // APPLICATION Controls
         buttonApply = (Button) scrollView.findViewById(R.id.buttonInterested);
@@ -194,7 +181,7 @@ public class ListingDetailFragment extends Fragment {
         buttonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                buttonApplyOnClickListener();
             }
         });
         buttonUnapply.setOnClickListener(new View.OnClickListener() {
@@ -221,6 +208,7 @@ public class ListingDetailFragment extends Fragment {
                 buttonNotAcceptDealOnClickListener();
             }
         });
+
 
         listingTitle = (TextView) scrollView.findViewById(R.id.listingTitle);
         listingCategory = (TextView) scrollView.findViewById(R.id.listingCategory);
@@ -287,15 +275,17 @@ public class ListingDetailFragment extends Fragment {
             }
             if(applicantStatus == 1) {
                 buttonFinishJob.setVisibility(View.VISIBLE);
-            }
-            if(applicantStatus == 0) {
-                buttonAcceptDeal.setVisibility(View.VISIBLE);
-                buttonNotAcceptDeal.setVisibility(View.VISIBLE);
-                acceptDealQuestion.setVisibility(View.VISIBLE);
             } else {
-                buttonUnapply.setVisibility(View.VISIBLE);
-                buttonMessage.setVisibility(View.VISIBLE);
+                if(applicantStatus == 0) {
+                    buttonAcceptDeal.setVisibility(View.VISIBLE);
+                    buttonNotAcceptDeal.setVisibility(View.VISIBLE);
+                    acceptDealQuestion.setVisibility(View.VISIBLE);
+                } else {
+                    buttonUnapply.setVisibility(View.VISIBLE);
+                    buttonMessage.setVisibility(View.VISIBLE);
+                }
             }
+
         } else {
             buttonApply.setVisibility(View.VISIBLE);
         }
@@ -334,19 +324,19 @@ public class ListingDetailFragment extends Fragment {
     }
 
     private void buttonApplyOnClickListener(){
-
+        mListingReference.child("applications/"+ userId).setValue("test");
     }
     private void buttonUnapplyOnClickListener(){
-
+        mListingReference.child("applications/"+ userId).setValue(null);
     }
     private void buttonMessageOnClickListener(){
 
     }
     private void buttonAcceptDealOnClickListener(){
-
+        mListingReference.child("applicant/"+ userId).setValue(1);
     }
     private void buttonNotAcceptDealOnClickListener(){
-
+        mListingReference.child("applicant/"+ userId).setValue(null);
     }
 
 }
