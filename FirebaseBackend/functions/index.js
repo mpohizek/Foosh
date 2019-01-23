@@ -74,14 +74,14 @@ app.get("", (req, res) => {
 app.post("/mainfeed", jsonParser, (req, res) => {  
   var ref = database.ref("listings-test");
 
-    var orderBy = req.body.orderBy;
-    var category = req.body.category;
-    var priceLowBound = req.body.priceLowBound;
-    var priceUpBound = req.body.priceUpBound;
-    var location = req.body.location;
-    var textSearch = req.body.textSearch;
-    var skip = req.body.skip;
-    var limit = req.body.limit;
+    var orderBy = req.body.data.orderBy;
+    var category = req.body.data.category;
+    var priceLowBound = req.body.data.priceLowBound;
+    var priceUpBound = req.body.data.priceUpBound;
+    var location = req.body.data.location;
+    var textSearch = req.body.data.textSearch;
+    var skip = req.body.data.skip;
+    var limit = req.body.data.limit;
 
     ref.orderByChild("orderNum").once("value").then(
         (snapshot) =>{           
@@ -152,10 +152,10 @@ app.post("/mainfeed", jsonParser, (req, res) => {
 app.post("/mylistings", jsonParser, (req, res) => {  
   var ref = database.ref("listings-test");
   
-  var ownerId = req.body.ownerId;    
-  var hiring = req.body.hiring;
-  var startAt = req.body.startAt;
-  var limit = req.body.limit; 
+  var ownerId = req.body.data.ownerId;    
+  var hiring = req.body.data.hiring;
+  var startAt = req.body.data.startAt;
+  var limit = req.body.data.limit; 
 
   ref.orderByChild("ownerId").equalTo(ownerId).once("value").then(
       (snapshot) =>{           
