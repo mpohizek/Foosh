@@ -375,7 +375,7 @@
         </ListView>
 
 
-        <!-- OWNER SHOW QR CODE - APPLICANT ACCEPTED THE DEAL -->
+        <!-- OWNER SHOW - WAITING FOR APPLICANT -->
         <me.biubiubiu.justifytext.library.JustifyTextView
             android:id="@+id/applicantNotAccepted"
             android:layout_width="match_parent"

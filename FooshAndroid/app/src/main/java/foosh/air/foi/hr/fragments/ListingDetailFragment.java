@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -40,6 +42,7 @@ import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.SlidingImageAdapter;
 import foosh.air.foi.hr.model.Listing;
 import foosh.air.foi.hr.model.User;
+import me.biubiubiu.justifytext.library.JustifyTextView;
 
 public class ListingDetailFragment extends Fragment {
 
@@ -52,7 +55,7 @@ public class ListingDetailFragment extends Fragment {
     private DatabaseReference mListingReference;
     private DatabaseReference mOwnerReference;
     ConstraintLayout contentLayout;
-
+    String userId;
     private ScrollView scrollView;
     private TextView listingTitle;
     private TextView listingCategory;
@@ -67,6 +70,16 @@ public class ListingDetailFragment extends Fragment {
     private TextView behindImages;
 
     private static ViewPager mPager;
+    private Button buttonUnapply;
+    private Button buttonMessage;
+    private JustifyTextView acceptDealQuestion;
+    private Button buttonAcceptDeal;
+    private Button buttonNotAcceptDeal;
+    private ListView applicantsList;
+    private Button buttonFinishJob;
+    private Button buttonApply;
+    private JustifyTextView applicantNotAcceptedInfo;
+    private ImageView listingsQrCode;
 
     public ListingDetailFragment() {
     }
@@ -85,14 +98,22 @@ public class ListingDetailFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mListing = dataSnapshot.getValue(Listing.class);
-
+                userId = mAuth.getCurrentUser().getUid();
                 if (mAuth.getCurrentUser().getUid().equals(mListing.getOwnerId())){
                     listingInterested.setText("Uredi oglas");
                     authOwner = true;
+                    hideAllControls();
+                    showControlsOwner();
+
+                } else {
+                    hideAllControls();
+                    showControlsApplicant();
                 }
-                listingInterested.setEnabled(true);
+                //listingInterested.setEnabled(true);
+
 
                 showListingDetailData();
+
 
                 //fetch listing owner data
                 mOwnerReference = FirebaseDatabase.getInstance().getReference().child("users").child(mListing.getOwnerId());
@@ -152,10 +173,54 @@ public class ListingDetailFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         authOwner = false;
         contentLayout = (ConstraintLayout) scrollView.findViewById(R.id.main_layout);
-        mListingReference = FirebaseDatabase.getInstance().getReference().child("listings").child(mListingId);
+        mListingReference = FirebaseDatabase.getInstance().getReference().child("listings-borna").child(mListingId);
 
         listingInterested = (Button) scrollView.findViewById(R.id.buttonInterested);
         listingInterested.setEnabled(false);
+
+        // APPLICATION Controls
+        buttonApply = (Button) scrollView.findViewById(R.id.buttonInterested);
+        buttonUnapply = (Button) scrollView.findViewById(R.id.buttonUnapply);
+        buttonMessage = (Button) scrollView.findViewById(R.id.buttonMessage);
+        acceptDealQuestion = (JustifyTextView) scrollView.findViewById(R.id.acceptDealQuestion);
+        buttonAcceptDeal = (Button) scrollView.findViewById(R.id.buttonAcceptDeal);
+        buttonNotAcceptDeal = (Button) scrollView.findViewById(R.id.buttonNotAcceptDeal);
+        applicantsList = (ListView) scrollView.findViewById(R.id.applicantsList);
+        buttonFinishJob = (Button) scrollView.findViewById(R.id.buttonFinishJob);
+        applicantNotAcceptedInfo = (JustifyTextView) scrollView.findViewById(R.id.applicantNotAccepted);
+        listingsQrCode = (ImageView) scrollView.findViewById(R.id.listingQrCode);
+
+        // SET onClick listeners
+        buttonApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        buttonUnapply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonUnapplyOnClickListener();
+            }
+        });
+        buttonMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonMessageOnClickListener();
+            }
+        });
+        buttonAcceptDeal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonAcceptDealOnClickListener();
+            }
+        });
+        buttonNotAcceptDeal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonNotAcceptDealOnClickListener();
+            }
+        });
 
         listingTitle = (TextView) scrollView.findViewById(R.id.listingTitle);
         listingCategory = (TextView) scrollView.findViewById(R.id.listingCategory);
@@ -210,6 +275,78 @@ public class ListingDetailFragment extends Fragment {
         }else{
             userRating.setRating(mOwner.getRatingEmployed());
         }
+    }
+
+
+    private void showControlsApplicant(){
+        String userIsApplied = mListing.getApplications().get(userId);
+        if(userIsApplied != null) {
+            int applicantStatus = 2;
+            if( mListing.getApplicant().size() != 0){
+                applicantStatus = mListing.getApplicant().get(userId);
+            }
+            if(applicantStatus == 1) {
+                buttonFinishJob.setVisibility(View.VISIBLE);
+            }
+            if(applicantStatus == 0) {
+                buttonAcceptDeal.setVisibility(View.VISIBLE);
+                buttonNotAcceptDeal.setVisibility(View.VISIBLE);
+                acceptDealQuestion.setVisibility(View.VISIBLE);
+            } else {
+                buttonUnapply.setVisibility(View.VISIBLE);
+                buttonMessage.setVisibility(View.VISIBLE);
+            }
+        } else {
+            buttonApply.setVisibility(View.VISIBLE);
+        }
+
+
+
+    }
+
+    private void showControlsOwner(){
+
+        if(mListing.getApplications() != null){
+            if(mListing.getApplicant().containsValue(1)) {
+                listingsQrCode.setVisibility(View.VISIBLE);
+            }else {
+                if(mListing.getApplicant().containsValue(0)) {
+                    applicantNotAcceptedInfo.setVisibility(View.VISIBLE);
+                } else {
+                    applicantsList.setVisibility(View.VISIBLE);
+                }
+            }
+
+
+        }
+    }
+
+    public void hideAllControls(){
+        buttonApply.setVisibility(View.GONE);
+        buttonUnapply.setVisibility(View.GONE);
+        buttonMessage.setVisibility(View.GONE);
+        acceptDealQuestion.setVisibility(View.GONE);
+        buttonAcceptDeal.setVisibility(View.GONE);
+        buttonNotAcceptDeal.setVisibility(View.GONE);
+        applicantsList.setVisibility(View.GONE);
+        buttonFinishJob.setVisibility(View.GONE);
+        applicantNotAcceptedInfo.setVisibility(View.GONE);
+    }
+
+    private void buttonApplyOnClickListener(){
+
+    }
+    private void buttonUnapplyOnClickListener(){
+
+    }
+    private void buttonMessageOnClickListener(){
+
+    }
+    private void buttonAcceptDealOnClickListener(){
+
+    }
+    private void buttonNotAcceptDealOnClickListener(){
+
     }
 
 }
