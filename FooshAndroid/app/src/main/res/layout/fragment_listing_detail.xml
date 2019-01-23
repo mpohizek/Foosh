@@ -230,6 +230,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/descriptionTitle"/>
 
+
+
+
+
+        <!-- APPLICANT VIEWING ACTIVE LISTING, CAN APPLY-->
         <Button
             android:id="@+id/buttonInterested"
             android:layout_width="wrap_content"
@@ -241,11 +246,170 @@
             android:backgroundTint="@color/colorPrimary"
             android:text="zanima me"
             android:textColor="@color/colorWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"/>
+
+
+
+        <!-- APPLICANT APPLIED, WAITING FOR DEAL -->
+        <Button
+            android:id="@+id/buttonUnapply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="odjavi"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonMessage"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/buttonMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="poruka"
+            android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@id/buttonUnapply"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"/>
+
+
+
+
+        <!-- APPLICANT ACCEPT DEAL -->
+        <me.biubiubiu.justifytext.library.JustifyTextView
+            android:id="@+id/acceptDealQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/accept_deal_question"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listingDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"
+            />
+        <Button
+            android:id="@+id/buttonAcceptDeal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="da"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonNotAcceptDeal"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@id/buttonUnapply"
+            app:layout_constraintTop_toBottomOf="@+id/acceptDealQuestion"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/buttonNotAcceptDeal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="ne"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@id/buttonAcceptDeal"
+            app:layout_constraintTop_toBottomOf="@+id/acceptDealQuestion"
+            android:visibility="gone"/>
+
+
+        <!-- APPLICANT - FINISH JOB -->
+        <Button
+            android:id="@+id/buttonFinishJob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="završi posao"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"/>
+
+
+
+        <!-- OWNER - SHOW LIST OF APPLICANTS -->
+        <ListView
+            android:id="@+id/applicantsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listingDescription"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone">
+
+        </ListView>
+
+
+        <!-- OWNER SHOW QR CODE - APPLICANT ACCEPTED THE DEAL -->
+        <me.biubiubiu.justifytext.library.JustifyTextView
+            android:id="@+id/applicantNotAccepted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/applicant_not_accepted_deal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"
+            />
+
+
+
+
+        <!-- OWNER SHOW QR CODE - APPLICANT ACCEPTED THE DEAL -->
+        <ImageView
+            android:id="@+id/listingQrCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listingDescription"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            />
+
+
+
+
+
+
 
 
 

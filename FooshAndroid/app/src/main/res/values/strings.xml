@@ -31,4 +31,6 @@
     <string name="label_work">RAD</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="accept_deal_question"> želi sklopiti dogovor. Želite li potvrditi?\n</string>
+    <string name="applicant_not_accepted_deal"> nije potvrdio/la dogovor.\n</string>
 </resources>
