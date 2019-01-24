@@ -2,7 +2,6 @@ package foosh.air.foi.hr.fragments;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,9 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -29,12 +27,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import foosh.air.foi.hr.MyProfileActivity;
@@ -45,7 +41,6 @@ import foosh.air.foi.hr.model.User;
 import me.biubiubiu.justifytext.library.JustifyTextView;
 
 public class ListingDetailFragment extends Fragment {
-
     private String mListingId;
     private Listing mListing;
     private User mOwner;
@@ -54,6 +49,7 @@ public class ListingDetailFragment extends Fragment {
 
     private DatabaseReference mListingReference;
     private DatabaseReference mOwnerReference;
+    private DatabaseReference mUsersReference;
     ConstraintLayout contentLayout;
     String userId;
     private ScrollView scrollView;
@@ -75,7 +71,8 @@ public class ListingDetailFragment extends Fragment {
     private JustifyTextView acceptDealQuestion;
     private Button buttonAcceptDeal;
     private Button buttonNotAcceptDeal;
-    private ListView applicantsList;
+    private LinearLayout applicantsList;
+    private TextView applicantsListTitle;
     private Button buttonFinishJob;
     private Button buttonApply;
     private JustifyTextView applicantNotAcceptedInfo;
@@ -140,12 +137,7 @@ public class ListingDetailFragment extends Fragment {
         View.OnClickListener profileOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ListingDetailFragment","Go to profile " + mListing.getOwnerId());
-                Intent intent = new Intent(scrollView.getContext(), MyProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","listingOwnerProfile");
-                intent.putExtra("userId", mListing.getOwnerId());
-                startActivity(intent);
+                goToProfile(v, mListing.getOwnerId());
             }
         };
         userProfilePhoto.setOnClickListener(profileOnClickListener);
@@ -161,6 +153,7 @@ public class ListingDetailFragment extends Fragment {
         authOwner = false;
         contentLayout = (ConstraintLayout) scrollView.findViewById(R.id.main_layout);
         mListingReference = FirebaseDatabase.getInstance().getReference().child("listings-borna").child(mListingId);
+        mUsersReference = FirebaseDatabase.getInstance().getReference().child("users");
 
         listingInterested = (Button) scrollView.findViewById(R.id.buttonInterested);
         //listingInterested.setEnabled(false);
@@ -172,7 +165,8 @@ public class ListingDetailFragment extends Fragment {
         acceptDealQuestion = (JustifyTextView) scrollView.findViewById(R.id.acceptDealQuestion);
         buttonAcceptDeal = (Button) scrollView.findViewById(R.id.buttonAcceptDeal);
         buttonNotAcceptDeal = (Button) scrollView.findViewById(R.id.buttonNotAcceptDeal);
-        applicantsList = (ListView) scrollView.findViewById(R.id.applicantsList);
+        applicantsList = (LinearLayout) scrollView.findViewById(R.id.applicantsList);
+        applicantsListTitle = (TextView) scrollView.findViewById(R.id.applicantsListTitle);
         buttonFinishJob = (Button) scrollView.findViewById(R.id.buttonFinishJob);
         applicantNotAcceptedInfo = (JustifyTextView) scrollView.findViewById(R.id.applicantNotAccepted);
         listingsQrCode = (ImageView) scrollView.findViewById(R.id.listingQrCode);
@@ -303,12 +297,91 @@ public class ListingDetailFragment extends Fragment {
                 if(mListing.getApplicant().containsValue(0)) {
                     applicantNotAcceptedInfo.setVisibility(View.VISIBLE);
                 } else {
+                    applicantsListTitle.setVisibility(View.VISIBLE);
                     applicantsList.setVisibility(View.VISIBLE);
+                    fetchApplicantList();
                 }
             }
 
 
         }
+    }
+
+    private void fetchApplicantList() {
+        final ArrayList<User> applicants = new ArrayList<User>();
+        final LayoutInflater inflater = getLayoutInflater();
+        Set<String> applicantsId = mListing.getApplications().keySet();
+        applicantsList.removeAllViews();
+
+        for (String id: applicantsId) {
+            mUsersReference.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    View child = inflater.inflate(R.layout.fragment_listing_applicant, null);
+                    TextView applicantName = (TextView)child.findViewById(R.id.applicantName);
+                    CircleImageView profilePhoto = (CircleImageView) child.findViewById(R.id.applicantProfileImage);
+                    applicantName.setText(user.getDisplayName());
+                    if(user.getProfileImgPath() == null || user.getProfileImgPath().equals("")){
+                        Picasso.get().load(R.drawable.avatar).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+                    }else{
+                        Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
+                    }
+
+                    Button makeDeal = (Button)child.findViewById(R.id.buttonMakeDeal);
+                    Button message = (Button)child.findViewById(R.id.buttonMessageApplicant);
+
+                    makeDeal.setTag(dataSnapshot.getKey());
+                    message.setTag(user.getContact());
+                    profilePhoto.setTag(dataSnapshot.getKey());
+                    applicantName.setTag(dataSnapshot.getKey());
+
+                    makeDeal.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //view.getTag() to access the applicant id
+                        }
+                    });
+                    message.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //view.getTag() to access the applicant contact
+                        }
+                    });
+
+                    profilePhoto.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            goToProfile(view, view.getTag().toString());
+                        }
+                    });
+
+                    applicantName.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            goToProfile(view, view.getTag().toString());
+                        }
+                    });
+
+                    applicantsList.addView(child);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+    }
+
+    private void goToProfile(View view, String userId) {
+        Log.d("ListingDetailFragment","Go to profile " + view.getTag());
+        Intent intent = new Intent(scrollView.getContext(), MyProfileActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","listingOwnerProfile");
+        intent.putExtra("userId", userId);
+        startActivity(intent);
     }
 
     public void hideAllControls(){
