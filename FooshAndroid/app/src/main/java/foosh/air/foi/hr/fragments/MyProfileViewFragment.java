@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -53,7 +54,7 @@ public class MyProfileViewFragment extends Fragment {
             listingOwner = false;
         }
 
-        //mAuth = FirebaseAuth.getInstance();
+
 
         //Fetching the user data
         DatabaseReference userRef;
@@ -115,15 +116,19 @@ public class MyProfileViewFragment extends Fragment {
         ImageView locationIcon = (ImageView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.locationIcon);
         TextView location = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.userLocationName);
         TextView bio = (TextView) contentLayout.findViewById(R.id.linearLayout4).findViewById(R.id.userAboutMe);
-
+        TextView contact = (TextView) contentLayout.findViewById(R.id.linearLayout4).findViewById(R.id.userContact);
         if(user.getProfileImgPath() == null || user.getProfileImgPath().equals("")){
             Picasso.get().load(R.drawable.avatar).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
         }else{
             Picasso.get().load(user.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(profilePhoto);
         }
-
-        displayName.setText(user.getDisplayName());
         email.setText(user.getEmail());
+        displayName.setText(user.getDisplayName());
+        contact.setText("");
+        if(!user.getContact().equals("")){
+            contact.setText(user.getContact());
+        }
+
 
         //Hiding the location icon and text if the user doesn't have a location specified in the database
         if(user.getLocation() != null){
@@ -139,7 +144,7 @@ public class MyProfileViewFragment extends Fragment {
 
         contentLayout.setVisibility(ConstraintLayout.VISIBLE);
 
-        TextView editLink = (TextView) contentLayout.findViewById(R.id.linearLayout).findViewById(R.id.editProfileLink);
+        Button editLink = (Button) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.editButton);
         if(!listingOwner) {
             editLink.setVisibility(View.VISIBLE);
             editLink.setOnClickListener(new View.OnClickListener() {
@@ -169,28 +174,14 @@ public class MyProfileViewFragment extends Fragment {
             }
         }
 
-        RatingBar ratingHired = (RatingBar) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.ratingHired);
-        ratingHired.setRating(sumHired/numHired);
-        RatingBar ratingEmployed = (RatingBar) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.ratingEmployed);
-        ratingEmployed.setRating(sumEmployed/numEmployed);
 
         //TODO: switch - posao, poslova...
         String employedNumJobsText = " poslova";
         String employedNumPeopleText = " zaposlenih osoba";
         String hiredNumJobsText = " poslova izvršeno";
         String hiredNumPeopleText = " poslodavaca";
-        TextView hiredNumJobs = (TextView) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.hiredNumJobs);
-        TextView hiredNumPeople = (TextView) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.hiredNumPeople);
-        TextView employedNumJobs = (TextView) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.employedNumJobs);
-        TextView employedNumPeople = (TextView) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.employedNumPeople);
 
-        hiredNumJobs.setText(numHired + hiredNumJobsText);
-        //TODO: change to the number of people employed
-        hiredNumPeople.setText(numHired + hiredNumPeopleText);
 
-        employedNumJobs.setText(numEmployed + employedNumJobsText);
-        //TODO: change to the number of people who hired the user
-        employedNumPeople.setText(numEmployed + employedNumPeopleText);
 
     }
 
@@ -201,13 +192,14 @@ public class MyProfileViewFragment extends Fragment {
         userDataBundle.putString("DisplayName",user.getDisplayName());
         userDataBundle.putString("Location",user.getLocation());
         userDataBundle.putString("Bio",user.getBio());
+        userDataBundle.putString("contact",user.getContact());
 
         EditMyProfileFragment mEditMyProfileFragment = new EditMyProfileFragment();
         mEditMyProfileFragment.setArguments(userDataBundle);
 
         FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
         mFragmentManager.beginTransaction()
-                .replace(R.id.main_layout, mEditMyProfileFragment )
+                .replace(R.id.main_layout, mEditMyProfileFragment, "MY_PROFILE" )
                 .addToBackStack("profileEdit")
                 .commit();
     }
