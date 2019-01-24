@@ -50,7 +50,7 @@ exports.createBlankUserDocument = functions.auth.user().onCreate( userCreate => 
       bio : '',
       updateFlag: false,
       email: user.email,
-      contact : ['']
+      contact : ''
     };
     const userDbRef = database.ref('users/'+ user.uid).set(userDocument).then(
       result => {     
