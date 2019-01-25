@@ -25,7 +25,6 @@ public class MainActivity extends NavigationDrawerBaseActivity {
     private static final int RC_MAIN = 1001;
     private FirebaseAuth mAuth;
     private Toolbar toolbar;
-    Button signOutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,40 +42,11 @@ public class MainActivity extends NavigationDrawerBaseActivity {
 
 
         mAuth = FirebaseAuth.getInstance();
-        signOutButton = (Button) findViewById(R.id.signOutButton);
-        signOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AuthUI.getInstance().signOut(MainActivity.this)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                                    finish();
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Sign out failed", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-            }
-        });
+
         if(mAuth.getCurrentUser() == null){
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
-    }
-    public void callSignInActivity(){
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.FacebookBuilder().build());
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_MAIN);
     }
 
     @Override
