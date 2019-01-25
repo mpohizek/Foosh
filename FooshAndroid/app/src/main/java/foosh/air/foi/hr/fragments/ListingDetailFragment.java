@@ -46,8 +46,7 @@ public class ListingDetailFragment extends Fragment {
     private Listing mListing;
     private User mOwner;
     private FirebaseAuth mAuth;
-    private Boolean authOwner; //true if owner and auth user are the same person
-
+    private Boolean authOwner;
     private DatabaseReference mListingReference;
     private DatabaseReference mOwnerReference;
     private DatabaseReference mUsersReference;
@@ -65,7 +64,6 @@ public class ListingDetailFragment extends Fragment {
     private RatingBar userRating;
     private Button listingInterested;
     private TextView behindImages;
-
     private static ViewPager mPager;
     private Button buttonUnapply;
     private Button buttonMessage;
@@ -91,7 +89,6 @@ public class ListingDetailFragment extends Fragment {
 
         init(inflater, container);
 
-        //fetch listing data
         mListingReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -107,11 +104,8 @@ public class ListingDetailFragment extends Fragment {
                     hideAllControls();
                     showControlsApplicant();
                 }
-                //listingInterested.setEnabled(true);
-
 
                 showListingDetailData();
-
 
                 //fetch listing owner data
                 mOwnerReference = FirebaseDatabase.getInstance().getReference().child("users").child(mListing.getOwnerId());
@@ -153,11 +147,10 @@ public class ListingDetailFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         authOwner = false;
         contentLayout = (ConstraintLayout) scrollView.findViewById(R.id.main_layout);
-        mListingReference = FirebaseDatabase.getInstance().getReference().child("listings-borna").child(mListingId);
+        mListingReference = FirebaseDatabase.getInstance().getReference().child("listings").child(mListingId);
         mUsersReference = FirebaseDatabase.getInstance().getReference().child("users");
 
         listingInterested = (Button) scrollView.findViewById(R.id.buttonInterested);
-        //listingInterested.setEnabled(false);
 
         // APPLICATION Controls
         buttonApply = (Button) scrollView.findViewById(R.id.buttonInterested);
@@ -297,7 +290,6 @@ public class ListingDetailFragment extends Fragment {
     }
 
     private void showControlsOwner(){
-
         if(mListing.getApplications() != null){
             if(mListing.getApplicant().containsValue(1)) {
                 listingsQrCode.setVisibility(View.VISIBLE);
@@ -310,8 +302,6 @@ public class ListingDetailFragment extends Fragment {
                     fetchApplicantList();
                 }
             }
-
-
         }
     }
 
@@ -348,7 +338,7 @@ public class ListingDetailFragment extends Fragment {
                         @Override
                         public void onClick(View view) {
                             String applicantId = (String) view.getTag();
-                            mListingReference = FirebaseDatabase.getInstance().getReference().child("listings-borna").child(mListingId);
+                            mListingReference = FirebaseDatabase.getInstance().getReference().child("listings").child(mListingId);
                             mListingReference.child("applicant/"+ applicantId).setValue(0);
                             applicantsListTitle.setVisibility(View.GONE);
                         }
@@ -357,11 +347,7 @@ public class ListingDetailFragment extends Fragment {
                         @Override
                         public void onClick(View view) {
                             String applicantContact = (String) view.getTag();
-                            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                            smsIntent.setType("vnd.android-dir/mms-sms");
-                            smsIntent.putExtra("address", applicantContact);
-                            smsIntent.putExtra("sms_body","");
-                            startActivity(smsIntent);
+                            openAndroidDefaultSMSApp(applicantContact);
                         }
                     });
 
@@ -412,6 +398,14 @@ public class ListingDetailFragment extends Fragment {
         applicantNotAcceptedInfo.setVisibility(View.GONE);
     }
 
+    private void openAndroidDefaultSMSApp(String contact){
+        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+        smsIntent.setType("vnd.android-dir/mms-sms");
+        smsIntent.putExtra("address", contact);
+        smsIntent.putExtra("sms_body","");
+        startActivity(smsIntent);
+    }
+
     private void buttonApplyOnClickListener(){
         mListingReference.child("applications/"+ userId).setValue("test");
     }
@@ -419,7 +413,7 @@ public class ListingDetailFragment extends Fragment {
         mListingReference.child("applications/"+ userId).setValue(null);
     }
     private void buttonMessageOnClickListener(){
-
+        openAndroidDefaultSMSApp(mOwner.getContact());
     }
     private void buttonAcceptDealOnClickListener(){
         mListingReference.child("applicant/"+ userId).setValue(1);

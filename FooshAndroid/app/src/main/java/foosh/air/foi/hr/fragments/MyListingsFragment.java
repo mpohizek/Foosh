@@ -49,12 +49,12 @@ public class MyListingsFragment extends Fragment{
             final String key = id != null ? id.getId() : null;
             if (key == null)
                 query = FirebaseDatabase.getInstance().getReference()
-                        .child("listings-borna")
+                        .child("listings")
                         .orderByKey()
                         .limitToLast(mPostsPerPage);
             else
                 query = FirebaseDatabase.getInstance().getReference()
-                        .child("listings-borna")
+                        .child("listings")
                         .orderByKey()
                         .endAt(key)
                         .limitToLast(mPostsPerPage);
