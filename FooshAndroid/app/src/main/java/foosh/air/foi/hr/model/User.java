@@ -6,14 +6,14 @@ import java.util.List;
 public class User {
     private String displayName;
     private String profileImgPath;
-    private List<String> contact;
+    private String contact;
     private String bio;
     private String email;
     private String location;
     private float ratingHired;
     private float ratingEmployed;
 
-    public User(String displayName, String profileImgPath, List<String> contact, String bio, String email, String location, float ratingHired, float ratingEmployed) {
+    public User(String displayName, String profileImgPath, String contact, String bio, String email, String location, float ratingHired, float ratingEmployed) {
         this.displayName = displayName;
         this.profileImgPath = profileImgPath;
         this.contact = contact;
@@ -43,11 +43,11 @@ public class User {
         this.profileImgPath = profileImgPath;
     }
 
-    public List<String> getContact() {
+    public String getContact() {
         return contact;
     }
 
-    public void setContact(List<String> contact) {
+    public void setContact(String contact) {
         this.contact = contact;
     }
 

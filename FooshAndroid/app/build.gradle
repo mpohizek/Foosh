@@ -46,13 +46,17 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-storage:16.0.1'
 
-    implementation'com.google.firebase:firebase-functions:16.0.1'
+    implementation 'com.google.firebase:firebase-functions:16.0.1'
 
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
     implementation project(':core')
-	
+
     implementation 'me.biubiubiu.justifytext:library:1.1'
+
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
+    implementation 'com.google.zxing:core:3.3.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 }
 
 apply plugin: 'com.google.gms.google-services'
