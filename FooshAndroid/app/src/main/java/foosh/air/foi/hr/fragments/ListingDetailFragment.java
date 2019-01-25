@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -261,11 +262,16 @@ public class ListingDetailFragment extends Fragment {
 
 
     private void showControlsApplicant(){
+        HashMap currentApplicant = new HashMap();
         String userIsApplied = mListing.getApplications().get(userId);
         if(userIsApplied != null) {
             int applicantStatus = 2;
             if( mListing.getApplicant().size() != 0){
-                applicantStatus = mListing.getApplicant().get(userId);
+                currentApplicant = mListing.getApplicant();
+                if(currentApplicant.get(userId) != null){
+                    applicantStatus = mListing.getApplicant().get(userId);
+                }
+
             }
             if(applicantStatus == 1) {
                 buttonFinishJob.setVisibility(View.VISIBLE);
@@ -275,8 +281,10 @@ public class ListingDetailFragment extends Fragment {
                     buttonNotAcceptDeal.setVisibility(View.VISIBLE);
                     acceptDealQuestion.setVisibility(View.VISIBLE);
                 } else {
-                    buttonUnapply.setVisibility(View.VISIBLE);
-                    buttonMessage.setVisibility(View.VISIBLE);
+                    if(!currentApplicant.containsValue(1)){
+                        buttonUnapply.setVisibility(View.VISIBLE);
+                        buttonMessage.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -339,13 +347,21 @@ public class ListingDetailFragment extends Fragment {
                     makeDeal.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            //view.getTag() to access the applicant id
+                            String applicantId = (String) view.getTag();
+                            mListingReference = FirebaseDatabase.getInstance().getReference().child("listings-borna").child(mListingId);
+                            mListingReference.child("applicant/"+ applicantId).setValue(0);
+                            applicantsListTitle.setVisibility(View.GONE);
                         }
                     });
                     message.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            //view.getTag() to access the applicant contact
+                            String applicantContact = (String) view.getTag();
+                            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                            smsIntent.setType("vnd.android-dir/mms-sms");
+                            smsIntent.putExtra("address", applicantContact);
+                            smsIntent.putExtra("sms_body","");
+                            startActivity(smsIntent);
                         }
                     });
 
