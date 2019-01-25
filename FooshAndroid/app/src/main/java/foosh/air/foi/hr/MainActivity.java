@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -22,9 +25,22 @@ import java.util.List;
 
 public class MainActivity extends NavigationDrawerBaseActivity {
 
+    //used in the NavigationDrawerBaseActivity for the menu item id
+    public static final int id=0;
     private static final int RC_MAIN = 1001;
     private FirebaseAuth mAuth;
+
+    private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
+    private PagerAdapter mPagerAdapter;
+    private ViewPager mViewPager;
+    //what happens with layout when selected tab changes
+    private TabLayout mTabLayout;
     private Toolbar toolbar;
+    private AppBarLayout appBarLayoutMain;
+
+    public static String getMenuTitle(){
+        return "Početna stranica";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

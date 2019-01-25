@@ -77,6 +77,8 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         TextView emailText = (TextView) navigationHeader.findViewById(R.id.emailText);
         //emailText.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
+        navigationView.getMenu().add(Menu.NONE,MainActivity.id,Menu.NONE,MainActivity.getMenuTitle()).setIcon(R.drawable.ic_home_white_24dp);
+
         navigationView.getMenu().add(Menu.NONE,NewListingActivity.id,Menu.NONE, NewListingActivity.getMenuTitle()).setIcon(R.drawable.ic_add_black_24dp);
 
         navigationView.getMenu().add(Menu.NONE,MyListingsActivity.id,Menu.NONE, MyListingsActivity.getMenuTitle()).setIcon(R.drawable.ic_star_white_24dp);
@@ -88,7 +90,13 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 Intent intent;
                 switch (item.getItemId()) {
-
+                    case MainActivity.id:
+                        intent = new Intent(NavigationDrawerBaseActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        drawerLayout.closeDrawer(Gravity.START, true);
+                        break;
                     case MyListingsActivity.id:
                         intent = new Intent(NavigationDrawerBaseActivity.this, MyListingsActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -104,6 +112,7 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawer(Gravity.START, true);
                         break;
                     case 3:
+                        //Sign out
                         AuthUI.getInstance().signOut(NavigationDrawerBaseActivity.this)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
