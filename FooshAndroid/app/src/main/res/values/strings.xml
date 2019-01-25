@@ -29,6 +29,15 @@
     <string name="label_active_listings">AKTIVNI OGLASI</string>
     <string name="label_hiring">ZAPOŠLJAVANJE</string>
     <string name="label_work">RAD</string>
+    <string name="search_settings">Postavke pretraživanja</string>
+    <string name="sort_by">Sortiraj po:</string>
+    <string name="pick_category">Odaberi kategoriju:</string>
+    <string name="pick_city">Odaberi grad:</string>
+    <string name="price_range">Raspon cijena</string>
+    <string name="price_from">od</string>
+    <string name="price_to">do</string>
+    <string name="price_between">KN -</string>
+    <string name="done">ODABERI</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
