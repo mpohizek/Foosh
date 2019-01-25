@@ -32,11 +32,6 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
         // Required empty public constructor
     }
 
-    public static QRDialogFragment newInstance() {
-        QRDialogFragment fragment = new QRDialogFragment();
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -34,11 +34,6 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
         // Required empty public constructor
     }
 
-    public static CameraDialogFragment newInstance(String param1, String param2) {
-        CameraDialogFragment fragment = new CameraDialogFragment();
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
