@@ -35,7 +35,6 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.QRDialog_white);
         mQRCode = generateQRCode();
     }
@@ -47,7 +46,7 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
         View view =  inflater.inflate(R.layout.dialogfragment_qr, container, false);
         ImageView imageView = view.findViewById(R.id.qr_code);
         imageView.setImageBitmap(createQRBitmap(mQRCode));
-
+        mListener.onQRShown(mQRCode);
         ImageButton exitButton = (ImageButton) view.findViewById(R.id.button_exit);
         exitButton.setOnClickListener(
                 new View.OnClickListener() {

@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -81,6 +82,7 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     private Button buttonApply;
     private JustifyTextView applicantNotAcceptedInfo;
     private ImageView listingsQrCode;
+    private TextView jobFinishedText;
 
     public ListingDetailFragment() {
     }
@@ -168,6 +170,7 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         applicantsListTitle = (TextView) scrollView.findViewById(R.id.applicantsListTitle);
         buttonFinishJob = (Button) scrollView.findViewById(R.id.buttonFinishJob);
         applicantNotAcceptedInfo = (JustifyTextView) scrollView.findViewById(R.id.applicantNotAccepted);
+        jobFinishedText = (TextView) scrollView.findViewById(R.id.jobFinishedText);
 
         // SET onClick listeners
         buttonApply.setOnClickListener(new View.OnClickListener() {
@@ -264,6 +267,10 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
 
 
     private void showControlsApplicant(){
+        if(!mListing.isActive()){
+            jobFinishedText.setVisibility(View.VISIBLE);
+            return;
+        }
         HashMap currentApplicant = new HashMap();
         String userIsApplied = mListing.getApplications().get(userId);
         if(userIsApplied != null) {
@@ -301,14 +308,25 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     private void showControlsOwner(){
         if(mListing.getApplications() != null){
             if(mListing.getApplicant().containsValue(1)) {
-                listingsQrCode.setVisibility(View.VISIBLE);
+               if(!mListing.isActive()){
+                   jobFinishedText.setVisibility(View.VISIBLE);
+               } else {
+                   buttonFinishJob.setVisibility(View.VISIBLE);
+               }
+
             }else {
                 if(mListing.getApplicant().containsValue(0)) {
                     applicantNotAcceptedInfo.setVisibility(View.VISIBLE);
                 } else {
-                    applicantsListTitle.setVisibility(View.VISIBLE);
-                    applicantsList.setVisibility(View.VISIBLE);
-                    fetchApplicantList();
+                    if(mListing.getQrCode() == null){
+                        applicantsListTitle.setVisibility(View.VISIBLE);
+                        applicantsList.setVisibility(View.VISIBLE);
+                        fetchApplicantList();
+                    } else{
+                        // TODO: prikazat da je posao uspješno završen
+
+                    }
+
                 }
             }
         }
@@ -445,11 +463,19 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
 
     @Override
     public void onQRScannedfromActivity(String qrCode) {
-        //ovo se zove iz aktivnosti ListingDetailActivity iz metode onQRScanned
+
+        if(mListing.getQrCode().equals(qrCode)){
+            mListingReference.child("active/").setValue(false);
+        } else {
+            CharSequence text = "QR kod se ne poklapa";
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(scrollView.getContext(), text, duration);
+            toast.show();
+        }
     }
 
     @Override
     public void onQRShownfromActivity(String qrCode) {
-        //ovo se zove iz aktivnosti ListingDetailActivity iz metode onQRShown
+        mListingReference.child("qrCode/").setValue(qrCode);
     }
 }
