@@ -16,10 +16,10 @@ const database = admin.database();
 const app = express();
 const api = functions.https.onRequest(app);
 
-const onListingsCreate = functions.database.ref('/listings-test/{pushId}')
+const onListingsCreate = functions.database.ref('/listings/{pushId}')
     .onCreate((snapshot, context) => {
       var listing = snapshot.val();
-      database.ref("listings-test/").orderByChild("orderNum").limitToLast(1).once('value').then(
+      database.ref("listings/").orderByChild("orderNum").limitToLast(1).once('value').then(
         snap => {   
           var lastListing;    
           snap.forEach(el => {     
@@ -72,7 +72,7 @@ app.get("", (req, res) => {
 })
 
 app.post("/mainfeed", jsonParser, (req, res) => {  
-  var ref = database.ref("listings-test");
+  var ref = database.ref("listings");
 
     var orderBy = req.body.data.orderBy;
     var category = req.body.data.category;
@@ -150,7 +150,7 @@ app.post("/mainfeed", jsonParser, (req, res) => {
 })
 
 app.post("/mylistings", jsonParser, (req, res) => {  
-  var ref = database.ref("listings-test");
+  var ref = database.ref("listings");
   
   var ownerId = req.body.data.ownerId;    
   var hiring = req.body.data.hiring;
