@@ -33,4 +33,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="accept_deal_question"> želi sklopiti dogovor. Želite li potvrditi?\n</string>
     <string name="applicant_not_accepted_deal"> nije potvrdio/la dogovor.\n</string>
+    <string name="finish_job_applicant_hint">Gumb ZAVRŠI POSAO otvorit će skener QR koda s kojim je potrebno skenirati QR koda vlasnika oglasa.</string>
+    <string name="finish_job_owner_hint">Gumb ZAVRŠI POSAO generirat će QR kod koji je potreban pokazati osobi s kojom ste dogovorili posao kako bi ga skenirala i tada ćete uspješno zatvoriti posao.</string>
 </resources>

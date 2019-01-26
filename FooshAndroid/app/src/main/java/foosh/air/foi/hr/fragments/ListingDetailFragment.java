@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import foosh.air.foi.hr.MyProfileActivity;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.SlidingImageAdapter;
+import foosh.air.foi.hr.helper.DialogFragmentManager;
 import foosh.air.foi.hr.model.Listing;
 import foosh.air.foi.hr.model.User;
 import me.biubiubiu.justifytext.library.JustifyTextView;
@@ -163,7 +165,6 @@ public class ListingDetailFragment extends Fragment {
         applicantsListTitle = (TextView) scrollView.findViewById(R.id.applicantsListTitle);
         buttonFinishJob = (Button) scrollView.findViewById(R.id.buttonFinishJob);
         applicantNotAcceptedInfo = (JustifyTextView) scrollView.findViewById(R.id.applicantNotAccepted);
-        listingsQrCode = (ImageView) scrollView.findViewById(R.id.listingQrCode);
 
         // SET onClick listeners
         buttonApply.setOnClickListener(new View.OnClickListener() {
@@ -196,7 +197,12 @@ public class ListingDetailFragment extends Fragment {
                 buttonNotAcceptDealOnClickListener();
             }
         });
-
+        buttonFinishJob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonFinishJobClickListener();
+            }
+        });
 
         listingTitle = (TextView) scrollView.findViewById(R.id.listingTitle);
         listingCategory = (TextView) scrollView.findViewById(R.id.listingCategory);
@@ -421,5 +427,18 @@ public class ListingDetailFragment extends Fragment {
     private void buttonNotAcceptDealOnClickListener(){
         mListingReference.child("applicant/"+ userId).setValue(null);
     }
+    private void buttonFinishJobClickListener(){
+        if(authOwner){
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            DialogFragmentManager.getInstance().addDialogFragment("qrbitmap", new QRDialogFragment());
+            DialogFragmentManager.getInstance().getDialogFragment("qrbitmap").showFragment(fragmentManager, "qrdialog");
+        }else{
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            DialogFragmentManager.getInstance().addDialogFragment("qrscaner", new CameraDialogFragment());
+            DialogFragmentManager.getInstance().getDialogFragment("qrscaner").showFragment(fragmentManager, "qrdialog");
+        }
+
+    }
+
 
 }

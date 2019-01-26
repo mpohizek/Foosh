@@ -83,11 +83,12 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnQRCameraListener) {
             mListener = (OnQRCameraListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnQRCameraListener");
         }
     }
 
