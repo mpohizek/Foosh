@@ -29,6 +29,14 @@
                 android:layout_height="?attr/actionBarSize"
                 app:titleTextColor="@color/colorWhite"/>
 
+            <android.support.design.widget.TabLayout
+                android:id="@+id/id_tabs_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabTextColor="@color/colorBlack"
+                app:tabSelectedTextColor="@color/colorWhite"
+                app:tabIndicatorColor="@color/colorWhite"/>
+
         </android.support.design.widget.AppBarLayout>
 
         <android.support.constraint.ConstraintLayout

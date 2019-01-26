@@ -2,28 +2,26 @@ package foosh.air.foi.hr;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Arrays;
-import java.util.List;
+import foosh.air.foi.hr.adapters.MainFeedPagerAdapter;
+import foosh.air.foi.hr.fragments.MainFeedFragment;
 
-public class MainActivity extends NavigationDrawerBaseActivity {
+public class MainActivity extends NavigationDrawerBaseActivity implements MainFeedFragment.onFragmentInteractionListener {
+
+    private ConstraintLayout contentLayout;
 
     //used in the NavigationDrawerBaseActivity for the menu item id
     public static final int id=0;
@@ -31,7 +29,7 @@ public class MainActivity extends NavigationDrawerBaseActivity {
     private FirebaseAuth mAuth;
 
     private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
-    private PagerAdapter mPagerAdapter;
+    private MainFeedPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     //what happens with layout when selected tab changes
     private TabLayout mTabLayout;
@@ -45,11 +43,15 @@ public class MainActivity extends NavigationDrawerBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ConstraintLayout contentLayout = (ConstraintLayout) findViewById(R.id.main_layout);
-        getLayoutInflater().inflate(R.layout.activity_main_feed, contentLayout);
+        contentLayout = (ConstraintLayout) findViewById(R.id.main_layout);
+        CoordinatorLayout coordinatorLayout = getLayoutInflater().inflate(R.layout.activity_main_feed, contentLayout).findViewById(R.id.main_content_main_feed);
 
 
-        toolbar = findViewById(R.id.id_toolbar_main);
+
+        appBarLayoutMain = findViewById(R.id.id_appbar_main);
+        appBarLayoutMain.setVisibility(View.GONE);
+
+        toolbar = findViewById(R.id.id_toolbar_main_feed);
         setSupportActionBar(toolbar);
 
         ActionBar actionbar = getSupportActionBar();
@@ -57,12 +59,21 @@ public class MainActivity extends NavigationDrawerBaseActivity {
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
 
 
+        mPagerAdapter = new MainFeedPagerAdapter(getSupportFragmentManager());
+        mViewPager = contentLayout.findViewById(R.id.main_feed_viewpager);
+
+        mTabLayout = contentLayout.findViewById(R.id.id_tabs_main_feed);
+
+        mViewPager.setAdapter(mPagerAdapter);
+        mTabLayout.setupWithViewPager(mViewPager, true);
+
         mAuth = FirebaseAuth.getInstance();
 
         if(mAuth.getCurrentUser() == null){
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
+
     }
 
     @Override
@@ -75,5 +86,10 @@ public class MainActivity extends NavigationDrawerBaseActivity {
             default:
                 return false;
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Fragment fragment) {
+
     }
 }
