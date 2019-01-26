@@ -1,5 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+
+
 buildscript {
     
     repositories {
@@ -15,6 +17,19 @@ buildscript {
     }
 }
 
+plugins {
+    id "org.sonarqube" version "2.6"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "mpohizek_Foosh"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "mpohizek-github"
+        property "sonar.login", "7d6c263d0f40ce5b5d02efc25eb43be028595cbf"
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -25,3 +40,4 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
