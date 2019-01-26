@@ -170,9 +170,11 @@ public class MyProfileViewFragment extends Fragment {
         }
 
         RatingBar ratingHired = (RatingBar) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.ratingHired);
-        ratingHired.setRating(sumHired/numHired);
-        RatingBar ratingEmployed = (RatingBar) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.ratingEmployed);
-        ratingEmployed.setRating(sumEmployed/numEmployed);
+        if (numHired!=0 && numEmployed!=0) {
+            ratingHired.setRating(sumHired/numHired);
+            RatingBar ratingEmployed = (RatingBar) contentLayout.findViewById(R.id.linearLayout5).findViewById(R.id.reviewsCard).findViewById(R.id.ratingEmployed);
+            ratingEmployed.setRating(sumEmployed/numEmployed);
+        }
 
         //TODO: switch - posao, poslova...
         String employedNumJobsText = " poslova";
