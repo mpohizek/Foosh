@@ -9,8 +9,4 @@ public interface DialogFragmentItem {
     public String getName(Context context);
     public void destroyFragment();
     public void showFragment(FragmentManager fragmentManager, String tag);
-
-    public interface OnActionListener {
-        void onActionEvent(Object object);
-    }
 }

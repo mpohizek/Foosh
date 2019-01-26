@@ -26,7 +26,7 @@ import foosh.air.foi.hr.R;
 
 public class QRDialogFragment extends DialogFragment implements DialogFragmentItem {
     private String mQRCode;
-    private DialogFragmentItem.OnActionListener mListener;
+    private OnQRBitmapListener mListener;
 
     public QRDialogFragment() {
         // Required empty public constructor
@@ -80,8 +80,8 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof DialogFragmentItem.OnActionListener) {
-            mListener = (DialogFragmentItem.OnActionListener) context;
+        if (context instanceof OnQRBitmapListener) {
+            mListener = (OnQRBitmapListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -112,5 +112,9 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
     @Override
     public void showFragment(FragmentManager fragmentManager, String tag) {
         show(fragmentManager, tag);
+    }
+
+    public interface OnQRBitmapListener{
+        void onQRShown(String qrCode);
     }
 }

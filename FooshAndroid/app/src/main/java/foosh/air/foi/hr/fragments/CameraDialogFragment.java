@@ -26,7 +26,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class CameraDialogFragment extends DialogFragment implements ZXingScannerView.ResultHandler, DialogFragmentItem {
     private static final int MY_CAMERA_REQUEST_CODE = 101;
 
-    private DialogFragmentItem.OnActionListener mListener;
+    private OnQRCameraListener mListener;
 
     private ZXingScannerView zXingScannerView;
 
@@ -83,8 +83,8 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof DialogFragmentItem.OnActionListener) {
-            mListener = (DialogFragmentItem.OnActionListener) context;
+        if (context instanceof OnQRCameraListener) {
+            mListener = (OnQRCameraListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -112,7 +112,7 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
             Log.d("Vibration", "Cannot vibrate");
         }
 
-        mListener.onActionEvent(result.getText());
+        mListener.onQRScanned(result.getText());
     }
 
     @Override
@@ -145,5 +145,9 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
     @Override
     public void showFragment(FragmentManager fragmentManager, String tag) {
         show(fragmentManager, tag);
+    }
+
+    public interface OnQRCameraListener{
+        void onQRScanned(String qrCode);
     }
 }
