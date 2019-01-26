@@ -45,6 +45,7 @@ public class MainActivity extends NavigationDrawerBaseActivity {
         mAuth = FirebaseAuth.getInstance();
         signOutButton = (Button) findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(new View.OnClickListener() {
+            /*
             @Override
             public void onClick(View view) {
                 AuthUI.getInstance().signOut(MainActivity.this)
@@ -59,6 +60,13 @@ public class MainActivity extends NavigationDrawerBaseActivity {
                                 }
                             }
                         });
+            }
+            */
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, EditListingActivity.class);
+                intent.putExtra("listingId", "-LVsKoZ-bGV1Z9T7L_B2");
+                startActivity(intent);
             }
         });
         if(mAuth.getCurrentUser() == null){

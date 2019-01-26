@@ -6,8 +6,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -23,8 +28,9 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,24 +39,22 @@
         <activity
             android:name=".SignInActivity"
             android:theme="@style/AppTheme.Fullscreen">
-			<intent-filter>
-				<category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.MAIN" />
-			</intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
 
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
         <activity android:name=".NavigationDrawerBaseActivity" />
         <activity
             android:name=".MyProfileActivity"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
+        <activity android:name=".MyListingsActivity"></activity>
         <activity
-            android:name=".MyListingsActivity">
-        </activity>
-        
-        <activity android:name=".ListingDetailActivity"
-            android:launchMode = "singleTop">
-        </activity>
-        <activity android:name=".NewListingActivity"></activity>
+            android:name=".ListingDetailActivity"
+            android:launchMode="singleTop"></activity>
+        <activity android:name=".NewListingActivity" />
+        <activity android:name=".EditListingActivity"></activity>
     </application>
 
 </manifest>
