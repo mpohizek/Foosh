@@ -13,7 +13,7 @@ import foosh.air.foi.hr.fragments.CameraDialogFragment;
 import foosh.air.foi.hr.fragments.ListingDetailFragment;
 import foosh.air.foi.hr.fragments.QRDialogFragment;
 
-public class ListingDetailActivity extends NavigationDrawerBaseActivity implements QRDialogFragment.OnQRBitmapListener,  CameraDialogFragment.OnQRCameraListener {
+public class ListingDetailActivity extends NavigationDrawerBaseActivity implements QRDialogFragment.OnQRBitmapListener, CameraDialogFragment.OnQRCameraListener {
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";
 
@@ -21,6 +21,8 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
     private String fragmentKey;
     private String mListingId;
     private Toolbar toolbar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +80,11 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
 
     @Override
     public void onQRScanned(String qrCode) {
-
+        ((DialogFragmentItem.FragmentCommunicationCameraDialog)getSupportFragmentManager().findFragmentByTag(fragmentKey)).onQRScannedfromActivity(qrCode);
     }
 
     @Override
     public void onQRShown(String qrCode) {
-
+        ((DialogFragmentItem.FragmentCommunicationQRDialog)getSupportFragmentManager().findFragmentByTag(fragmentKey)).onQRShownfromActivity(qrCode);
     }
 }

@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import foosh.air.foi.hr.DialogFragmentItem;
 import foosh.air.foi.hr.MyProfileActivity;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.SlidingImageAdapter;
@@ -43,7 +44,9 @@ import foosh.air.foi.hr.model.Listing;
 import foosh.air.foi.hr.model.User;
 import me.biubiubiu.justifytext.library.JustifyTextView;
 
-public class ListingDetailFragment extends Fragment {
+public class ListingDetailFragment extends Fragment implements DialogFragmentItem.FragmentCommunicationCameraDialog,
+        DialogFragmentItem.FragmentCommunicationQRDialog {
+
     private String mListingId;
     private Listing mListing;
     private User mOwner;
@@ -440,5 +443,13 @@ public class ListingDetailFragment extends Fragment {
 
     }
 
+    @Override
+    public void onQRScannedfromActivity(String qrCode) {
+        //ovo se zove iz aktivnosti ListingDetailActivity iz metode onQRScanned
+    }
 
+    @Override
+    public void onQRShownfromActivity(String qrCode) {
+        //ovo se zove iz aktivnosti ListingDetailActivity iz metode onQRShown
+    }
 }

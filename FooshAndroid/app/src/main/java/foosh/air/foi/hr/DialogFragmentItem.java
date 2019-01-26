@@ -9,4 +9,12 @@ public interface DialogFragmentItem {
     public String getName(Context context);
     public void destroyFragment();
     public void showFragment(FragmentManager fragmentManager, String tag);
+
+    public interface FragmentCommunicationQRDialog {
+        public void onQRShownfromActivity (String qrCode);
+    }
+
+    public interface FragmentCommunicationCameraDialog {
+        public void onQRScannedfromActivity (String qrCode);
+    }
 }
