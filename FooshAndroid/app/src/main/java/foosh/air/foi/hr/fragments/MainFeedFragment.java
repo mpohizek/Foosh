@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,9 @@ import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.MainFeedLoadMoreListener;
@@ -64,12 +67,14 @@ public class MainFeedFragment extends Fragment {
                 public void onSuccess(HttpsCallableResult httpsCallableResult) {
                     ArrayList<Listing> listings = new ArrayList<>();
                     Object o = httpsCallableResult.getData();
+                    ArrayList<HashMap> result = (ArrayList<HashMap>) httpsCallableResult.getData();
                     if(httpsCallableResult.getData() != null){
-                        /*for(Object l: o){
-                            listings.add(0,l);
-                        }*/
+                        for (HashMap listingHashMap : result){
+                            Listing listing = listingHashMapToListing(listingHashMap);
+                            listings.add(listing);
+                        }
                     }
-
+                    ArrayList<Listing> listings2 = listings;
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -114,6 +119,32 @@ public class MainFeedFragment extends Fragment {
             });*/
         }
     };
+
+    private Listing listingHashMapToListing(HashMap listingHashMap) {
+        Listing listing = new Listing();
+        listing.setCategory((String) listingHashMap.get("category"));
+        listing.setDateCreated((String) listingHashMap.get("dateCreated"));
+        listing.setDescription((String) listingHashMap.get("description"));
+        listing.setHiring((Boolean) listingHashMap.get("hiring"));
+        listing.setId((String) listingHashMap.get("id"));
+        listing.setImages((ArrayList<String>) listingHashMap.get("images"));
+        listing.setLocation((String) listingHashMap.get("location"));
+        listing.setOwnerId((String) listingHashMap.get("ownerId"));
+        listing.setPrice((Integer) listingHashMap.get("price"));
+        listing.setQrCode((String) listingHashMap.get("qrCode"));
+        listing.setStatus((String) listingHashMap.get("status"));
+        listing.setTitle((String) listingHashMap.get("title"));
+        if(listingHashMap.get("active") != null){
+            listing.setActive((Boolean) listingHashMap.get("active"));
+        }
+        if(listingHashMap.get("applications") != null){
+            listing.setApplications((HashMap<String, String>) listingHashMap.get("applications"));
+        }
+        if(listingHashMap.get("applicant") != null){
+            listing.setApplicant((HashMap<String, Integer>) listingHashMap.get("applicant"));
+        }
+        return listing;
+    }
 
     public MainFeedFragment() {
         // Required empty public constructor
