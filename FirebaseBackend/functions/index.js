@@ -89,8 +89,12 @@ app.post("/mainfeed", jsonParser, (req, res) => {
             snapshot.forEach(el => {
                 listings.push(el.val())               
             });
-            listings = listings.reverse();
-            
+            listings = listings.reverse();            
+            listings = listings.filter((el) => {
+                if(el.active == true){                 
+                    return el;
+                }
+            })
             if(orderBy == "priceAsc"){
                 listings = listings.sort((a,b) => {return a.price-b.price});
             }
@@ -179,7 +183,7 @@ app.post("/mylistings", jsonParser, (req, res) => {
               finalRes = hiringFalse;
           }
           finalRes = finalRes.filter(el => el).sort( (a,b) => b.orderNum-a.orderNum).slice(startAt, startAt + limit);        
-          res.send({data : listings});
+          res.send({data : finalRes});
       }
   )      
 })
