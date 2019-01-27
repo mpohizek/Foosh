@@ -1,6 +1,7 @@
 package foosh.air.foi.hr;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
@@ -10,7 +11,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -35,6 +38,7 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
     private TabLayout mTabLayout;
     private Toolbar toolbar;
     private AppBarLayout appBarLayoutMain;
+    private SearchView searchView;
 
     public static String getMenuTitle(){
         return "Početna stranica";
@@ -53,6 +57,9 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
 
         toolbar = findViewById(R.id.id_toolbar_main_feed);
         setSupportActionBar(toolbar);
+
+        searchView = new SearchView(this);
+        toolbar.addView(searchView);
 
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -77,8 +84,27 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem item1 = menu.add(0, MenuItem_FilterAds, 0, "Filter");
+        item1.setIcon(R.drawable.ic_filter_list_white_24dp);
+        item1.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        MenuItem item2 = menu.add(0, MenuItem_ExpandOpt, 1, "More");
+        item2.setIcon(R.drawable.ic_more_vert_white_24dp);
+        item2.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case MenuItem_FilterAds:
+                drawerLayout.openDrawer(GravityCompat.END);
+                return true;
+            case MenuItem_ExpandOpt:
+                //
+                return true;
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
