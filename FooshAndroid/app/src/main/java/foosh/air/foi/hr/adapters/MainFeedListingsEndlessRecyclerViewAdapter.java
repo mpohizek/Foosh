@@ -71,8 +71,8 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
     }
 
     public Listing getLastItem(){
-        if (mDataset.size() > 0){
-            return mDataset.get(mDataset.size() - 1);
+        if (mDataset.size() > 1){
+            return mDataset.get(mDataset.size() - 2);
         }
         return null;
     }
@@ -155,7 +155,7 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
                             //Listing lastAd = getLastItem();
                             add(null);
                             //loadMoreListener.loadMore(lastAd, mPostsPerPage, new LoadCompletedListener() {
-                            mainFeedLoadMoreListener.loadMore(getLastItem(), getLastItemPosition(), mPostsPerPage, new LoadCompletedListener(){
+                            mainFeedLoadMoreListener.loadMore(getLastItem(), startAt, mPostsPerPage, new LoadCompletedListener(){
                                 @Override
                                 public void onLoadCompleted(ArrayList<Listing> newListings) {
                                     remove(null);
@@ -185,6 +185,7 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
                         remove(null);
                         if (newListings.size() > 0){
                             addList(newListings);
+                            startAt += newListings.size();
                         }
                         setLoading(false);
                     }

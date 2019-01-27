@@ -35,7 +35,9 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
     private ArrayList<Listing> mDataset = new ArrayList<>();
     private Context mcontext;
-    private int mPostsPerPage;
+    private int limit;
+    private int startAt = 0;
+    private boolean hiring;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private final int VIEW_TYPE_AD = 2;
@@ -69,10 +71,13 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     }
 
     public Listing getLastItem(){
-        if (mDataset.size() > 0){
-            return mDataset.get(mDataset.size() - 1);
+        if (mDataset.size() > 1){
+            return mDataset.get(mDataset.size() - 2);
         }
         return null;
+    }
+    public int getLastItemPosition(){
+        return mDataset.size() - 1;
     }
     public void add(Listing item) {
         mDataset.add(item);
@@ -94,10 +99,11 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
         notifyDataSetChanged();
     }
 
-    public MyListingsEndlessRecyclerViewAdapter(final Context context, RecyclerView recyclerView, final SwipeRefreshLayout swipeRefreshLayout,
+    public MyListingsEndlessRecyclerViewAdapter(boolean hiring, final Context context, RecyclerView recyclerView, final SwipeRefreshLayout swipeRefreshLayout,
                                                 final int mPostsPerPage, final LoadMoreListener loadMoreListener) {
         mcontext = context;
-        this.mPostsPerPage = mPostsPerPage;
+        this.hiring = hiring;
+        limit = mPostsPerPage;
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -108,11 +114,12 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 setStopScrolling(true);
                 clear();
                 setLoading(true);
-                loadMoreListener.loadMore(null, mPostsPerPage, new LoadCompletedListener() {
+                loadMoreListener.loadMore(getLastItem(), 0, limit, new LoadCompletedListener() {
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         if (newListings.size() > 0){
                             addList(newListings);
+                            startAt += newListings.size();
                         }
                         setLoading(false);
                         setStopScrolling(false);
@@ -136,20 +143,19 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 for (Listing listings : mDataset) {
                     Log.d("mDataset", listings != null ? listings.getTitle() : "null");
                 }
-                Log.d("lastItem", getLastItem() != null ? getLastItem().getId() : "null");
                 if (!isLoading && totalItemCount <= (lastVisibleItem + 1 + visibleThreshold)) {
                     setLoading(true);
                     recyclerView.post(new Runnable() {
                         @Override
                         public void run() {
-                            Listing lastAd = getLastItem();
                             add(null);
-                            loadMoreListener.loadMore(lastAd, mPostsPerPage, new LoadCompletedListener() {
+                            loadMoreListener.loadMore(getLastItem(), startAt, mPostsPerPage, new LoadCompletedListener() {
                                 @Override
                                 public void onLoadCompleted(ArrayList<Listing> newListings) {
                                     remove(null);
                                     if (newListings.size() > 0){
                                         addList(newListings);
+                                        startAt += newListings.size();
                                     }
                                     else{
                                         stopScrolling = true;
@@ -167,12 +173,13 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             public void run() {
                 add(null);
                 setLoading(true);
-                loadMoreListener.loadMore(null, mPostsPerPage, new LoadCompletedListener() {
+                loadMoreListener.loadMore(null, 0, mPostsPerPage, new LoadCompletedListener() {
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         remove(null);
                         if (newListings.size() > 0){
                             addList(newListings);
+                            startAt += newListings.size();
                         }
                         setLoading(false);
                     }

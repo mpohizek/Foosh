@@ -14,13 +14,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.LoadMoreListener;
@@ -44,42 +51,68 @@ public class MyListingsFragment extends Fragment{
     private SwipeRefreshLayout swipeRefreshLayout;
     private LoadMoreListener loadMoreListener = new LoadMoreListener() {
         @Override
-        public void loadMore(Listing id, int mPostsPerPage, final LoadCompletedListener loadCompletedListener) {
-            Query query;
-            final String key = id != null ? id.getId() : null;
-            if (key == null)
-                query = FirebaseDatabase.getInstance().getReference()
-                        .child("listings")
-                        .orderByKey()
-                        .limitToLast(mPostsPerPage);
-            else
-                query = FirebaseDatabase.getInstance().getReference()
-                        .child("listings")
-                        .orderByKey()
-                        .endAt(key)
-                        .limitToLast(mPostsPerPage);
+        public void loadMore(Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener) {
+            final Listing l = last;
+            Map<String, String> data = new HashMap<>();
+            if (last == null) {
+                data.put("hiring", "true");
+                data.put("ownerId", FirebaseAuth.getInstance().getUid());
+            } else {
+                data.put("hiring", String.valueOf(l.isHiring()));
+                data.put("ownerId", l.getOwnerId());
+            }
 
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
+            data.put("startAt", String.valueOf(startAt));
+            data.put("limit", String.valueOf(limit));
+
+            FirebaseFunctions.getInstance().getHttpsCallable("api/mylistings")
+                    .call(data).addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onSuccess(HttpsCallableResult httpsCallableResult) {
                     ArrayList<Listing> listings = new ArrayList<>();
-                    if (dataSnapshot.exists()){
-                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            Log.d("key-id", userSnapshot.getValue(Listing.class).getId());
-                            if (!userSnapshot.getValue(Listing.class).getId().equals(key))
-                                listings.add(0, userSnapshot.getValue(Listing.class));
+                    ArrayList<HashMap> result = (ArrayList<HashMap>) httpsCallableResult.getData();
+                    if (httpsCallableResult.getData() != null) {
+                        for (HashMap listingHashMap : result) {
+                            Listing listing = listingHashMapToListing(listingHashMap);
+                            listings.add(listing);
                         }
-                        loadCompletedListener.onLoadCompleted(listings);
                     }
+                    loadCompletedListener.onLoadCompleted(listings);
                 }
-
+            }).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    loadCompletedListener.onLoadCompleted(new ArrayList<foosh.air.foi.hr.model.Listing>());
+                public void onFailure(@NonNull Exception e) {
+                    loadCompletedListener.onLoadCompleted(new ArrayList<Listing>());
                 }
             });
         }
     };
+
+    private Listing listingHashMapToListing(HashMap listingHashMap) {
+        Listing listing = new Listing();
+        listing.setCategory((String) listingHashMap.get("category"));
+        listing.setDateCreated((String) listingHashMap.get("dateCreated"));
+        listing.setDescription((String) listingHashMap.get("description"));
+        listing.setHiring((Boolean) listingHashMap.get("hiring"));
+        listing.setId((String) listingHashMap.get("id"));
+        listing.setImages((ArrayList<String>) listingHashMap.get("images"));
+        listing.setLocation((String) listingHashMap.get("location"));
+        listing.setOwnerId((String) listingHashMap.get("ownerId"));
+        listing.setPrice((Integer) listingHashMap.get("price"));
+        listing.setQrCode((String) listingHashMap.get("qrCode"));
+        listing.setStatus((String) listingHashMap.get("status"));
+        listing.setTitle((String) listingHashMap.get("title"));
+        if(listingHashMap.get("active") != null){
+            listing.setActive((boolean) listingHashMap.get("active"));
+        }
+        if(listingHashMap.get("applications") != null){
+            listing.setApplications((HashMap<String, String>) listingHashMap.get("applications"));
+        }
+        if(listingHashMap.get("applicant") != null){
+            listing.setApplicant((HashMap<String, Integer>) listingHashMap.get("applicant"));
+        }
+        return listing;
+    }
 
     public MyListingsFragment() {
         // Required empty public constructor
@@ -113,15 +146,15 @@ public class MyListingsFragment extends Fragment{
         recyclerView.setLayoutManager(linearLayoutManager);
 
         if (mType.equals("OBJAVLJENI")){
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(getContext(), recyclerView,
+            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
                     swipeRefreshLayout, 10, loadMoreListener);
         }
         else if (mType.equals("PRIJAVLJENI")){
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(getContext(), recyclerView,
+            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(false, getContext(), recyclerView,
                     swipeRefreshLayout, 10, loadMoreListener);
         }
         else {
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(getContext(), recyclerView,
+            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
                     swipeRefreshLayout, 10, loadMoreListener);
         }
         recyclerView.setAdapter(myListingsEndlessRecyclerViewAdapter);

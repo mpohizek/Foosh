@@ -74,8 +74,8 @@ public class MainFeedFragment extends Fragment {
                             listings.add(listing);
                         }
                     }
-                    ArrayList<Listing> listings2 = listings;
-
+                    //ArrayList<Listing> listings2 = listings;
+                    loadCompletedListener.onLoadCompleted(listings);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -83,40 +83,6 @@ public class MainFeedFragment extends Fragment {
                     loadCompletedListener.onLoadCompleted(new ArrayList<Listing>());
                 }
             });
-
-            /*Query query;
-            final String key = id != null ? id.getId() : null;
-            if (key == null)
-                query = FirebaseDatabase.getInstance().getReference()
-                        .child("listings")
-                        .orderByKey()
-                        .limitToLast(mPostsPerPage);
-            else
-                query = FirebaseDatabase.getInstance().getReference()
-                        .child("listings")
-                        .orderByKey()
-                        .endAt(key)
-                        .limitToLast(mPostsPerPage);
-
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    ArrayList<Listing> listings = new ArrayList<>();
-                    if (dataSnapshot.exists()){
-                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            Log.d("key-id", userSnapshot.getValue(Listing.class).getId());
-                            if (!userSnapshot.getValue(Listing.class).getId().equals(key))
-                                listings.add(0, userSnapshot.getValue(Listing.class));
-                        }
-                        loadCompletedListener.onLoadCompleted(listings);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    loadCompletedListener.onLoadCompleted(new ArrayList<foosh.air.foi.hr.model.Listing>());
-                }
-            });*/
         }
     };
 
