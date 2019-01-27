@@ -40,8 +40,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,17 +53,15 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
+import java.util.UUID;
 
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
 import foosh.air.foi.hr.helper.ImagesRecyclerViewDatasetItem;
@@ -160,7 +156,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             progressBars.get(i).setProgressTintList(ColorStateList.valueOf(Color.GREEN));
         }
 
-        textViewUploadImages.setText(R.string.label_uploading);
+        textViewUploadImages.setText(R.string.toast_uploading);
         textViewUploadImages.setVisibility(View.VISIBLE);
     }
     @Override
@@ -178,20 +174,21 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                         || listingDescription.getText().length()==0
                         || listingPrice.getText().length()==0
                         || autoCompleteTextView.getText().length()==0) {
-                    Toast.makeText(NewListingActivity.this, "Not all fileds have been populated!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(NewListingActivity.this, R.string.toast_not_all_fields_populated, Toast.LENGTH_LONG).show();
                 }
                 else {
                     fillListingPartial();
                     setUpProgress(imagesRecyclerViewAdapter.getmDataset().size());
                     finished = 0;
                     for (int i = 0; i < imagesRecyclerViewAdapter.getmDataset().size(); i++){
-                        String imageName = listing.getId() + "_image_" + (i + 1);
+                        String uniqueID = UUID.randomUUID().toString().replace("-", "");
+                        String imageName = listing.getId() + "_image_" + uniqueID;
                         final StorageReference listingImageRef = FirebaseStorage.getInstance().getReference()
                             .child("listings/" + listing.getOwnerId() + "/" + listing.getId() + "/" + imageName);
                         StorageMetadata metadata = new StorageMetadata.Builder()
                                 .setContentType("image/jpeg")
                                 .build();
-                            Uri imageUri = (Uri) imagesRecyclerViewAdapter.getmDataset().get(i).getImageUri();
+                            Uri imageUri = imagesRecyclerViewAdapter.getmDataset().get(i).getImageUri();
                             uploadTask.add(listingImageRef.putFile(imageUri, metadata));
                             final int j = i;
                             uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -202,7 +199,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                             }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                    System.out.println(R.string.label_upload_paused);
+                                    System.out.println(R.string.toast_upload_paused);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -241,7 +238,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                 buttonPayingForService.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(132, 146, 166));
                 listing.setHiring(true);
-                listing.setStatus("KREIRAN");
+                listing.setStatus("OBJAVLJEN");
             }
         });
 
@@ -287,7 +284,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                         try {
                             photoFile = createImageFile();
                         } catch (IOException ex) {
-                            Toast.makeText(NewListingActivity.this, "Image cannot be saved!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(NewListingActivity.this, R.string.toast_cant_save_img, Toast.LENGTH_LONG).show();
                         }
                         if (photoFile != null) {
                             Uri photoURI = FileProvider.getUriForFile(NewListingActivity.this,
@@ -309,7 +306,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             appCompatImageViewCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(NewListingActivity.this, "Camera not found!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(NewListingActivity.this, R.string.toast_camera_not_found, Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -389,10 +386,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         if (uploadTask.size() != finished){
             return;
         }
-
-        createFirebaseListing(listing);
-        Toast.makeText(NewListingActivity.this, "New listing has been successfully added!", Toast.LENGTH_LONG).show();
-        finish();
+        createFirebaseListing();
     }
 
     private void updateCategorys() {
@@ -459,13 +453,15 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         });
     }
 
-    public void createFirebaseListing(Listing listing){
+    public void createFirebaseListing(){
         mDatabaseListings.child(listing.getId()).setValue(listing).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 updateCategorys();
             }
         });
+        Toast.makeText(NewListingActivity.this, R.string.toast_listing_successfully_added, Toast.LENGTH_LONG).show();
+        finish();
     }
 
     @Override
@@ -495,19 +491,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                     imagesRecyclerViewAdapter.addImageToDataset(imagesRecyclerViewDatasetItem);
                 }
                 else{
-                    /*
-                    List<Object> imagesList = new ArrayList<>();
-                    ClipData mClipData = data.getClipData();
-                    if (!canAddListingImageAfter(mClipData.getItemCount())){
-                        Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
-                                " images can be added!", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    for (int i=0;i<mClipData.getItemCount();i++){
-                        imagesList.add(mClipData.getItemAt(i).getUri());
-                    }
-                    //imagesRecyclerViewAdapter.addImagesToDataset(imagesList);
-                    imagesRecyclerViewAdapter.addImagesToDataset(imagesList);*/
                     List<ImagesRecyclerViewDatasetItem> imagesList = new ArrayList<>();
                     ClipData mClipData = data.getClipData();
                     if (!canAddListingImageAfter(mClipData.getItemCount())){
@@ -516,11 +499,9 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                         return;
                     }
                     for (int i=0;i<mClipData.getItemCount();i++){
-                        //imagesList.add(mClipData.getItemAt(i).getUri());
-                        ImagesRecyclerViewDatasetItem item = new ImagesRecyclerViewDatasetItem(mClipData.getItemAt(i).getUri());
-                        imagesList.add(item);
+                        imagesRecyclerViewDatasetItem = new ImagesRecyclerViewDatasetItem(mClipData.getItemAt(i).getUri());
+                        imagesList.add(imagesRecyclerViewDatasetItem);
                     }
-                    //imagesRecyclerViewAdapter.addImagesToDataset(imagesList);
                     imagesRecyclerViewAdapter.addImagesToDataset(imagesList);
                 }
             }
@@ -565,9 +546,9 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Camera permission granted!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.toast_camera_granted, Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "Camera permission denied!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.toast_camera_denied, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -607,7 +588,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     @Override
     public void onBackPressed() {
         if (uploadTask.size() > 0){
-            Toast.makeText(this, "Uploading images... Please wait!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.toast_uploading, Toast.LENGTH_LONG).show();
         }
         else{
             super.onBackPressed();

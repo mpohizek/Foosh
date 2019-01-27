@@ -32,9 +32,13 @@
     <string name="save_changes">SPRERMI PROMJENE</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="label_uploading">Uploading images &#x2026;</string>
-    <string name="label_upload_paused">Upload is paused</string>
-
-    <string name="label_camera_granted">Camera permission granted!</string>
-    <string name="label_camera_denied">Camera permission denied!</string>
+    <string name="toast_not_all_fields_populated">Not all fileds have been populated!</string>
+    <string name="toast_listing_succesfully_updated">Listing has been successfully updated!</string>
+    <string name="toast_uploading">Uploading images..</string>
+    <string name="toast_upload_paused">Upload is paused</string>
+    <string name="toast_cant_save_img">Image cannot be saved!</string>
+    <string name="toast_listing_successfully_added">"New listing has been successfully added!"</string>
+    <string name="toast_camera_granted">Camera permission granted!</string>
+    <string name="toast_camera_denied">Camera permission denied!</string>
+    <string name="toast_camera_not_found">Camera not found!</string>
 </resources>

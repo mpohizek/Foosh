@@ -38,9 +38,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -71,11 +72,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
 
     private ConstraintLayout contentLayout;
     private String mListingId;
-
-    private String own;
-
     private ImagesRecyclerViewDatasetItem imagesRecyclerViewDatasetItem;
-
 
     private RecyclerView recyclerView;
     private Toolbar toolbar;
@@ -96,7 +93,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     private final int REQUEST_IMAGE_CAPTURE = 1501;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
     private final int NUMBER_OF_IMAGES = 10;
-    private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
 
     private AppCompatImageView appCompatImageViewLibrary;
     private AppCompatImageView appCompatImageViewCamera;
@@ -105,10 +101,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     private LinearLayout linearLayout;
     private List<ProgressBar> progressBars;
 
-
-    private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private DatabaseReference mDatabaseListings;
     private DatabaseReference mDatabaseCategorys;
     private DatabaseReference mDatabaseCities;
     private DatabaseReference mListingReference;
@@ -123,9 +116,10 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
 
     private String mCurrentPhotoPath;
     private int finished;
+    private int uploadNum;
+
     {
         listing = new Listing();
-        mDatabaseListings = FirebaseDatabase.getInstance().getReference().child("listings");
         mDatabaseCategorys = FirebaseDatabase.getInstance().getReference().child("categorys");
         mDatabaseCities = FirebaseDatabase.getInstance().getReference().child("cities");
         uploadTask = new ArrayList<>();
@@ -134,18 +128,22 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
         cities = new ArrayList<>();
     }
 
-    private void setUpProgress(int progressBarNumber){
+    private void setUpProgress(int progressBarNumber) {
         linearLayout.setVisibility(View.VISIBLE);
-        linearLayout.setWeightSum((float)progressBarNumber);
+        linearLayout.setWeightSum((float) progressBarNumber);
 
-        for (int i = 0; i < progressBarNumber; i++){
+        for (int i = 0; i < progressBarNumber; i++) {
             progressBars.get(i).setVisibility(View.VISIBLE);
             progressBars.get(i).setProgress(0);
             progressBars.get(i).setProgressTintList(ColorStateList.valueOf(Color.GREEN));
         }
 
-        textViewUploadImages.setText(R.string.label_uploading);
+        textViewUploadImages.setText(R.string.toast_uploading);
         textViewUploadImages.setVisibility(View.VISIBLE);
+    }
+
+    public static String getMenuTitle(){
+        return "Uredi oglas";
     }
 
     @Override
@@ -167,7 +165,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                 buttonPayingForService.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(132, 146, 166));
                 listing.setHiring(true);
-                listing.setStatus("KREIRAN");
+                listing.setStatus("OBJAVLJEN");
             }
         });
 
@@ -186,7 +184,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot item : dataSnapshot.getChildren()) {
-                    categories.put(item.getKey().toString(), (long) item.getValue());
+                    categories.put(item.getKey(), (long) item.getValue());
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(EditListingActivity.this,
                         android.R.layout.simple_spinner_item, new ArrayList<>(categories.keySet()));
@@ -196,7 +194,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
 
@@ -209,7 +206,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
@@ -226,7 +222,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
 
@@ -261,7 +256,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                         try {
                             photoFile = createImageFile();
                         } catch (IOException ex) {
-                            Toast.makeText(EditListingActivity.this, "Image cannot be saved!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(EditListingActivity.this, R.string.toast_cant_save_img, Toast.LENGTH_LONG).show();
                         }
                         if (photoFile != null) {
                             Uri photoURI = FileProvider.getUriForFile(EditListingActivity.this,
@@ -282,7 +277,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
             appCompatImageViewCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(EditListingActivity.this, "Camera not found!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditListingActivity.this, R.string.toast_camera_not_found, Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -309,39 +304,44 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                 if (listingTitle.getText().length() == 0
                         || listingDescription.getText().length() == 0
                         || listingPrice.getText().length() == 0
-                        || listingLocation.getText().length() == 0) {
-                    Toast.makeText(EditListingActivity.this, "Not all fileds have been populated!", Toast.LENGTH_LONG).show();
+                        || listingLocation.getText().length() == 0
+                        || imagesRecyclerViewAdapter.getmDataset().size() == 0) {
+                    Toast.makeText(EditListingActivity.this, R.string.toast_not_all_fields_populated, Toast.LENGTH_LONG).show();
                 } else {
                     fillListingPartial();
-                    mDatabase.child("listings").child(mListingId).child("title").setValue(listing.getTitle());
-                    mDatabase.child("listings").child(mListingId).child("description").setValue(listing.getDescription());
-                    mDatabase.child("listings").child(mListingId).child("price").setValue(listing.getPrice());
-                    mDatabase.child("listings").child(mListingId).child("location").setValue(listing.getLocation());
-                    mDatabase.child("listings").child(mListingId).child("category").setValue(listing.getCategory());
-                    mDatabase.child("listings").child(mListingId).child("hiring").setValue(listing.isHiring());
-                    setUpProgress(imagesRecyclerViewAdapter.getmDataset().size());/////////////
-                    finished = 0;
-                    for (int i = 0; i < imagesRecyclerViewAdapter.getmDataset().size(); i++) {
-                        imagesRecyclerViewDatasetItem = imagesRecyclerViewAdapter.getmDataset().get(i);
-                            String imageName = mListingId + "_image_" + (i + 1);
-                            final StorageReference listingImageRef = FirebaseStorage.getInstance().getReference()
-                                    .child("listings/" + own + "/" + mListingId + "/" + imageName);
-                            StorageMetadata metadata = new StorageMetadata.Builder()
-                                    .setContentType("image/jpeg")
-                                    .build();
-                                Uri imageUri = (Uri) imagesRecyclerViewAdapter.getmDataset().get(i).getImageUri();
-                                //uploaded
+                    while (imagesRecyclerViewAdapter.getmDeleted().size() != 0) {
+                        ImagesRecyclerViewDatasetItem item = imagesRecyclerViewAdapter.getmDeleted().pop();
+                        if (item.isInDatabase()) {
+                            listing.getImages().remove(item.getImageUri().toString());
+                            StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(item.getImageUri().toString());
+                            photoRef.delete();
+                        }
+                    }
+                    countUpload();
+                    if (uploadNum > 0) {
+                        setUpProgress(uploadNum);
+                        finished = 0;
+                        for (int i = 0; i < imagesRecyclerViewAdapter.getmDataset().size(); i++) {
+                            imagesRecyclerViewDatasetItem = imagesRecyclerViewAdapter.getmDataset().get(i);
+                            if (!imagesRecyclerViewDatasetItem.isInDatabase()) {
+                                String  uniqueID = UUID.randomUUID().toString().replace("-", "");;
+                                String imageName = mListingId + "_image_" + uniqueID;
+                                final StorageReference listingImageRef = FirebaseStorage.getInstance().getReference()
+                                        .child("listings/" + listing.getOwnerId() + "/" + mListingId + "/" + imageName);
+                                StorageMetadata metadata = new StorageMetadata.Builder()
+                                        .setContentType("image/jpeg")
+                                        .build();
+                                Uri imageUri = imagesRecyclerViewAdapter.getmDataset().get(i).getImageUri();
                                 uploadTask.add(listingImageRef.putFile(imageUri, metadata));
                                 final int j = i;
                                 uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
                                     }
                                 }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                        System.out.println(R.string.label_upload_paused);
+                                        System.out.println(R.string.toast_upload_paused);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -356,7 +356,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                                         listingImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
-                                                mDatabase.child("listings").child(mListingId).child("images").push().setValue(uri.toString());
+                                                listing.getImages().add(uri.toString());
                                                 finished++;
                                                 checkNewListing();
                                             }
@@ -368,8 +368,10 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                                         });
                                     }
                                 });
-
+                            }
                         }
+                    }
+                    else { createFirebaseListing(); }
                 }
             }
         });
@@ -378,7 +380,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     }
 
     private void checkNewListing() {
-        if (uploadTask.size() != imagesRecyclerViewAdapter.getmDataset().size()) {
+        if (uploadTask.size() != uploadNum) {
             return;
         }
         for (UploadTask task : uploadTask) {
@@ -389,8 +391,27 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
         if (uploadTask.size() != finished) {
             return;
         }
-        Toast.makeText(EditListingActivity.this, "Listing has been successfully updated!", Toast.LENGTH_LONG).show();
+        createFirebaseListing();
+    }
+
+    public void createFirebaseListing() {
+        mDatabase.child("listings").child(mListingId).setValue(listing).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(EditListingActivity.this, R.string.toast_listing_succesfully_updated, Toast.LENGTH_LONG).show();
+            }
+        });
         finish();
+    }
+
+    private void countUpload() {
+        int count = 0;
+        for (ImagesRecyclerViewDatasetItem item : imagesRecyclerViewAdapter.getmDataset()) {
+            if (!item.isInDatabase()) {
+                count++;
+            }
+        }
+        uploadNum = count;
     }
 
     private void init() {
@@ -421,7 +442,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
 
         textViewUploadImages = contentLayout.findViewById(R.id.textUploadImage);
         linearLayout = contentLayout.findViewById(R.id.imageProgresBarLinearLayout);
-        for (int i = 0; i < NUMBER_OF_IMAGES; i++){
+        for (int i = 0; i < NUMBER_OF_IMAGES; i++) {
             progressBars.add((ProgressBar) contentLayout.findViewById(getResources()
                     .getIdentifier("imageUploadProgressBar" + (i + 1), "id", getPackageName())));
         }
@@ -442,6 +463,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.getParent().requestDisallowInterceptTouchEvent(true);
+
                 return false;
             }
         });
@@ -458,26 +480,23 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     }
 
     private void showListingDetailData() {
-        own = listing.getOwnerId();
         listingTitle.setText(listing.getTitle());
         listingDescription.setText(listing.getDescription());
         listingPrice.setText(String.valueOf(listing.getPrice()));
         listingLocation.setText(listing.getLocation());
-        if (listing.isHiring()){
+        if (listing.isHiring()) {
             buttonPayingForService.setBackgroundColor(Color.rgb(114, 79, 175));
             buttonIWantToEarn.setBackgroundColor(Color.rgb(132, 146, 166));
-        }
-        else {
+        } else {
             buttonIWantToEarn.setBackgroundColor(Color.rgb(114, 79, 175));
             buttonPayingForService.setBackgroundColor(Color.rgb(132, 146, 166));
         }
-        categoriesSpinner.setSelection(((ArrayAdapter<String>)categoriesSpinner.getAdapter()).getPosition(listing.getCategory()));
+        categoriesSpinner.setSelection(((ArrayAdapter<String>) categoriesSpinner.getAdapter()).getPosition(listing.getCategory()));
         buttonAddNewListing.setText(R.string.save_changes);
         ArrayList<String> listOfCurrentImages = listing.getImages();
         List<ImagesRecyclerViewDatasetItem> imagesList = new ArrayList<>();
-        if(listOfCurrentImages != null){
-            for (String imagePath : listOfCurrentImages){
-                //imagesUpdates.put(listOfCurrentImages.indexOf(imagePath), imagePath);
+        if (listOfCurrentImages != null) {
+            for (String imagePath : listOfCurrentImages) {
                 imagesRecyclerViewDatasetItem = new ImagesRecyclerViewDatasetItem(Uri.parse(imagePath));
                 imagesRecyclerViewDatasetItem.setInDatabase(true);
                 imagesList.add(imagesRecyclerViewDatasetItem);
@@ -486,12 +505,12 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
         }
     }
 
-    private boolean canAddListingImageBefore(){
-        return imagesRecyclerViewAdapter.getmDataset().size() < NUMBER_OF_IMAGES;
+    private boolean canAddListingImageBefore() {
+        return uploadNum < NUMBER_OF_IMAGES;
     }
 
-    private boolean canAddListingImageAfter(int plusNumberOfImages){
-        return imagesRecyclerViewAdapter.getmDataset().size() + plusNumberOfImages <= NUMBER_OF_IMAGES;
+    private boolean canAddListingImageAfter(int plusNumberOfImages) {
+        return uploadNum + plusNumberOfImages <= NUMBER_OF_IMAGES;
     }
 
     private File createImageFile() throws IOException {
@@ -513,33 +532,31 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGES_FOR_LISTING && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                if (data.getData() != null){
-                    if (!canAddListingImageAfter(1)){
+                if (data.getData() != null) {
+                    if (!canAddListingImageAfter(1)) {
                         Toast.makeText(EditListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
                                 " images can be added!", Toast.LENGTH_LONG).show();
                         return;
                     }
                     imagesRecyclerViewDatasetItem = new ImagesRecyclerViewDatasetItem(data.getData());
                     imagesRecyclerViewAdapter.addImageToDataset(imagesRecyclerViewDatasetItem);
-                }
-                else{
+                } else {
                     List<ImagesRecyclerViewDatasetItem> imagesList = new ArrayList<>();
                     ClipData mClipData = data.getClipData();
-                    if (!canAddListingImageAfter(mClipData.getItemCount())){
+                    if (!canAddListingImageAfter(mClipData.getItemCount())) {
                         Toast.makeText(EditListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
                                 " images can be added!", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    for (int i=0;i<mClipData.getItemCount();i++){
+                    for (int i = 0; i < mClipData.getItemCount(); i++) {
                         imagesRecyclerViewDatasetItem = new ImagesRecyclerViewDatasetItem(mClipData.getItemAt(i).getUri());
                         imagesList.add(imagesRecyclerViewDatasetItem);
                     }
                     imagesRecyclerViewAdapter.addImagesToDataset(imagesList);
                 }
             }
-        }
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
-            if (!canAddListingImageAfter(1)){
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            if (!canAddListingImageAfter(1)) {
                 Toast.makeText(EditListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
                         " images can be added!", Toast.LENGTH_LONG).show();
                 return;
@@ -555,9 +572,8 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
             String name = "Undo removed image";
             final Object deletedItem = imagesRecyclerViewAdapter.getmDataset().get(viewHolder.getAdapterPosition());
             final int deletedIndex = viewHolder.getAdapterPosition();
-            imagesRecyclerViewAdapter.removeItem(viewHolder.getAdapterPosition());
-          //  ((ImagesRecyclerViewAdapter.MyViewHolder) viewHolder).setDeleteImageVisibility(4);
-                  //  viewHolder.getAdapterPosition()
+
+            imagesRecyclerViewAdapter.removeItem(deletedIndex);
 
             Snackbar snackbar = Snackbar
                     .make(contentLayout, name, Snackbar.LENGTH_LONG);
@@ -574,20 +590,51 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     }
 
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, R.string.label_camera_granted, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.toast_camera_granted, Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, R.string.label_camera_denied, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.toast_camera_denied, Toast.LENGTH_LONG).show();
             }
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (uploadTask.size() > 0){
+            for (UploadTask task: uploadTask) {
+                if (task.isInProgress()){
+                    task.pause();
+                }
+            }
+        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (uploadTask.size() > 0){
+            for (UploadTask task: uploadTask) {
+                if (task.isPaused()){
+                    task.resume();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (uploadTask.size() > 0){
+            Toast.makeText(this, R.string.toast_uploading, Toast.LENGTH_LONG).show();
+        }
+        else{
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -595,14 +642,12 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
-
             default:
                 return false;
         }
     }
 
-
-    private void fillListingPartial(){
+    private void fillListingPartial() {
         listing.setTitle(listingTitle.getText().toString());
         listing.setDescription(listingDescription.getText().toString());
         listing.setPrice(Integer.parseInt(listingPrice.getText().toString()));
