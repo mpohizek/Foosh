@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="150dp"
     app:cardElevation="5dp"
     app:cardCornerRadius="8dp"
     android:layout_margin="5dp"
@@ -40,7 +40,7 @@
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="Category"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/main_feed_listing_image"
@@ -52,12 +52,26 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:text="Description.."
             app:layout_constraintStart_toEndOf="@+id/main_feed_listing_image"
             app:layout_constraintTop_toBottomOf="@+id/main_feed_listing_category"
             android:ellipsize="end"/>
 
+        <TextView
+            android:id="@+id/main_feed_listing_price"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:textAlignment="center"
+            android:text="price"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@id/main_feed_listing_image"
+            app:layout_constraintStart_toStartOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 

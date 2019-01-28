@@ -51,14 +51,6 @@ public class User {
         this.profileImgPath = profileImgPath;
     }
 
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
     public String getBio() {
         return bio;
     }

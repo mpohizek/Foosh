@@ -213,9 +213,9 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             viewBinderHelper.setOpenOnlyOne(true);
             viewBinderHelper.bind(viewHolderRow.swipeRevealLayout, String.valueOf(listing.getId()));
 
-            viewHolderRow.status.setText(listing.getStatus());
+            viewHolderRow.price.setText(String.valueOf(listing.getPrice())+" HRK");
             viewHolderRow.kategorije.setText(listing.getCategory());
-            viewHolderRow.naslov.setText(listing.getId());
+            viewHolderRow.naslov.setText(listing.getTitle());
 
             if(listing.getDescription().length()<descriptionLength){
                 viewHolderRow.opis.setText(listing.getDescription());
@@ -295,7 +295,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
         public SwipeRevealLayout swipeRevealLayout;
         private Button prvi, drugi;
         private ImageView slika;
-        private TextView naslov, kategorije, opis, status;
+        private TextView naslov, kategorije, opis, price;
         private CardView cardView;
 
         public String getListingID() {
@@ -317,7 +317,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             naslov = itemView.findViewById(R.id.textView);
             kategorije = itemView.findViewById(R.id.textView2);
             opis = itemView.findViewById(R.id.textView3);
-            status = itemView.findViewById(R.id.textView4);
+            price = itemView.findViewById(R.id.textView4);
             cardView = itemView.findViewById(R.id.listingCardView);
         }
     }

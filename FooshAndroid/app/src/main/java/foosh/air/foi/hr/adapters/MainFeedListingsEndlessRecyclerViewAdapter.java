@@ -235,6 +235,7 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
 
             viewHolderRow.category.setText(listing.getCategory());
             viewHolderRow.title.setText(listing.getTitle());
+            viewHolderRow.price.setText(String.valueOf(listing.getPrice())+" HRK");
 
             if(listing.getDescription().length()<descriptionLength){
                 viewHolderRow.desc.setText(listing.getDescription());
@@ -286,7 +287,7 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
 
     public class MainFeedViewHolderRow extends RecyclerView.ViewHolder {
         private ImageView image;
-        private TextView title, category, desc;
+        private TextView title, category, desc, price;
         private CardView cardView;
 
         public String getListingID() {
@@ -306,6 +307,7 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
             category = itemView.findViewById(R.id.main_feed_listing_category);
             desc = itemView.findViewById(R.id.main_feed_listing_description);
             cardView = itemView.findViewById(R.id.main_feed_card_view);
+            price = itemView.findViewById(R.id.main_feed_listing_price);
         }
     }
 }
