@@ -31,4 +31,12 @@
     <string name="label_work">RAD</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="label_contact">KONTAKT</string>
+    <string name="hintPhoneNumber">Kontakt broj</string>
+    <string name="buttonTextAddCurrentNumber">DODAJ TRENUTNI BROJ MOBITELA</string>
+    <string name="labelAboutMe">O meni</string>
+    <string name="hintDisplayName">Ime</string>
+    <string name="button_change_profile_picture">Promijeni sliku profila</string>
+    <string name="button_save_profile_changes">POTVRDI PROMJENE</string>
+    <string name="button_edit_profile">Uredi profil</string>
 </resources>
