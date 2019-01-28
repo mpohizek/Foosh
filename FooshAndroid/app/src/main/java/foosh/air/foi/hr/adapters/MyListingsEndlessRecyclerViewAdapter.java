@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     private Context mcontext;
     private int limit;
     private int startAt = 0;
-    private boolean hiring;
+    private boolean listingHiring;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private final int VIEW_TYPE_AD = 2;
@@ -102,7 +101,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     public MyListingsEndlessRecyclerViewAdapter(boolean hiring, final Context context, RecyclerView recyclerView, final SwipeRefreshLayout swipeRefreshLayout,
                                                 final int mPostsPerPage, final LoadMoreListener loadMoreListener) {
         mcontext = context;
-        this.hiring = hiring;
+        listingHiring = hiring;
         limit = mPostsPerPage;
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -114,15 +113,19 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 setStopScrolling(true);
                 clear();
                 setLoading(true);
-                loadMoreListener.loadMore(getLastItem(), 0, limit, new LoadCompletedListener() {
+                startAt = 0;
+                loadMoreListener.loadMore(listingHiring, getLastItem(), 0, mPostsPerPage, new LoadCompletedListener() {
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         if (newListings.size() > 0){
                             addList(newListings);
                             startAt += newListings.size();
+                            setStopScrolling(false);
+                        }
+                        else{
+                            setStopScrolling(true);
                         }
                         setLoading(false);
-                        setStopScrolling(false);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -136,26 +139,21 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                     return;
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 totalItemCount = linearLayoutManager.getItemCount();
-                Log.d("Fragment", this.toString());
-                Log.d("totalItemCount", String.valueOf(totalItemCount));
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                Log.d("lastVisibleItem", String.valueOf(lastVisibleItem));
-                for (Listing listings : mDataset) {
-                    Log.d("mDataset", listings != null ? listings.getTitle() : "null");
-                }
                 if (!isLoading && totalItemCount <= (lastVisibleItem + 1 + visibleThreshold)) {
                     setLoading(true);
                     recyclerView.post(new Runnable() {
                         @Override
                         public void run() {
                             add(null);
-                            loadMoreListener.loadMore(getLastItem(), startAt, mPostsPerPage, new LoadCompletedListener() {
+                            loadMoreListener.loadMore(listingHiring, getLastItem(), startAt, mPostsPerPage, new LoadCompletedListener() {
                                 @Override
                                 public void onLoadCompleted(ArrayList<Listing> newListings) {
                                     remove(null);
                                     if (newListings.size() > 0){
                                         addList(newListings);
                                         startAt += newListings.size();
+                                        setStopScrolling(false);
                                     }
                                     else{
                                         stopScrolling = true;
@@ -173,7 +171,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             public void run() {
                 add(null);
                 setLoading(true);
-                loadMoreListener.loadMore(null, 0, mPostsPerPage, new LoadCompletedListener() {
+                loadMoreListener.loadMore(listingHiring, null, 0, mPostsPerPage, new LoadCompletedListener() {
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         remove(null);
@@ -181,6 +179,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                             addList(newListings);
                             startAt += newListings.size();
                         }
+                        setStopScrolling(false);
                         setLoading(false);
                     }
                 });
@@ -247,7 +246,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                     builder.setMessage("Jeste li sigurni?").setTitle("Brisanje oglasa")
                             .setPositiveButton("Da", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    FirebaseDatabase.getInstance().getReference().child("listings/" + listing.getId()).removeValue();
+                                    FirebaseDatabase.getInstance().getReference().child("listings/" + listing.getId()).child("active").setValue(false);
                                     Toast.makeText(mcontext, "Oglas obrisan!", Toast.LENGTH_LONG).show();
                                     remove(listing);
                                 }

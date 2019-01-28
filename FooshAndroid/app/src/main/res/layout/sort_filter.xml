@@ -53,6 +53,7 @@
             android:layout_height="match_parent"
             android:layout_row="1"
             android:backgroundTint="@color/colorWhite"
+            android:foregroundTint="@color/colorWhite"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:paddingStart="0dp" />
@@ -131,8 +132,9 @@
             android:textColor="@color/colorWhite"
             android:textColorHint="@color/colorWhite"
             android:backgroundTint="@color/colorWhite"
-            android:inputType="text"
-            android:text="" />
+            android:inputType="numberDecimal"
+            android:text=""
+            android:imeOptions="actionDone" />
 
         <TextView
             android:id="@+id/textDash"
@@ -151,11 +153,12 @@
             android:layout_row="1"
             android:layout_column="3"
             android:hint="@string/price_to"
-            android:inputType="text"
+            android:inputType="numberDecimal"
             android:backgroundTint="@color/colorWhite"
             android:textColorHint="@color/colorWhite"
             android:textColor="@color/colorWhite"
-            android:text="" />
+            android:text=""
+            android:imeOptions="actionDone" />
 
         <TextView
             android:id="@+id/textDash2"
@@ -176,6 +179,7 @@
             android:src="@drawable/ic_baseline_close_24px"
             android:layout_column="7"
             android:clickable="true"
+            android:focusable="true"
             android:backgroundTint="@color/colorPrimaryDark"
             android:tint="@color/colorWhite"
             android:layout_row="1"
@@ -208,16 +212,38 @@
             android:textColor="@color/colorWhite"
             android:text="@string/pick_city" />
 
-        <android.support.v7.widget.AppCompatSpinner
-            android:id="@+id/spinner_cities"
-            style="@style/Widget.AppCompat.Spinner.Underlined"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_row="1"
-            android:backgroundTint="@color/colorWhite"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:paddingStart="0dp" />
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/cities_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:hint="Odaberite grad"
+                android:textColor="@color/colorWhite"
+                android:backgroundTint="@color/colorWhite"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/remove_autocomplete_text"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginEnd="28dp"
+                android:layout_gravity="end"
+                android:src="@drawable/ic_baseline_close_24px"
+                android:clickable="true"
+                android:focusable="true"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:tint="@color/colorWhite" />
+
+        </FrameLayout>
+
     </GridLayout>
 
     <TextView

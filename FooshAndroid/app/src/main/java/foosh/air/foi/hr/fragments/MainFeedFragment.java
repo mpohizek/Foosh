@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,17 +27,23 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import foosh.air.foi.hr.DataDelivered;
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.MainFeedLoadMoreListener;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.MainFeedListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.model.Listing;
 
-public class MainFeedFragment extends Fragment {
-    public interface onFragmentInteractionListener{
-        void onFragmentInteraction(Fragment fragment);
+public class MainFeedFragment extends Fragment implements DataDelivered {
+    @Override
+    public void onDataDelivered() {
+        mainFeedListingsEndlessRecyclerViewAdapter.sortOperation();
     }
 
+    public interface onFragmentInteractionListener{
+        NavigationView getNavigationView();
+        void getHashMapValues(Map<String, String> hashMap);
+    }
 
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MainActivity.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "MainFeedFragment";
@@ -48,17 +55,12 @@ public class MainFeedFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private MainFeedLoadMoreListener mainFeedLoadMoreListener = new MainFeedLoadMoreListener() {
         @Override
-        public void loadMore(Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener){//(Listing last, int mPostsPerPage, final LoadCompletedListener loadCompletedListener) {
-            final Listing l = last;
+        public void loadMore(boolean hiring, Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener){
             Map<String, String> data = new HashMap<>();
-            if(last == null){
-                data.put("hiring","true");
-                data.put("ownerId",FirebaseAuth.getInstance().getUid());
-            }else{
-                data.put("hiring", String.valueOf(l.isHiring()));
-                data.put("ownerId", l.getOwnerId());
-            }
-            data.put("startAt", String.valueOf(startAt));
+            mListener.getHashMapValues(data);
+
+            data.put("hiring", hiring ? "1" : "");
+            data.put("skip", String.valueOf(startAt));
             data.put("limit", String.valueOf(limit));
 
             FirebaseFunctions.getInstance().getHttpsCallable("api/mainfeed")
@@ -66,7 +68,6 @@ public class MainFeedFragment extends Fragment {
                 @Override
                 public void onSuccess(HttpsCallableResult httpsCallableResult) {
                     ArrayList<Listing> listings = new ArrayList<>();
-                    Object o = httpsCallableResult.getData();
                     ArrayList<HashMap> result = (ArrayList<HashMap>) httpsCallableResult.getData();
                     if(httpsCallableResult.getData() != null){
                         for (HashMap listingHashMap : result){
@@ -74,7 +75,6 @@ public class MainFeedFragment extends Fragment {
                             listings.add(listing);
                         }
                     }
-                    //ArrayList<Listing> listings2 = listings;
                     loadCompletedListener.onLoadCompleted(listings);
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -145,21 +145,15 @@ public class MainFeedFragment extends Fragment {
 
         if (mType.equals("OBJAVLJENI")){
             mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, mainFeedLoadMoreListener);
-            //mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(getContext(), recyclerView,
-            //        swipeRefreshLayout, 10, mainFeedLoadMoreListener);
+                    swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
         }
         else if (mType.equals("PRIJAVLJENI")){
             mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(false, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, mainFeedLoadMoreListener);
-            //mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(getContext(), recyclerView,
-            //        swipeRefreshLayout, 10, mainFeedLoadMoreListener);
+                    swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
         }
         else {
             mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, mainFeedLoadMoreListener);
-            //mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(getContext(), recyclerView,
-            //        swipeRefreshLayout, 10, mainFeedLoadMoreListener);
+                    swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
         }
         recyclerView.setAdapter(mainFeedListingsEndlessRecyclerViewAdapter);
         return swipeRefreshLayout;

@@ -51,17 +51,17 @@ public class MyListingsFragment extends Fragment{
     private SwipeRefreshLayout swipeRefreshLayout;
     private LoadMoreListener loadMoreListener = new LoadMoreListener() {
         @Override
-        public void loadMore(Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener) {
+        public void loadMore(boolean owner, Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener) {
             final Listing l = last;
             Map<String, String> data = new HashMap<>();
+
             if (last == null) {
-                data.put("hiring", "true");
                 data.put("ownerId", FirebaseAuth.getInstance().getUid());
             } else {
-                data.put("hiring", String.valueOf(l.isHiring()));
                 data.put("ownerId", l.getOwnerId());
             }
 
+            data.put("isOwner", owner ? "1" : "");
             data.put("startAt", String.valueOf(startAt));
             data.put("limit", String.valueOf(limit));
 
@@ -144,17 +144,17 @@ public class MyListingsFragment extends Fragment{
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) new LinearLayoutManager(getContext());
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-
+        boolean isOwner = mType.equals("OBJAVLJENI");
         if (mType.equals("OBJAVLJENI")){
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
+            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
                     swipeRefreshLayout, 10, loadMoreListener);
         }
         else if (mType.equals("PRIJAVLJENI")){
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(false, getContext(), recyclerView,
+            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
                     swipeRefreshLayout, 10, loadMoreListener);
         }
         else {
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
+            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
                     swipeRefreshLayout, 10, loadMoreListener);
         }
         recyclerView.setAdapter(myListingsEndlessRecyclerViewAdapter);

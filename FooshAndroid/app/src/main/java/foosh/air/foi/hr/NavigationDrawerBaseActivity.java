@@ -34,8 +34,10 @@ import foosh.air.foi.hr.model.User;
 public class NavigationDrawerBaseActivity extends AppCompatActivity {
 
     private static final int RC_MAIN = 1001;
+
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
+    NavigationView navigationViewFilter;
     FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +47,13 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View navigationHeader = navigationView.getHeaderView(0);
+
+        navigationViewFilter = (NavigationView) findViewById(R.id.nav_main_feed);
 
         setUserNameListener(navigationHeader);
 

@@ -3,6 +3,7 @@ package foosh.air.foi.hr.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,7 +32,6 @@ import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Listing;
 
 public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
     private ArrayList<Listing> mDataset = new ArrayList<>();
     private Context mContext;
     private final int VIEW_TYPE_ITEM = 0;
@@ -39,9 +39,8 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
     private final int VIEW_TYPE_AD = 2;
     private final int descriptionLength = 100;
 
-    private int limit;
     private int startAt;
-    private boolean hiring;
+    private boolean listingHiring;
 
     public boolean isLoading() {
         return isLoading;
@@ -65,6 +64,10 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
 
     private boolean stopScrolling = false;
 
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private MainFeedLoadMoreListener mainFeedLoadMoreListener;
+    private int mPostsPerPage;
 
     public ArrayList<Listing> getDataSet(){
         return mDataset;
@@ -99,13 +102,44 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
         notifyDataSetChanged();
     }
 
-    public MainFeedListingsEndlessRecyclerViewAdapter//(final Context context, RecyclerView recyclerView, final SwipeRefreshLayout swipeRefreshLayout,
-                                                //final int mPostsPerPage, final LoadMoreListener loadMoreListener) {
-    (boolean hiring, final Context context,RecyclerView recyclerView, final SwipeRefreshLayout swipeRefreshLayout,
-     final int mPostsPerPage, final MainFeedLoadMoreListener mainFeedLoadMoreListener){
+    private LoadCompletedListener loadCompletedListener= new LoadCompletedListener(){
+        @Override
+        public void onLoadCompleted(ArrayList<Listing> newListings) {
+            remove(null);
+            if (newListings.size() > 0){
+                addList(newListings);
+                startAt += newListings.size();
+                setStopScrolling(false);
+            }
+            else{
+                setStopScrolling(true);
+            }
+            setLoading(false);
+        }
+    };
+
+    public void sortOperation(){
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                setStopScrolling(true);
+                clear();
+                add(null);
+                setLoading(true);
+                startAt = 0;
+                mainFeedLoadMoreListener.loadMore(listingHiring, null, startAt, mPostsPerPage, loadCompletedListener);
+            }
+        });
+    }
+    public MainFeedListingsEndlessRecyclerViewAdapter (boolean owner, final Context context, RecyclerView recyclerViewArg, SwipeRefreshLayout swipeRefreshLayoutArg,
+                                                       int mPostsPerPageArg, MainFeedLoadMoreListener mainFeedLoadMoreListenerArg, final NavigationView navigationView){
+
         mContext = context;
-        this.hiring = hiring;
-        limit = mPostsPerPage;
+        listingHiring = owner;
+        recyclerView = recyclerViewArg;
+        swipeRefreshLayout = swipeRefreshLayoutArg;
+        mPostsPerPage = mPostsPerPageArg;
+        mainFeedLoadMoreListener = mainFeedLoadMoreListenerArg;
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -117,7 +151,8 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
                 setStopScrolling(true);
                 clear();
                 setLoading(true);
-                mainFeedLoadMoreListener.loadMore(getLastItem(), 0, limit, new LoadCompletedListener() {
+                startAt = 0;
+                mainFeedLoadMoreListener.loadMore(listingHiring, getLastItem(), 0, mPostsPerPage, new LoadCompletedListener() {
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         if (newListings.size() > 0){
@@ -139,47 +174,28 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
                     return;
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 totalItemCount = linearLayoutManager.getItemCount();
-                Log.d("Fragment", this.toString());
-                Log.d("totalItemCount", String.valueOf(totalItemCount));
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                Log.d("lastVisibleItem", String.valueOf(lastVisibleItem));
-                for (Listing listings : mDataset) {
-                    Log.d("mDataset", listings != null ? listings.getTitle() : "null");
-                }
-                //Log.d("lastItem", getLastItem() != null ? getLastItem().getId() : "null");
                 if (!isLoading && totalItemCount <= (lastVisibleItem + 1 + visibleThreshold)) {
                     setLoading(true);
                     recyclerView.post(new Runnable() {
                         @Override
                         public void run() {
-                            //Listing lastAd = getLastItem();
                             add(null);
-                            //loadMoreListener.loadMore(lastAd, mPostsPerPage, new LoadCompletedListener() {
-                            mainFeedLoadMoreListener.loadMore(getLastItem(), startAt, mPostsPerPage, new LoadCompletedListener(){
-                                @Override
-                                public void onLoadCompleted(ArrayList<Listing> newListings) {
-                                    remove(null);
-                                    if (newListings.size() > 0){
-                                        addList(newListings);
-                                        startAt += newListings.size();
-                                    }
-                                    else{
-                                        stopScrolling = true;
-                                    }
-                                    setLoading(false);
-                                }
-                            });
+                            mainFeedLoadMoreListener.loadMore(listingHiring, getLastItem(), startAt, mPostsPerPage, loadCompletedListener);
                         }
                     });
                 }
             }
         });
+
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
+                setStopScrolling(true);
+                clear();
                 add(null);
                 setLoading(true);
-                mainFeedLoadMoreListener.loadMore(null, 0, mPostsPerPage, new LoadCompletedListener() {
+                mainFeedLoadMoreListener.loadMore(listingHiring, null, 0, mPostsPerPage, new LoadCompletedListener() {
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         remove(null);
@@ -187,6 +203,7 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
                             addList(newListings);
                             startAt += newListings.size();
                         }
+                        setStopScrolling(false);
                         setLoading(false);
                     }
                 });
@@ -215,8 +232,6 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
         if (holder instanceof MainFeedViewHolderRow){
             final Listing listing = mDataset.get(position);
             final MainFeedViewHolderRow viewHolderRow = (MainFeedViewHolderRow)holder;
-            viewBinderHelper.setOpenOnlyOne(true);
-            //viewBinderHelper.bind(viewHolderRow.swipeRevealLayout, String.valueOf(listing.getId()));
 
             viewHolderRow.category.setText(listing.getCategory());
             viewHolderRow.title.setText(listing.getTitle());
