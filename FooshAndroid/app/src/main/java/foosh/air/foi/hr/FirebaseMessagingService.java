@@ -26,10 +26,16 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Klasa za komunikaciju sa Firebase Cloud Messaging-om. Služi za slanje i primanje notifikacija.
+*/
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     private static final String TAG = "FirebaseMessagingService";
 
+    /**
+     * Obvezan prazan konstruktor
+     */
     public FirebaseMessagingService() {
     }
 
@@ -37,6 +43,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onCreate() {
     }
 
+    /**
+     * Događaj koji se poziva nakon što FirebaseMessagingService dobije poruku
+     * @param remoteMessage Poruka koja se dobije od Firebase-a, sadrži naziv i tijelo poruke
+     */
     @SuppressLint("LongLogTag")
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -54,6 +64,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onDeletedMessages() {
     }
 
+    /**
+     * Kreira notifiakciju i šalje je na mobitel.
+     * @param title Naslov notifikacije
+     * @param messageBody Poruka unutar notifikacije
+     */
     private void sendNotification(String title,String messageBody) {
         Intent intent = new Intent(this, SignInActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -75,6 +90,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         manager.notify(0, builder.build());
     }
 
+    /**
+     * Statična metoda za slanje notifikacije useru
+     * @param user Korsnik koji dobiva notifikaciju
+     * @param title Naslov notifikacije
+     * @param message Poruka unutar notifikacije
+     */
     public static void sendNotificationToUser(String user, final String title, final String message) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference notifications = ref.child("notificationRequests");
