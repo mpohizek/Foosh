@@ -11,6 +11,15 @@ public class User {
     private String email;
     private String location;
     private float ratingHired;
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
     private float ratingEmployed;
 
     public User(String displayName, String profileImgPath, String contact, String bio, String email, String location, float ratingHired, float ratingEmployed) {

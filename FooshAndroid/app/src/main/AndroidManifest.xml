@@ -11,6 +11,13 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,8 +32,9 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,15 +43,19 @@
         <activity
             android:name=".SignInActivity"
             android:theme="@style/AppTheme.Fullscreen">
-			<intent-filter>
-				<category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.MAIN" />
-			</intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
 
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
         <activity android:name=".NavigationDrawerBaseActivity" />
         <activity
             android:name=".MyProfileActivity"
+            android:launchMode="singleTop" />
+        <activity android:name=".MyListingsActivity"></activity>
+        <activity
+            android:name=".ListingDetailActivity"
             android:launchMode="singleTop"></activity>
         <activity
             android:name=".MyListingsActivity">
@@ -63,6 +75,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
+        <activity android:name=".EditListingActivity"></activity>
     </application>
 
 </manifest>

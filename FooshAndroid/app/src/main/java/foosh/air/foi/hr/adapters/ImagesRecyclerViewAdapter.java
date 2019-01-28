@@ -18,16 +18,23 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import foosh.air.foi.hr.R;
+import foosh.air.foi.hr.helper.ImagesRecyclerViewDatasetItem;
 
 public class ImagesRecyclerViewAdapter extends RecyclerView.Adapter<ImagesRecyclerViewAdapter.MyViewHolder> {
 
-    private ArrayList<Object> mDataset;
+    private ArrayList<ImagesRecyclerViewDatasetItem> mDataset;
+    private Stack<ImagesRecyclerViewDatasetItem> mDeleted  = new Stack<>();
     private Context context;
 
-    public ArrayList<Object> getmDataset() {
+    public ArrayList<ImagesRecyclerViewDatasetItem> getmDataset() {
         return mDataset;
+    }
+
+    public Stack<ImagesRecyclerViewDatasetItem> getmDeleted() {
+        return mDeleted;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -42,18 +49,13 @@ public class ImagesRecyclerViewAdapter extends RecyclerView.Adapter<ImagesRecycl
             image.setAdjustViewBounds(true);
             deleteImage = viewItem.findViewById(R.id.delete_icon);
         }
-        public void setImage(Object image){
-            if (image instanceof Uri){
-                Uri imageUri = (Uri) image;
-                Picasso.get().load(imageUri).into(this.image);
-            }
-            else if (image instanceof Bitmap){
-                Bitmap imageBitmap = (Bitmap) image;
-                this.image.setImageBitmap(imageBitmap);
-            }
+        public void setImage(Uri image){
+            Picasso.get().load(image).into(this.image);
         }
 
-        public void setDeleteImageVisibility(int imageVisibility) {deleteImage.setVisibility(imageVisibility);}
+        public void setDeleteImageVisibility(int imageVisibility) {
+            deleteImage.setVisibility(imageVisibility);
+        }
 
         public RelativeLayout getViewBackground() {
             return viewBackground;
@@ -77,28 +79,29 @@ public class ImagesRecyclerViewAdapter extends RecyclerView.Adapter<ImagesRecycl
         this.context = context;
     }
 
-    public ImagesRecyclerViewAdapter(List<Object> myDataset, Context context) {
-        mDataset = (ArrayList<Object>) myDataset;
+    public ImagesRecyclerViewAdapter(List<ImagesRecyclerViewDatasetItem> myDataset, Context context) {
+        mDataset = (ArrayList<ImagesRecyclerViewDatasetItem>) myDataset;
         this.context = context;
     }
 
-    public void addImageToDataset(Object image){
+    public void addImageToDataset(ImagesRecyclerViewDatasetItem image){
         mDataset.add(image);
         notifyItemInserted(mDataset.size() - 1);
     }
 
-    public void addImagesToDataset(List<Object> images){
+    public void addImagesToDataset(List<ImagesRecyclerViewDatasetItem> images){
         mDataset.addAll(images);
         notifyItemRangeInserted(mDataset.size() - 1, images.size());
     }
 
     public void removeItem(int position) {
-        mDataset.remove(position);
+        mDeleted.add(mDataset.get(position));
+        mDataset.remove(mDataset.get(position));
         notifyItemRemoved(position);
     }
 
     public void restoreItem(Object item, int position) {
-        mDataset.add(position, item);
+        mDataset.add(mDeleted.pop());
         notifyItemInserted(position);
     }
 
@@ -111,8 +114,8 @@ public class ImagesRecyclerViewAdapter extends RecyclerView.Adapter<ImagesRecycl
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.setImage(mDataset.get(position));
-        holder.setDeleteImageVisibility(View.VISIBLE);
+            holder.setImage(mDataset.get(position).getImageUri());
+            holder.setDeleteImageVisibility(View.VISIBLE);
     }
 
     @Override
