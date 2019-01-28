@@ -212,6 +212,10 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             final ViewHolderRow viewHolderRow = (ViewHolderRow)holder;
             viewBinderHelper.setOpenOnlyOne(true);
             viewBinderHelper.bind(viewHolderRow.swipeRevealLayout, String.valueOf(listing.getId()));
+            if (!listingHiring){
+                viewHolderRow.swipeRevealLayout.setLockDrag(true);
+                viewBinderHelper.lockSwipe(String.valueOf(listing.getId()));
+            }
 
             viewHolderRow.price.setText(String.valueOf(listing.getPrice())+" HRK");
             viewHolderRow.kategorije.setText(listing.getCategory());
@@ -229,38 +233,40 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                         .error(R.drawable.ic_launcher_foreground).into(viewHolderRow.slika);
             }
             viewHolderRow.setListingID(listing.getId());
+            if (listingHiring){
+                viewHolderRow.prvi.setText("Obriši");
+                viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mcontext,
+                                R.style.CustomDialog);
+                        builder.setMessage("Jeste li sigurni?").setTitle("Brisanje oglasa")
+                                .setPositiveButton("Da", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        FirebaseDatabase.getInstance().getReference().child("listings/" + listing.getId()).child("active").setValue(false);
+                                        Toast.makeText(mcontext, "Oglas obrisan!", Toast.LENGTH_LONG).show();
+                                        remove(listing);
+                                    }
+                                })
+                                .setNegativeButton("Ne", null).create().show();
+                    }
+                });
+                viewHolderRow.drugi.setText("Uredi");
+                viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(mcontext, EditListingActivity.class);
+                        intent.putExtra("listingId", listing.getId());
+                        mcontext.startActivity(intent);
+                    }
+                });
+            }
             viewHolderRow.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mcontext, ListingDetailActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","listingDetail");
-                    intent.putExtra("listingId", listing.getId());
-                    mcontext.startActivity(intent);
-                }
-            });
-            viewHolderRow.prvi.setText("Obriši");
-            viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mcontext,
-                            R.style.CustomDialog);
-                    builder.setMessage("Jeste li sigurni?").setTitle("Brisanje oglasa")
-                            .setPositiveButton("Da", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    FirebaseDatabase.getInstance().getReference().child("listings/" + listing.getId()).child("active").setValue(false);
-                                    Toast.makeText(mcontext, "Oglas obrisan!", Toast.LENGTH_LONG).show();
-                                    remove(listing);
-                                }
-                            })
-                            .setNegativeButton("Ne", null).create().show();
-                }
-            });
-            viewHolderRow.drugi.setText("Uredi");
-            viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mcontext, EditListingActivity.class);
                     intent.putExtra("listingId", listing.getId());
                     mcontext.startActivity(intent);
                 }

@@ -38,7 +38,7 @@
     <string name="price_to">do</string>
     <string name="price_between">KN -</string>
     <string name="done">ODABERI</string>
-    <string name="save_changes">SPRERMI PROMJENE</string>
+    <string name="save_changes">SPREMI PROMJENE</string>
 
     <string name="toast_not_all_fields_populated">Not all fileds have been populated!</string>
     <string name="toast_listing_succesfully_updated">Listing has been successfully updated!</string>

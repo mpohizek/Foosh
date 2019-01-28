@@ -424,7 +424,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
 
         categoriesSpinner = contentLayout.findViewById(R.id.spinner_categories);
 
-
         mListingReference = FirebaseDatabase.getInstance().getReference().child("listings").child(mListingId);
 
         scrollView = findViewById(R.id.fragment_listing_add);

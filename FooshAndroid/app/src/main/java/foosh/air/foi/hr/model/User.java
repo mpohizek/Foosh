@@ -1,8 +1,5 @@
 package foosh.air.foi.hr.model;
 
-
-import java.util.List;
-
 public class User {
     private String displayName;
     private String profileImgPath;
@@ -25,14 +22,6 @@ public class User {
     }
 
     public User() {
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
     }
 
     public String getDisplayName() {
@@ -90,4 +79,8 @@ public class User {
     public void setRatingEmployed(float ratingEmployed) {
         this.ratingEmployed = ratingEmployed;
     }
+
+    public String getContact() { return contact; }
+
+    public void setContact(String contact) { this.contact = contact; }
 }
