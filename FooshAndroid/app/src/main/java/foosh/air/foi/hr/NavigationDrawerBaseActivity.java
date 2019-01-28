@@ -2,16 +2,22 @@ package foosh.air.foi.hr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -20,12 +26,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Arrays;
+import java.util.List;
+
 import foosh.air.foi.hr.model.User;
 
 public class NavigationDrawerBaseActivity extends AppCompatActivity {
 
+    private static final int RC_MAIN = 1001;
+
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
+    NavigationView navigationViewFilter;
     FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +47,13 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
-
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View navigationHeader = navigationView.getHeaderView(0);
+
+        navigationViewFilter = (NavigationView) findViewById(R.id.nav_main_feed);
 
         setUserNameListener(navigationHeader);
 
@@ -68,16 +83,26 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         TextView emailText = (TextView) navigationHeader.findViewById(R.id.emailText);
         //emailText.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
+        navigationView.getMenu().add(Menu.NONE,MainActivity.id,Menu.NONE,MainActivity.getMenuTitle()).setIcon(R.drawable.ic_home_white_24dp);
+
         navigationView.getMenu().add(Menu.NONE,NewListingActivity.id,Menu.NONE, NewListingActivity.getMenuTitle()).setIcon(R.drawable.ic_add_black_24dp);
 
         navigationView.getMenu().add(Menu.NONE,MyListingsActivity.id,Menu.NONE, MyListingsActivity.getMenuTitle()).setIcon(R.drawable.ic_star_white_24dp);
+
+        navigationView.getMenu().add(Menu.NONE, 3, Menu.NONE, "Odjavi se").setIcon(R.drawable.ic_subdirectory_arrow_right_white_24dp);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 Intent intent;
                 switch (item.getItemId()) {
-
+                    case MainActivity.id:
+                        intent = new Intent(NavigationDrawerBaseActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        drawerLayout.closeDrawer(Gravity.START, true);
+                        break;
                     case MyListingsActivity.id:
                         intent = new Intent(NavigationDrawerBaseActivity.this, MyListingsActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -92,7 +117,21 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
                         startActivity(intent);
                         drawerLayout.closeDrawer(Gravity.START, true);
                         break;
-
+                    case 3:
+                        //Sign out
+                        AuthUI.getInstance().signOut(NavigationDrawerBaseActivity.this)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            startActivity(new Intent(NavigationDrawerBaseActivity.this, SignInActivity.class));
+                                            finish();
+                                        } else {
+                                            Toast.makeText(NavigationDrawerBaseActivity.this, "Sign out failed", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                        break;
                 }
                 return false;
             }

@@ -51,4 +51,15 @@
         app:itemTextColor="@color/colorWhite"
         app:itemIconTint="@color/colorWhite"/>
 
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_main_feed"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:fitsSystemWindows="true">
+
+        <include layout="@layout/sort_filter" />
+
+    </android.support.design.widget.NavigationView>
+
 </android.support.v4.widget.DrawerLayout>

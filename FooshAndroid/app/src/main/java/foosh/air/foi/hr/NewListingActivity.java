@@ -296,11 +296,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                     }
                 }
             });
-            if (checkSelfPermission(android.Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.CAMERA},
-                        MY_CAMERA_REQUEST_CODE);
-            }
         }
         else{
             appCompatImageViewCamera.setOnClickListener(new View.OnClickListener() {
@@ -548,7 +543,8 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, R.string.toast_camera_granted, Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, R.string.toast_camera_denied, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Camera permission denied!", Toast.LENGTH_LONG).show();
+                appCompatImageViewCamera.setVisibility(View.GONE);
             }
         }
     }
@@ -592,6 +588,16 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         }
         else{
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (checkSelfPermission(android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA},
+                    MY_CAMERA_REQUEST_CODE);
         }
     }
 }

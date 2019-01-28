@@ -22,7 +22,6 @@ public class Listing {
 
 
 
-
     public Listing() {
     }
 
@@ -167,5 +166,4 @@ public class Listing {
     public void setApplicant(HashMap<String, Integer> applicant) {
         this.applicant = applicant;
     }
-
 }
