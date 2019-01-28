@@ -11,10 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginEnd="8dp"
         android:text="@string/search_settings"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -48,12 +49,10 @@
 
         <android.support.v7.widget.AppCompatSpinner
             android:id="@+id/spinner_sort_by"
-            style="@style/Widget.AppCompat.Spinner.Underlined"
+            style="@style/SpinnerWhiteTheme"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_row="1"
-            android:backgroundTint="@color/colorWhite"
-            android:foregroundTint="@color/colorWhite"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:paddingStart="0dp" />
@@ -86,11 +85,10 @@
 
         <android.support.v7.widget.AppCompatSpinner
             android:id="@+id/spinner_categories"
-            style="@style/Widget.AppCompat.Spinner.Underlined"
+            style="@style/SpinnerWhiteTheme"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_row="1"
-            android:backgroundTint="@color/colorWhite"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:paddingStart="0dp" />
@@ -223,6 +221,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:hint="Odaberite grad"
+                android:textColorHint="@color/colorWhite"
                 android:textColor="@color/colorWhite"
                 android:backgroundTint="@color/colorWhite"
                 app:layout_constraintEnd_toEndOf="parent"

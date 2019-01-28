@@ -108,7 +108,7 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         sort.add("Cijena DSC");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this,
-                android.R.layout.simple_spinner_item, sort);
+                R.layout.spinner_item, sort);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ((AppCompatSpinner)navigationViewFilter.findViewById(R.id.spinner_sort_by)).setAdapter(adapter);
 
@@ -123,7 +123,7 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
                     categories.add(item.getKey());
                 }
                 ArrayAdapter<String> adapter1 = new ArrayAdapter<>(MainActivity.this,
-                        android.R.layout.simple_spinner_item, categories);
+                        R.layout.spinner_item, categories);
                 adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 ((AppCompatSpinner)navigationViewFilter.findViewById(R.id.spinner_categories)).setAdapter(adapter1);
                 ((AppCompatSpinner)navigationViewFilter.findViewById(R.id.spinner_categories)).setSelection(0);
