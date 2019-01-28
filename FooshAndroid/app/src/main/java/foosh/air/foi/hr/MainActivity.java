@@ -16,6 +16,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +66,8 @@ public class MainActivity extends NavigationDrawerBaseActivity {
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
+
+        FirebaseMessaging.getInstance().subscribeToTopic("user_" + mAuth.getUid());
     }
     public void callSignInActivity(){
         List<AuthUI.IdpConfig> providers = Arrays.asList(
