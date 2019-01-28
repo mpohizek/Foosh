@@ -23,11 +23,15 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Prva aktivnost koja se otvara ako korisnik nije prijavljen u aplikaciju.
+ */
 public class SignInActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1000;
     private FirebaseAuth mAuth;
     Button signInButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +56,11 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Provjerava je li aplikacija povezana na internet ili nije.
+     * @return
+     * @throws NullPointerException
+     */
     private boolean isNetworkAvailable() throws NullPointerException{
         try{
             ConnectivityManager connectivityManager
@@ -62,6 +71,13 @@ public class SignInActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    /**
+     * Preuzimanje rezultata druge aktivnosti.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -70,6 +86,12 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Prijava korisnika u aplikaciju. Ako je prijava uspješna, otvara se glavni feed i dohvaća se ID korisnika.
+     * @param resultCode
+     * @param data
+     * @throws NullPointerException
+     */
     private void handleSignInResponse(int resultCode, Intent data) throws NullPointerException{
         IdpResponse response = IdpResponse.fromResultIntent(data);
         Toast toast;
@@ -110,11 +132,14 @@ public class SignInActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Otvara korisniku izbor načina prijave u aplikaciju (e-mail, Google).
+     */
     public void callSignInActivity(){
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.FacebookBuilder().build());
+                new AuthUI.IdpConfig.GoogleBuilder().build());
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
