@@ -37,6 +37,7 @@ import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import foosh.air.foi.hr.DialogFragmentItem;
+import foosh.air.foi.hr.FirebaseMessagingService;
 import foosh.air.foi.hr.MyProfileActivity;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.SlidingImageAdapter;
@@ -337,7 +338,8 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         final LayoutInflater inflater = getLayoutInflater();
         Set<String> applicantsId = mListing.getApplications().keySet();
         applicantsList.removeAllViews();
-
+        if(applicantsId.size() <= 0)
+            applicantsListTitle.setVisibility(View.GONE);
         for (String id: applicantsId) {
             mUsersReference.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -368,6 +370,9 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
                             mListingReference = FirebaseDatabase.getInstance().getReference().child("listings").child(mListingId);
                             mListingReference.child("applicant/"+ applicantId).setValue(0);
                             applicantsListTitle.setVisibility(View.GONE);
+
+                            FirebaseMessagingService.sendNotificationToUser(applicantId,"Potvrdite dogovor",
+                                    mAuth.getCurrentUser().getDisplayName()+" je poslao zahtjev za sklapanje dogovora za oglas: "+mListing.getTitle());
                         }
                     });
                     message.setOnClickListener(new View.OnClickListener() {
@@ -423,6 +428,7 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         applicantsList.setVisibility(View.GONE);
         buttonFinishJob.setVisibility(View.GONE);
         applicantNotAcceptedInfo.setVisibility(View.GONE);
+        applicantsListTitle.setVisibility(View.GONE);
     }
 
     private void openAndroidDefaultSMSApp(String contact){
@@ -435,6 +441,8 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
 
     private void buttonApplyOnClickListener(){
         mListingReference.child("applications/"+ userId).setValue("test");
+        FirebaseMessagingService.sendNotificationToUser(mListing.getOwnerId(),"Prijava na oglas",
+                "Korisnik "+mAuth.getCurrentUser().getDisplayName()+" se prijavio na oglas: "+mListing.getTitle());
     }
     private void buttonUnapplyOnClickListener(){
         mListingReference.child("applications/"+ userId).setValue(null);
@@ -444,6 +452,8 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     }
     private void buttonAcceptDealOnClickListener(){
         mListingReference.child("applicant/"+ userId).setValue(1);
+        FirebaseMessagingService.sendNotificationToUser(mListing.getOwnerId(),"Prihvaćen vaš zahtjev",
+                "Korisnik "+mAuth.getCurrentUser().getDisplayName()+" je prihvatio punudu za oglas: "+mListing.getTitle());
     }
     private void buttonNotAcceptDealOnClickListener(){
         mListingReference.child("applicant/"+ userId).setValue(null);
