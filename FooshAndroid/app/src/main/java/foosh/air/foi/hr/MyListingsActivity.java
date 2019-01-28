@@ -71,14 +71,6 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity implements 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-     /*  MenuItem item1 = menu.add(0, MenuItem_FilterAds, 0, "Filter");
-        item1.setIcon(R.drawable.ic_filter_list_white_24dp);
-        item1.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);*/
-
-        MenuItem item1 = menu.add(0, MenuItem_ExpandOpt, 1, "More");
-        item1.setIcon(R.drawable.ic_more_vert_white_24dp);
-        item1.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -88,7 +80,6 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity implements 
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
-
             default:
                 return false;
         }
