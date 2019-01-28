@@ -31,9 +31,11 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import foosh.air.foi.hr.DialogFragmentItem;
@@ -231,10 +233,10 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         listingTitle.setText(mListing.getTitle());
 
         try{
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
-            Date d = sdf.parse(mListing.getDateCreated());
-            sdf.applyPattern("dd.MM.yyyy.");
-            listingDate.setText(sdf.format(d));
+            SimpleDateFormat formatterUTC = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+            Date date = formatterUTC.parse(mListing.getDateCreated());
+            SimpleDateFormat formatterString = new SimpleDateFormat("dd.MM.yyyy");
+            listingDate.setText(formatterString.format(date));
         }catch (Exception ex){
             Log.e("ListingDetailFragment",ex.toString());
             listingDate.setText(mListing.getDateCreated());
