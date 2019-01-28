@@ -72,7 +72,7 @@ app.get("", (req, res) => {
 })
 
 app.post("/mainfeed", jsonParser, (req, res) => {  
-  var ref = database.ref("listings-test");
+  var ref = database.ref("listings");
 
     var orderBy = req.body.data.orderBy;
     var category = req.body.data.category;
@@ -82,6 +82,7 @@ app.post("/mainfeed", jsonParser, (req, res) => {
     var textSearch = req.body.data.textSearch;
     var skip = req.body.data.skip;
     var limit = req.body.data.limit;
+    var hiring = req.body.data.hiring;
 
     ref.orderByChild("orderNum").once("value").then(
         (snapshot) =>{           
@@ -89,7 +90,14 @@ app.post("/mainfeed", jsonParser, (req, res) => {
             snapshot.forEach(el => {
                 listings.push(el.val())               
             });
-            listings = listings.reverse();            
+            listings = listings.reverse();
+            if(hiring != undefined){
+                listings = listings.filter((el) => {
+                    if(el.hiring == hiring){
+                        return el;
+                    }
+                });      
+            }                  
             listings = listings.filter((el) => {
                 if(el.active == true){                 
                     return el;
@@ -154,7 +162,7 @@ app.post("/mainfeed", jsonParser, (req, res) => {
 })
 
 app.post("/mylistings", jsonParser, (req, res) => {  
-  var ref = database.ref("listings-test");
+  var ref = database.ref("listings");
   
   var ownerId = req.body.data.ownerId;    
   var hiring = req.body.data.hiring;
