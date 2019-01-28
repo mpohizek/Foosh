@@ -24,9 +24,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import foosh.air.foi.hr.EditListingActivity;
 import foosh.air.foi.hr.ListingDetailActivity;
 import foosh.air.foi.hr.LoadCompletedListener;
 import foosh.air.foi.hr.LoadMoreListener;
+import foosh.air.foi.hr.MainActivity;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Listing;
 
@@ -252,7 +254,9 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
             viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Intent intent = new Intent(mcontext, EditListingActivity.class);
+                    intent.putExtra("listingId", listing.getId());
+                    mcontext.startActivity(intent);
                 }
             });
         }
