@@ -63,4 +63,5 @@
     <string name="button_change_profile_picture">Promijeni sliku profila</string>
     <string name="button_save_profile_changes">POTVRDI PROMJENE</string>
     <string name="button_edit_profile">Uredi profil</string>
+    <string name="hint_city">Gard</string>
 </resources>
