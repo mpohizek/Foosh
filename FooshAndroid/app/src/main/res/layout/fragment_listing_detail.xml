@@ -99,7 +99,7 @@
 
         </FrameLayout>
 
-        <android.support.v7.widget.GridLayout
+        <android.support.constraint.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:grid="http://schemas.android.com/apk/res-auto"
             android:id="@+id/gridLayout"
@@ -109,99 +109,74 @@
             android:paddingBottom="2dp"
             android:paddingTop="2dp"
             android:background="@color/colorAccentBackground"
-            grid:columnCount="5"
             grid:layout_constraintEnd_toEndOf="parent"
             grid:layout_constraintHorizontal_bias="1.0"
             grid:layout_constraintStart_toStartOf="parent"
             grid:layout_constraintTop_toBottomOf="@+id/imageLayout"
-            grid:rowCount="2"
             >
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/userProfileImage"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
+                android:layout_margin="5dp"
                 android:src="@drawable/avatar"
                 app:civ_border_color="#FF000000"
-                app:layout_rowSpan="2"
-                app:layout_column="0"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <TextView
                 android:id="@+id/listingOwner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textSize="18sp"
                 android:text="Ime Prezime"
-                grid:layout_gravity="start|center_vertical"
-                grid:layout_rowWeight="1"
-                grid:layout_column="1"
-                grid:layout_columnWeight="1"/>
+                grid:layout_constraintTop_toTopOf="parent"
+                grid:layout_constraintBottom_toBottomOf="parent"
+                grid:layout_constraintStart_toEndOf="@id/userProfileImage"/>
 
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorWhite"
-                grid:layout_rowSpan="2"
-                grid:layout_column="2"
-                grid:layout_gravity="center_horizontal"/>
 
             <android.support.v7.widget.AppCompatImageView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_marginEnd="0dp"
                 android:src="@drawable/ic_outline_location_on_24px"
-                grid:layout_column="3"
-                grid:layout_gravity="center_vertical|right"
-                grid:layout_columnWeight="2"
+                grid:layout_constraintEnd_toStartOf="@id/listingLocation"
+                grid:layout_constraintTop_toTopOf="parent"
+                grid:layout_constraintBottom_toBottomOf="@id/listingLocation"
+                android:paddingTop="8dp"
                 />
 
             <TextView
                 android:id="@+id/listingLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="8dp"
                 android:text="Location"
                 android:textSize="18sp"
-                grid:layout_column="4"
-                grid:layout_gravity="end|center_vertical"
+                grid:layout_constraintEnd_toEndOf="parent"
+                grid:layout_constraintBottom_toTopOf="@id/ListingPrice"
+                grid:layout_constraintTop_toTopOf="parent"
                 />
-
-
-
-            <RatingBar
-                android:id="@+id/ratingHired"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.RatingBar.Small"
-                android:layout_marginBottom="8dp"
-                android:progressBackgroundTint="@color/colorBlack"
-                android:progressBackgroundTintMode="src_atop"
-                android:progressTint="@color/colorPrimaryDark"
-                android:progressTintMode="src_atop"
-                grid:layout_gravity="center_vertical"
-                />
-
-
 
             <TextView
                 android:id="@+id/ListingPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="8dp"
                 android:text="0"
                 android:textSize="18sp"
-                grid:layout_column="4"
-                grid:layout_gravity="end|center_vertical"
+                grid:layout_constraintEnd_toEndOf="parent"
+                grid:layout_constraintBottom_toBottomOf="parent"
+                grid:layout_constraintTop_toBottomOf="@id/listingLocation"
                 />
 
 
-        </android.support.v7.widget.GridLayout>
+        </android.support.constraint.ConstraintLayout>
 
 
         <TextView
@@ -453,8 +428,7 @@
             />
         <TextView
             android:id="@+id/jobFinishedText"
-            android:visibility="gone
-"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"

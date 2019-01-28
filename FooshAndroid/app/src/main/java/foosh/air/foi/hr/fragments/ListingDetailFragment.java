@@ -68,7 +68,6 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     private TextView listingDate;
     private TextView userName;
     private CircleImageView userProfilePhoto;
-    private RatingBar userRating;
     private Button listingInterested;
     private TextView behindImages;
     private static ViewPager mPager;
@@ -220,7 +219,6 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         listingDate = (TextView) scrollView.findViewById(R.id.listingDate);
         userName = (TextView) scrollView.findViewById(R.id.listingOwner);
         userProfilePhoto = (CircleImageView) scrollView.findViewById(R.id.userProfileImage);
-        userRating = (RatingBar) scrollView.findViewById(R.id.ratingHired);
         behindImages = (TextView) scrollView.findViewById(R.id.behindImages);
     }
 
@@ -259,11 +257,6 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     private void showListingOwnerData() {
         userName.setText(mOwner.getDisplayName());
         Picasso.get().load((mOwner.getProfileImgPath()).equals("")?null:mOwner.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(userProfilePhoto);
-        if(mListing.isHiring()){
-            userRating.setRating(mOwner.getRatingHired());
-        }else{
-            userRating.setRating(mOwner.getRatingEmployed());
-        }
     }
 
 
