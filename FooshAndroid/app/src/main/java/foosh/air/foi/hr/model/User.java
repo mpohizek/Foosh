@@ -11,15 +11,6 @@ public class User {
     private String email;
     private String location;
     private float ratingHired;
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
     private float ratingEmployed;
 
     public User(String displayName, String profileImgPath, String contact, String bio, String email, String location, float ratingHired, float ratingEmployed) {
@@ -36,6 +27,14 @@ public class User {
     public User() {
     }
 
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
     public String getDisplayName() {
         return displayName;
     }
@@ -50,14 +49,6 @@ public class User {
 
     public void setProfileImgPath(String profileImgPath) {
         this.profileImgPath = profileImgPath;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
     }
 
     public String getBio() {

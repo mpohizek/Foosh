@@ -30,7 +30,6 @@
     <string name="label_hiring">ZAPOŠLJAVANJE</string>
     <string name="label_work">RAD</string>
     <string name="save_changes">SPRERMI PROMJENE</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="toast_not_all_fields_populated">Not all fileds have been populated!</string>
     <string name="toast_listing_succesfully_updated">Listing has been successfully updated!</string>
