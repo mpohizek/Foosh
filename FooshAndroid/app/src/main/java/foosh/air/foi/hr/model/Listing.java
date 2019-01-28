@@ -10,7 +10,7 @@ public class Listing {
     private boolean hiring;
     private boolean active;
     private String id;
-    private ArrayList<String> images;
+    private ArrayList<String> images = new ArrayList<>();
     private String location;
     private String ownerId;
     private int price;

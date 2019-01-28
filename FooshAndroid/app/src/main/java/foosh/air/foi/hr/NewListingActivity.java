@@ -173,10 +173,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                 if (listingTitle.getText().length()==0
                         || listingDescription.getText().length()==0
                         || listingPrice.getText().length()==0
-                        || autoCompleteTextView.getText().length()==0) {
+                        || autoCompleteTextView.getText().toString().length()==0) {
                     Toast.makeText(NewListingActivity.this, R.string.toast_not_all_fields_populated, Toast.LENGTH_LONG).show();
                 }
                 else {
+                    autoCompleteTextView.getText().toString();
                     fillListingPartial();
                     setUpProgress(imagesRecyclerViewAdapter.getmDataset().size());
                     finished = 0;
@@ -237,8 +238,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             public void onClick(View view) {
                 buttonPayingForService.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(132, 146, 166));
-                listing.setHiring(true);
-                listing.setStatus("OBJAVLJEN");
+                listing.setHiring(false);
             }
         });
 
@@ -248,8 +248,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             public void onClick(View view) {
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonPayingForService.setBackgroundColor(Color.rgb(132, 146, 166));
-                listing.setHiring(false);
-                listing.setStatus("OBJAVLJEN");
+                listing.setHiring(true);
             }
         });
 
