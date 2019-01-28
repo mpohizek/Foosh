@@ -59,7 +59,7 @@ exports.createBlankUserDocument = functions.auth.user().onCreate( userCreate => 
       bio : '',
       updateFlag: false,
       email: user.email,
-      contact : ''
+      contact : ['']
     };
     const userDbRef = database.ref('users/'+ user.uid).set(userDocument).then(
       result => {     
@@ -91,8 +91,7 @@ app.post("/mainfeed", jsonParser, (req, res) => {
     var textSearch = req.body.data.textSearch;
     var skip = req.body.data.skip;
     var limit = req.body.data.limit;
-
-    var hiring = req.body.data.hiring;
+    var hiring = req.body.data.hiring; 
 
     ref.orderByChild("orderNum").once("value").then(
         (snapshot) =>{           
@@ -231,7 +230,6 @@ if(isOwner){
 }
 
     
-
 })
 
 
@@ -286,5 +284,3 @@ module.exports = {
   api,
   onListingsCreate
 }
-
-
