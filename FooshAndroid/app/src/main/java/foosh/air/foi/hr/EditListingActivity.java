@@ -42,6 +42,7 @@ import java.util.UUID;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -117,6 +118,9 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     private String mCurrentPhotoPath;
     private int finished;
     private int uploadNum;
+    private int forDeleting;
+    private int deleted;
+    private ArrayAdapter<String> adapter;
 
     {
         listing = new Listing();
@@ -149,6 +153,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         contentLayout = findViewById(R.id.main_layout);
         getLayoutInflater().inflate(R.layout.activity_listing_new, contentLayout);
 
@@ -165,7 +170,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                 buttonPayingForService.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(132, 146, 166));
                 listing.setHiring(true);
-                listing.setStatus("OBJAVLJEN");
             }
         });
 
@@ -176,7 +180,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonPayingForService.setBackgroundColor(Color.rgb(132, 146, 166));
                 listing.setHiring(false);
-                listing.setStatus("OBJAVLJEN");
             }
         });
 
@@ -186,14 +189,28 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                 for (DataSnapshot item : dataSnapshot.getChildren()) {
                     categories.put(item.getKey(), (long) item.getValue());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(EditListingActivity.this,
+                adapter = new ArrayAdapter<>(EditListingActivity.this,
                         android.R.layout.simple_spinner_item, new ArrayList<>(categories.keySet()));
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 categoriesSpinner.setAdapter(adapter);
+
+                mListingReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        listing = dataSnapshot.getValue(Listing.class);
+                        showListingDetailData();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
@@ -268,11 +285,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                     }
                 }
             });
-            if (checkSelfPermission(android.Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.CAMERA},
-                        MY_CAMERA_REQUEST_CODE);
-            }
         } else {
             appCompatImageViewCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -280,23 +292,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                     Toast.makeText(EditListingActivity.this, R.string.toast_camera_not_found, Toast.LENGTH_LONG).show();
                 }
             });
-
         }
-
-        mListingReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                listing = dataSnapshot.getValue(Listing.class);
-                showListingDetailData();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
 
         buttonAddNewListing.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,79 +300,107 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                 if (listingTitle.getText().length() == 0
                         || listingDescription.getText().length() == 0
                         || listingPrice.getText().length() == 0
-                        || listingLocation.getText().length() == 0
+                        || listingLocation.getText().toString().length() == 0
                         || imagesRecyclerViewAdapter.getmDataset().size() == 0) {
                     Toast.makeText(EditListingActivity.this, R.string.toast_not_all_fields_populated, Toast.LENGTH_LONG).show();
                 } else {
-                    fillListingPartial();
-                    while (imagesRecyclerViewAdapter.getmDeleted().size() != 0) {
-                        ImagesRecyclerViewDatasetItem item = imagesRecyclerViewAdapter.getmDeleted().pop();
-                        if (item.isInDatabase()) {
-                            listing.getImages().remove(item.getImageUri().toString());
-                            StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(item.getImageUri().toString());
-                            photoRef.delete();
-                        }
-                    }
-                    countUpload();
-                    if (uploadNum > 0) {
-                        setUpProgress(uploadNum);
-                        finished = 0;
-                        for (int i = 0; i < imagesRecyclerViewAdapter.getmDataset().size(); i++) {
-                            imagesRecyclerViewDatasetItem = imagesRecyclerViewAdapter.getmDataset().get(i);
-                            if (!imagesRecyclerViewDatasetItem.isInDatabase()) {
-                                String  uniqueID = UUID.randomUUID().toString().replace("-", "");;
-                                String imageName = mListingId + "_image_" + uniqueID;
-                                final StorageReference listingImageRef = FirebaseStorage.getInstance().getReference()
-                                        .child("listings/" + listing.getOwnerId() + "/" + mListingId + "/" + imageName);
-                                StorageMetadata metadata = new StorageMetadata.Builder()
-                                        .setContentType("image/jpeg")
-                                        .build();
-                                Uri imageUri = imagesRecyclerViewAdapter.getmDataset().get(i).getImageUri();
-                                uploadTask.add(listingImageRef.putFile(imageUri, metadata));
-                                final int j = i;
-                                uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                    }
-                                }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                        System.out.println(R.string.toast_upload_paused);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        progressBars.get(j).setProgressTintList(ColorStateList.valueOf(Color.RED));
-                                        progressBars.get(j).setProgress(100);
-                                    }
-                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        progressBars.get(j).setProgress(100);
-                                        listingImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri) {
-                                                listing.getImages().add(uri.toString());
-                                                finished++;
-                                                checkNewListing();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }
-                    }
-                    else { createFirebaseListing(); }
+                    listing.setLocation(listingLocation.getText().toString());
+                    deleteOldImages();
                 }
             }
         });
+    }
 
+    private void deleteOldImages(){
+        forDeleting = imagesRecyclerViewAdapter.getmDeleted().size();
+        deleted = 0;
+        if (forDeleting == 0){
+            uploadNewImages();
+        }
+        for (int i = 0; i < forDeleting; i++) {
+            ImagesRecyclerViewDatasetItem item = imagesRecyclerViewAdapter.getmDeleted().pop();
+            if (item.isInDatabase()) {
+                listing.getImages().remove(item.getImageUri().toString());
+                StorageReference photoRef;
+                try{
+                    photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(item.getImageUri().toString());
+                    photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            deleted++;
+                            if (deleted == forDeleting){
+                                uploadNewImages();
+                            }
+                        }
+                    });
+                }
+                catch (Exception e){
+                    deleted++;
+                    if (deleted == forDeleting){
+                        uploadNewImages();
+                    }
+                }
+            }
+        }
+    }
 
+    private void uploadNewImages(){
+        fillListingPartial();
+        countUpload();
+        if (uploadNum > 0) {
+            setUpProgress(uploadNum);
+            finished = 0;
+            for (int i = 0; i < imagesRecyclerViewAdapter.getmDataset().size(); i++) {
+                imagesRecyclerViewDatasetItem = imagesRecyclerViewAdapter.getmDataset().get(i);
+                if (!imagesRecyclerViewDatasetItem.isInDatabase()) {
+                    String  uniqueID = UUID.randomUUID().toString().replace("-", "");;
+                    String imageName = mListingId + "_image_" + uniqueID;
+                    final StorageReference listingImageRef = FirebaseStorage.getInstance().getReference()
+                            .child("listings/" + listing.getOwnerId() + "/" + mListingId + "/" + imageName);
+                    StorageMetadata metadata = new StorageMetadata.Builder()
+                            .setContentType("image/jpeg")
+                            .build();
+                    Uri imageUri = imagesRecyclerViewAdapter.getmDataset().get(i).getImageUri();
+                    uploadTask.add(listingImageRef.putFile(imageUri, metadata));
+                    final int j = i;
+                    uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        }
+                    }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                            System.out.println(R.string.toast_upload_paused);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            progressBars.get(j).setProgressTintList(ColorStateList.valueOf(Color.RED));
+                            progressBars.get(j).setProgress(100);
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressBars.get(j).setProgress(100);
+                            listingImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    listing.getImages().add(uri.toString());
+                                    finished++;
+                                    checkNewListing();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        }
+        else { createFirebaseListing(); }
     }
 
     private void checkNewListing() {
@@ -597,6 +621,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                 Toast.makeText(this, R.string.toast_camera_granted, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, R.string.toast_camera_denied, Toast.LENGTH_LONG).show();
+                appCompatImageViewCamera.setVisibility(View.GONE);
             }
         }
     }
@@ -655,4 +680,13 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
         listing.setId(mListingId);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (checkSelfPermission(android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA},
+                    MY_CAMERA_REQUEST_CODE);
+        }
+    }
 }
