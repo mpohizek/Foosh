@@ -42,6 +42,7 @@ import java.util.UUID;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -299,10 +300,11 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                 if (listingTitle.getText().length() == 0
                         || listingDescription.getText().length() == 0
                         || listingPrice.getText().length() == 0
-                        || listingLocation.getText().length() == 0
+                        || listingLocation.getText().toString().length() == 0
                         || imagesRecyclerViewAdapter.getmDataset().size() == 0) {
                     Toast.makeText(EditListingActivity.this, R.string.toast_not_all_fields_populated, Toast.LENGTH_LONG).show();
                 } else {
+                    listing.setLocation(listingLocation.getText().toString());
                     deleteOldImages();
                 }
             }
@@ -312,20 +314,32 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     private void deleteOldImages(){
         forDeleting = imagesRecyclerViewAdapter.getmDeleted().size();
         deleted = 0;
-        while (forDeleting != 0) {
+        if (forDeleting == 0){
+            uploadNewImages();
+        }
+        for (int i = 0; i < forDeleting; i++) {
             ImagesRecyclerViewDatasetItem item = imagesRecyclerViewAdapter.getmDeleted().pop();
             if (item.isInDatabase()) {
                 listing.getImages().remove(item.getImageUri().toString());
-                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(item.getImageUri().toString());
-                photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        deleted++;
-                        if (deleted == forDeleting){
-                            uploadNewImages();
+                StorageReference photoRef;
+                try{
+                    photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(item.getImageUri().toString());
+                    photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            deleted++;
+                            if (deleted == forDeleting){
+                                uploadNewImages();
+                            }
                         }
+                    });
+                }
+                catch (Exception e){
+                    deleted++;
+                    if (deleted == forDeleting){
+                        uploadNewImages();
                     }
-                });
+                }
             }
         }
     }

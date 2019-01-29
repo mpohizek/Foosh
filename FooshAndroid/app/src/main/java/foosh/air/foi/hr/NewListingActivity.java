@@ -173,11 +173,12 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                 if (listingTitle.getText().length()==0
                         || listingDescription.getText().length()==0
                         || listingPrice.getText().length()==0
-                        || autoCompleteTextView.getText().toString().length()==0) {
+                        || autoCompleteTextView.getText().toString().length()==0
+                        || imagesRecyclerViewAdapter.getmDataset().size() == 0) {
                     Toast.makeText(NewListingActivity.this, R.string.toast_not_all_fields_populated, Toast.LENGTH_LONG).show();
                 }
                 else {
-                    autoCompleteTextView.getText().toString();
+                    listing.setLocation(autoCompleteTextView.getText().toString());
                     fillListingPartial();
                     setUpProgress(imagesRecyclerViewAdapter.getmDataset().size());
                     finished = 0;
