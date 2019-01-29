@@ -450,7 +450,7 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     private void buttonAcceptDealOnClickListener(){
         mListingReference.child("applicant/"+ userId).setValue(1);
         FirebaseMessagingService.sendNotificationToUser(mListing.getOwnerId(),"Prihvaćen vaš zahtjev",
-                "Korisnik "+mAuth.getCurrentUser().getDisplayName()+" je prihvatio punudu za oglas: "+mListing.getTitle());
+                "Korisnik "+mAuth.getCurrentUser().getDisplayName()+" je prihvatio ponudu za oglas: "+mListing.getTitle());
     }
     private void buttonNotAcceptDealOnClickListener(){
         mListingReference.child("applicant/"+ userId).setValue(null);

@@ -6,6 +6,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -62,16 +66,20 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
      * @param messageBody Poruka unutar notifikacije
      */
     private void sendNotification(String title,String messageBody) {
+        Bitmap foosh = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.ic_launcher);
+
         Intent intent = new Intent(this, SignInActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         String channelId = "Default";
-        NotificationCompat.Builder builder = new  NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(title)
-                .setContentText(messageBody)
+        NotificationCompat.Builder builder = new  NotificationCompat.Builder(getApplicationContext(), channelId)
+                .setSmallIcon(R.drawable.foosh_logo)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(title))
+                //.setContentTitle(title)
+                //.setContentText(messageBody)
+                .setLargeIcon(foosh)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
