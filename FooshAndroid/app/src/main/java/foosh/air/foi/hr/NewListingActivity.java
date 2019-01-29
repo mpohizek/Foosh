@@ -384,10 +384,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         createFirebaseListing();
     }
 
-    private void updateCategorys() {
-        mDatabaseCategorys.child(listing.getCategory()).setValue(categories.get(listing.getCategory()) + 1);
-    }
-
     private void init() {
         toolbar = findViewById(R.id.id_toolbar_main);
         setSupportActionBar(toolbar);
@@ -452,11 +448,10 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         mDatabaseListings.child(listing.getId()).setValue(listing).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                updateCategorys();
+                Toast.makeText(NewListingActivity.this, R.string.toast_listing_successfully_added, Toast.LENGTH_LONG).show();
+                finish();
             }
         });
-        Toast.makeText(NewListingActivity.this, R.string.toast_listing_successfully_added, Toast.LENGTH_LONG).show();
-        finish();
     }
 
     @Override

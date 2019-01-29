@@ -469,10 +469,11 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     }
 
     @Override
-    public void onQRScannedfromActivity(String qrCode) {
+    public void onQRScannedfromActivity(DialogFragmentItem self, String qrCode) {
 
         if(mListing.getQrCode().equals(qrCode)){
             mListingReference.child("active/").setValue(false);
+            self.destroyFragment();
         } else {
             CharSequence text = "QR kod se ne poklapa";
             int duration = Toast.LENGTH_LONG;
@@ -482,7 +483,7 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     }
 
     @Override
-    public void onQRShownfromActivity(String qrCode) {
+    public void onQRShownfromActivity(DialogFragmentItem self, String qrCode) {
         mListingReference.child("qrCode/").setValue(qrCode);
     }
 }

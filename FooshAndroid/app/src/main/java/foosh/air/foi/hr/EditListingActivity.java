@@ -347,9 +347,9 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     private void uploadNewImages(){
         fillListingPartial();
         countUpload();
+        finished = 0;
         if (uploadNum > 0) {
             setUpProgress(uploadNum);
-            finished = 0;
             for (int i = 0; i < imagesRecyclerViewAdapter.getmDataset().size(); i++) {
                 imagesRecyclerViewDatasetItem = imagesRecyclerViewAdapter.getmDataset().get(i);
                 if (!imagesRecyclerViewDatasetItem.isInDatabase()) {
@@ -423,9 +423,9 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(EditListingActivity.this, R.string.toast_listing_succesfully_updated, Toast.LENGTH_LONG).show();
+                finish();
             }
         });
-        finish();
     }
 
     private void countUpload() {

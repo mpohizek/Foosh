@@ -46,7 +46,7 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
         View view =  inflater.inflate(R.layout.dialogfragment_qr, container, false);
         ImageView imageView = view.findViewById(R.id.qr_code);
         imageView.setImageBitmap(createQRBitmap(mQRCode));
-        mListener.onQRShown(mQRCode);
+        mListener.onQRShown(this, mQRCode);
         ImageButton exitButton = (ImageButton) view.findViewById(R.id.button_exit);
         exitButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -114,6 +114,6 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
     }
 
     public interface OnQRBitmapListener{
-        void onQRShown(String qrCode);
+        void onQRShown(DialogFragmentItem self, String qrCode);
     }
 }

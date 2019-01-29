@@ -113,7 +113,7 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
             Log.d("Vibration", "Cannot vibrate");
         }
 
-        mListener.onQRScanned(result.getText());
+        mListener.onQRScanned(this, result.getText());
     }
 
     @Override
@@ -149,6 +149,6 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
     }
 
     public interface OnQRCameraListener{
-        void onQRScanned(String qrCode);
+        void onQRScanned(DialogFragmentItem self, String qrCode);
     }
 }

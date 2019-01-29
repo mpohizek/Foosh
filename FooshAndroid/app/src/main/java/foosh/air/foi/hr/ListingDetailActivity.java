@@ -71,12 +71,12 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
     }
 
     @Override
-    public void onQRScanned(String qrCode) {
-        ((DialogFragmentItem.FragmentCommunicationCameraDialog)getSupportFragmentManager().findFragmentByTag(fragmentKey)).onQRScannedfromActivity(qrCode);
+    public void onQRScanned(DialogFragmentItem self, String qrCode) {
+        ((DialogFragmentItem.FragmentCommunicationCameraDialog)getSupportFragmentManager().findFragmentByTag(fragmentKey)).onQRScannedfromActivity(self, qrCode);
     }
 
     @Override
-    public void onQRShown(String qrCode) {
-        ((DialogFragmentItem.FragmentCommunicationQRDialog)getSupportFragmentManager().findFragmentByTag(fragmentKey)).onQRShownfromActivity(qrCode);
+    public void onQRShown(DialogFragmentItem self, String qrCode) {
+        ((DialogFragmentItem.FragmentCommunicationQRDialog)getSupportFragmentManager().findFragmentByTag(fragmentKey)).onQRShownfromActivity(self, qrCode);
     }
 }

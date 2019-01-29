@@ -11,10 +11,10 @@ public interface DialogFragmentItem {
     public void showFragment(FragmentManager fragmentManager, String tag);
 
     public interface FragmentCommunicationQRDialog {
-        public void onQRShownfromActivity (String qrCode);
+        public void onQRShownfromActivity (DialogFragmentItem self, String qrCode);
     }
 
     public interface FragmentCommunicationCameraDialog {
-        public void onQRScannedfromActivity (String qrCode);
+        public void onQRScannedfromActivity (DialogFragmentItem self, String qrCode);
     }
 }
