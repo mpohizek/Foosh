@@ -11,7 +11,6 @@ var request = require('request');
 
 
 var API_KEY = "AAAAh-OdgCM:APA91bH-RNBKfVErwazv5DjhNBv5qFVFaHGxkiXyk4h16tF8Aiegw_5HC18OXgVUK3dVLryU1cCPp1pf-ZEso9cHmOeGSlgHZRR46cbK1JY3mLZGQxqreP28wPzEqQyY8UVY-ZvzzAwG"; // Your Firebase Cloud Messaging Server API key
-// Fetch the service account key JSON file contents
 var serviceAccount = require("./fooshandroid-4f97debb2be3.json");
 admin.initializeApp(
     {
@@ -232,27 +231,22 @@ if(isOwner){
     
 })
 
+const onNotificationSend = functions.database.ref('/notificationRequests/{pushId}')
+    .onCreate((requestSnapshot, context) => {
+        var request = requestSnapshot.val();
+        sendNotificationToUser(
+          request.username, 
+          request.message,
+          function() {
+            requestSnapshot.ref.remove();
+          }
+        );
 
-ref = admin.database().ref();
+});
 
-function listenForNotificationRequests() {
-  var requests = ref.child('notificationRequests');
-  requests.on('child_added', function(requestSnapshot) {
-    var request = requestSnapshot.val();
-    sendNotificationToUser(
-      request.username, 
-      request.message,
-      function() {
-        requestSnapshot.ref.remove();
-      }
-    );
-  }, function(error) {
-    console.error(error);
-  });
-};
 
 function sendNotificationToUser(username, message, onSuccess) {
-  request({
+    request({
     url: 'https://fcm.googleapis.com/fcm/send',
     method: 'POST',
     headers: {
@@ -276,11 +270,8 @@ function sendNotificationToUser(username, message, onSuccess) {
   });
 }
 
-// start listening
-listenForNotificationRequests();
-
-
 module.exports = {
   api,
-  onListingsCreate
+  onListingsCreate,
+  onNotificationSend
 }
