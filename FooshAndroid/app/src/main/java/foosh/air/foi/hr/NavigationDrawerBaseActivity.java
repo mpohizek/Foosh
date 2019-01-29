@@ -106,24 +106,28 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
                 Intent intent;
                 switch (item.getItemId()) {
                     case MainActivity.id:
-                        intent = new Intent(NavigationDrawerBaseActivity.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivity(intent);
+                        if (!(NavigationDrawerBaseActivity.this instanceof MainActivity)){
+                            intent = new Intent(NavigationDrawerBaseActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
                         drawerLayout.closeDrawer(Gravity.START, true);
                         break;
                     case MyListingsActivity.id:
-                        intent = new Intent(NavigationDrawerBaseActivity.this, MyListingsActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        startActivity(intent);
+                        if (!(NavigationDrawerBaseActivity.this instanceof MyListingsActivity)){
+                            intent = new Intent(NavigationDrawerBaseActivity.this, MyListingsActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                        }
                         drawerLayout.closeDrawer(Gravity.START, true);
                         break;
 
                     case NewListingActivity.id:
-                        intent = new Intent(NavigationDrawerBaseActivity.this, NewListingActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivity(intent);
+                        if (!(NavigationDrawerBaseActivity.this instanceof NewListingActivity)){
+                            intent = new Intent(NavigationDrawerBaseActivity.this, NewListingActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                        }
                         drawerLayout.closeDrawer(Gravity.START, true);
                         break;
                     case 3:
@@ -183,5 +187,18 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START)){
+            drawerLayout.closeDrawer(Gravity.START);
+        }
+        else if (drawerLayout.isDrawerOpen(Gravity.END)){
+            drawerLayout.closeDrawer(Gravity.END);
+        }
+        else{
+            super.onBackPressed();
+        }
     }
 }
