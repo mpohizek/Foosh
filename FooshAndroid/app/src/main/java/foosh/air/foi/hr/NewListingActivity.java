@@ -239,7 +239,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             public void onClick(View view) {
                 buttonPayingForService.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(132, 146, 166));
-                listing.setHiring(false);
+                listing.setHiring(true);
             }
         });
 
@@ -249,7 +249,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             public void onClick(View view) {
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonPayingForService.setBackgroundColor(Color.rgb(132, 146, 166));
-                listing.setHiring(true);
+                listing.setHiring(false);
             }
         });
 

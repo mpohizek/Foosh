@@ -17,10 +17,9 @@ public class Listing {
     private String qrCode;
     private String status;
     private String title;
+    private int orderNum;
     private HashMap<String, String> applications = new HashMap<String, String>();
     private HashMap<String, Integer> applicant = new HashMap<String, Integer>();
-
-
 
     public Listing() {
     }
@@ -28,7 +27,7 @@ public class Listing {
     public Listing(String category, String dateCreated,
                    String description, boolean hiring, boolean active, String id,
                    ArrayList<String> images, String location, String ownerId, int price,
-                   String qrCode, String status, String title, HashMap<String, String> applications,
+                   String qrCode, String status, String title, int orderNum, HashMap<String, String> applications,
                    HashMap<String, Integer> applicant) {
         this.category = category;
         this.dateCreated = dateCreated;
@@ -43,6 +42,7 @@ public class Listing {
         this.qrCode = qrCode;
         this.status = status;
         this.title = title;
+        this.orderNum = orderNum;
         this.applications = applications;
         this.applicant = applicant;
     }
@@ -155,9 +155,7 @@ public class Listing {
         return applications;
     }
 
-    public void setApplications(HashMap<String, String> applications) {
-        this.applications = applications;
-    }
+    public void setApplications(HashMap<String, String> applications) { this.applications = applications; }
 
     public HashMap<String, Integer> getApplicant() {
         return applicant;
@@ -166,4 +164,8 @@ public class Listing {
     public void setApplicant(HashMap<String, Integer> applicant) {
         this.applicant = applicant;
     }
+
+    public int getOrderNum() { return orderNum; }
+
+    public void setOrderNum(int orderNum) { this.orderNum = orderNum; }
 }
