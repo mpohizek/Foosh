@@ -38,7 +38,7 @@ const onListingsCreate = functions.database.ref('/listings/{pushId}')
           console.log("Last:" + lastListing.orderNum)
           var num = lastListing.orderNum + 1;
           console.log(num);
-          var updates = { dateCreated: new Date().toISOString(), orderNum: num}
+          var updates = { dateCreated: new Date().toUTCString(), orderNum: num}
           
           return snapshot.ref.update(updates);   
         }
