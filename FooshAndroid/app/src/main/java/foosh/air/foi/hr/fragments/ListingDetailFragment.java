@@ -435,12 +435,14 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     }
 
     private void buttonApplyOnClickListener(){
-        mListingReference.child("applications/"+ userId).setValue("test");
+        mListingReference.child("applications/"+ userId).setValue("1");
+        mUsersReference.child(userId+"/applications/"+mListing.getId()).setValue(mListing.getId());
         FirebaseMessagingService.sendNotificationToUser(mListing.getOwnerId(),"Prijava na oglas",
                 "Korisnik "+mAuth.getCurrentUser().getDisplayName()+" se prijavio na oglas: "+mListing.getTitle());
     }
     private void buttonUnapplyOnClickListener(){
         mListingReference.child("applications/"+ userId).setValue(null);
+        mUsersReference.child(userId+"/applications/"+mListing.getId()).removeValue();
     }
     private void buttonMessageOnClickListener(){
         openAndroidDefaultSMSApp(mOwner.getContact());
