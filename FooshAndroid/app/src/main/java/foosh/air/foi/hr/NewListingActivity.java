@@ -196,7 +196,8 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                             uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
+                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    progressBars.get(j).setProgress((int)Math.floor(progress));
                                 }
                             }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
                                 @Override
