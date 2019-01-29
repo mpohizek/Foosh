@@ -1,23 +1,22 @@
 <resources>
     <string name="app_name">Foosh</string>
-    <string name="nav_home">Home</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-
-    <string name="sign_in">Sign in</string>
-    <string name="listing_date">Date published:</string>
-    <string name="listing_description">Description</string>
-    <string name="listing_description_add">Add listing description</string>
-    <string name="listing_price">Price:</string>
-    <string name="interested">I am interested</string>
-    <string name="listing_add_new">Add new listing</string>
+    <string name="nav_home">Početna stranica</string>
+    <string name="open">Otvori</string>
+    <string name="close">Zatvori</string>
+    <string name="sign_in">Prijava</string>
+    <string name="listing_date">Datum objave:</string>
+    <string name="listing_description">Opis</string>
+    <string name="listing_description_add">Dodajte opis oglasa</string>
+    <string name="listing_price">Cijena:</string>
+    <string name="interested">Zanima me</string>
+    <string name="listing_add_new">Dodaj novi oglas</string>
     <string name="paying">Plaćam za uslugu</string>
     <string name="earning">Želim zaraditi</string>
-    <string name="listing_title">Listing title</string>
-    <string name="listing_location">Location</string>
-    <string name="listing_category">Listing Category</string>
-    <string name="listing_category_pick">Pick listing Category</string>
-    <string name="add_listing_photos">Add photos</string>
+    <string name="listing_title">Naslov oglasa</string>
+    <string name="listing_location">Lokacija</string>
+    <string name="listing_category">Kategorija oglasa</string>
+    <string name="listing_category_pick">Odaberite kategoriju</string>
+    <string name="add_listing_photos">Dodaj fotografije</string>
     <string name="currency">HRK</string>
     <string name="label_edit"><u>Uredi</u></string>
     <string name="label_about_me">O MENI</string>
@@ -36,16 +35,15 @@
     <string name="price_between">KN -</string>
     <string name="done">ODABERI</string>
     <string name="save_changes">SPREMI PROMJENE</string>
-
-    <string name="toast_not_all_fields_populated">Not all fileds have been populated!</string>
-    <string name="toast_listing_succesfully_updated">Listing has been successfully updated!</string>
-    <string name="toast_uploading">Uploading images..</string>
-    <string name="toast_upload_paused">Upload is paused</string>
-    <string name="toast_cant_save_img">Image cannot be saved!</string>
-    <string name="toast_listing_successfully_added">"New listing has been successfully added!"</string>
-    <string name="toast_camera_granted">Camera permission granted!</string>
-    <string name="toast_camera_denied">Camera permission denied!</string>
-    <string name="toast_camera_not_found">Camera not found!</string>
+    <string name="toast_not_all_fields_populated">Sva polja nisu popunjena!</string>
+    <string name="toast_listing_succesfully_updated">Oglas je uspješno ažuriran!</string>
+    <string name="toast_uploading">Učitavanje slika..</string>
+    <string name="toast_upload_paused">Učitavanje je pauzirano</string>
+    <string name="toast_cant_save_img">Slika ne može biti spremljena!</string>
+    <string name="toast_listing_successfully_added">Uspješno dodano!"</string>
+    <string name="toast_camera_granted">Pristup kameri dozvoljen!</string>
+    <string name="toast_camera_denied">Pristup kameri odbijen!</string>
+    <string name="toast_camera_not_found">Kamera uređaja nije nađena!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="accept_deal_question"> želi sklopiti dogovor. Želite li potvrditi?\n</string>
     <string name="applicant_not_accepted_deal"> Korisnik nije potvrdio dogovor.\n</string>
@@ -61,4 +59,5 @@
     <string name="button_save_profile_changes">POTVRDI PROMJENE</string>
     <string name="button_edit_profile">Uredi profil</string>
     <string name="hint_city">Gard</string>
+    <string name="hint_location">Lokacija:</string>
 </resources>

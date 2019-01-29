@@ -316,7 +316,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout3"
-            android:hint="Location:"
+            android:hint="@string/hint_location"
             android:dropDownAnchor="@id/ListingDescription">
         </AutoCompleteTextView>
 
