@@ -14,6 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import java.util.ArrayList;
 
 import foosh.air.foi.hr.fragments.MyListingsFragment;
@@ -32,6 +36,7 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity implements 
     private TabLayout mTabLayout;
     private Toolbar toolbar;
     private AppBarLayout appBarLayoutMain;
+    private AdView mAdView;
 
     public static String getMenuTitle(){
         return "Moji oglasi";
@@ -67,6 +72,11 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity implements 
 
         mViewPager.setAdapter(mPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager, true);
+
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override

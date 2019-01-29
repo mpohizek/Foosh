@@ -26,6 +26,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.database.DataSnapshot;
@@ -58,6 +61,7 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
     private Toolbar toolbar;
     private AppBarLayout appBarLayoutMain;
     private SearchView searchView;
+    private AdView mAdView;
 
     private DatabaseReference mDatabaseCategorys;
     private DatabaseReference mDatabaseCities;
@@ -199,6 +203,11 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
                 return false;
             }
         });
+
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override
