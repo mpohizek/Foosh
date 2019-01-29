@@ -19,6 +19,9 @@ import java.util.List;
 import foosh.air.foi.hr.fragments.EditMyProfileFragment;
 import foosh.air.foi.hr.fragments.MyProfileViewFragment;
 
+/**
+ * Aktivnost za prikaz profila korisnika.
+ */
 public class MyProfileActivity extends NavigationDrawerBaseActivity {
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";
@@ -39,6 +42,9 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
         startProfileView();
     }
 
+    /**
+     * Pozivanje kreiranja framenta preko intenta.
+     */
     public void startProfileView(){
         toolbar = findViewById(R.id.id_toolbar_main);
         setSupportActionBar(toolbar);
@@ -62,6 +68,10 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
         startFragment(b);
     }
 
+    /**
+     * Kreiranje novog fragmenta i transkacije.
+     * @param b
+     */
     public void startFragment(Bundle b) {
         mFragmentManager = getSupportFragmentManager();
 

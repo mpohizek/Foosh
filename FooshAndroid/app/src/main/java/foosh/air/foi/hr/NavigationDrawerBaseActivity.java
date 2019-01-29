@@ -31,6 +31,9 @@ import java.util.List;
 
 import foosh.air.foi.hr.model.User;
 
+/**
+ * Aktivnost za bočni glavni meni.
+ */
 public class NavigationDrawerBaseActivity extends AppCompatActivity {
 
     private static final int RC_MAIN = 1001;
@@ -39,6 +42,12 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
     ActionBarDrawerToggle actionBarDrawerToggle;
     NavigationView navigationViewFilter;
     FirebaseUser mUser;
+
+    /**
+     * Ovisno o odabiru opcije iz glavnog menija, otvara odgovarajuću aktivnost.
+     * Dodaje ikone i nazive opcija u meniju.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +147,10 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Sinkronizira toggle.
+     * @param savedInstanceState
+     */
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -145,9 +158,11 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
+    /**
+     * Prikaz imena i e-maila korisnika u bočnom meniju.
+     * @param header
+     */
     private void setUserNameListener(final View header){
-
-
         DatabaseReference userRef;
         userRef = FirebaseDatabase.getInstance().getReference("users/" + mUser.getUid());
 
