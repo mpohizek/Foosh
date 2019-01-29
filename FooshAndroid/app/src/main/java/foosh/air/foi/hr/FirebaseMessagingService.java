@@ -39,10 +39,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public FirebaseMessagingService() {
     }
 
-    @Override
-    public void onCreate() {
-    }
-
     /**
      * Događaj koji se poziva nakon što FirebaseMessagingService dobije poruku
      * @param remoteMessage Poruka koja se dobije od Firebase-a, sadrži naziv i tijelo poruke
@@ -58,10 +54,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         Log.d(TAG, "onMessageReceived: Message Received: \n" + "Title: " + title + "\n" + "Message: " + message);
         sendNotification(title, message);
 
-    }
-
-    @Override
-    public void onDeletedMessages() {
     }
 
     /**
