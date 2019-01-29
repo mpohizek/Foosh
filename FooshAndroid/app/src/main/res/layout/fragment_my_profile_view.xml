@@ -33,7 +33,7 @@
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_margin="5dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:src="@drawable/avatar"
                 app:civ_border_color="#FF000000"
                 app:layout_rowSpan="3" />
@@ -50,11 +50,11 @@
                 grid:layout_rowWeight="1" />
 
             <ImageView
-
+                android:contentDescription="@string/email_verified"
                 android:id="@+id/imageEmailVerified"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/locationIcon"
                 app:layout_constraintLeft_toRightOf="@id/userProfileImage"
                 app:layout_constraintTop_toBottomOf="@+id/userDisplayName"
@@ -72,6 +72,7 @@
 
 
             <ImageView
+                android:contentDescription="@string/user_profile_photo"
                 android:id="@+id/locationIcon"
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toEndOf="@id/userProfileImage"

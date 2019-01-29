@@ -17,6 +17,7 @@
 
         <ImageView
             android:id="@+id/main_feed_listing_image"
+            android:contentDescription="@string/main_feed_listing_image"
             android:layout_width="110dp"
             android:layout_height="110dp"
             android:layout_marginStart="8dp"
@@ -30,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Title"
+            android:text="@string/label_title"
             android:textColor="@color/colorBlack"
             app:layout_constraintStart_toEndOf="@+id/main_feed_listing_image"
             app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:text="Category"
+            android:text="@string/label_category"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/main_feed_listing_image"
             app:layout_constraintTop_toBottomOf="@+id/main_feed_listing_title" />
@@ -54,7 +55,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:text="Description.."
+            android:text="@string/label_description"
             app:layout_constraintStart_toEndOf="@+id/main_feed_listing_image"
             app:layout_constraintTop_toBottomOf="@+id/main_feed_listing_category"
             android:ellipsize="end"/>
@@ -68,7 +69,7 @@
             android:layout_marginBottom="12dp"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:textAlignment="center"
-            android:text="price"
+            android:text="@string/listing_price"
             android:textColor="@color/colorPrimary"
             app:layout_constraintTop_toBottomOf="@id/main_feed_listing_image"
             app:layout_constraintStart_toStartOf="parent"/>

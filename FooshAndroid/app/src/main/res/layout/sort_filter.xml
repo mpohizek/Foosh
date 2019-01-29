@@ -55,7 +55,8 @@
             android:layout_row="1"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:paddingStart="0dp" />
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"/>
     </GridLayout>
 
     <GridLayout
@@ -91,7 +92,8 @@
             android:layout_row="1"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:paddingStart="0dp" />
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"/>
     </GridLayout>
 
     <GridLayout
@@ -165,7 +167,7 @@
             android:layout_row="1"
             android:layout_column="5"
             android:textColor="@color/colorWhite"
-            android:text="KN" />
+            android:text="@string/currency" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/clearFilter"
@@ -220,7 +222,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:hint="Odaberite grad"
+                android:hint="@string/pick_city"
                 android:textColorHint="@color/colorWhite"
                 android:textColor="@color/colorWhite"
                 android:backgroundTint="@color/colorWhite"
@@ -253,6 +255,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="20dp"
         android:text="@string/done"
+        android:focusable="true"
         android:clickable="true"
         android:gravity="end"
         app:layout_constraintEnd_toEndOf="parent"

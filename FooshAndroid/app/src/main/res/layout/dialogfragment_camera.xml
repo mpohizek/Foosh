@@ -16,6 +16,7 @@
 
         <ImageButton
             android:id="@+id/button_exit"
+            android:contentDescription="@string/take_picture"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"

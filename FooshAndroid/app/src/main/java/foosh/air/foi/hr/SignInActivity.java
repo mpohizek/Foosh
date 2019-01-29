@@ -45,7 +45,7 @@ public class SignInActivity extends AppCompatActivity {
                     callSignInActivity();
                 }
                 else{
-                    Toast.makeText(SignInActivity.this, "No internet connection", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignInActivity.this, R.string.toast_no_internet_connection, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -104,13 +104,13 @@ public class SignInActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(SignInActivity.this, "Verification email sent!", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SignInActivity.this, R.string.toast_verification_mail_sent, Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
                 }
             } catch (NullPointerException ex){
-                Toast.makeText(SignInActivity.this, "Error sending verification email!", Toast.LENGTH_LONG).show();
+                Toast.makeText(SignInActivity.this, R.string.toast_verification_mail_sent, Toast.LENGTH_LONG).show();
             }
             finally {
                 startActivity(new Intent(this, MainActivity.class));
@@ -119,15 +119,15 @@ public class SignInActivity extends AppCompatActivity {
         }
         else{
             if (response == null) {
-                toast = Toast.makeText(this, "Sign in was cancelled!", Toast.LENGTH_LONG);
+                toast = Toast.makeText(this, R.string.toast_sign_in_canceled, Toast.LENGTH_LONG);
                 toast.show();
             }
             else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                toast = Toast.makeText(this, "You have no internet connection", Toast.LENGTH_LONG);
+                toast = Toast.makeText(this, R.string.toast_no_internet_connection, Toast.LENGTH_LONG);
                 toast.show();
             }
             else {
-                toast = Toast.makeText(this, "Unknown Error!", Toast.LENGTH_LONG);
+                toast = Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG);
                 toast.show();
             }
         }
