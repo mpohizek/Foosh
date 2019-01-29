@@ -233,8 +233,11 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
     @Override
     public void getHashMapValues(Map<String, String> hashMap){
         String sortiranje = ((AppCompatSpinner)navigationViewFilter.findViewById(R.id.spinner_sort_by)).getSelectedItem().toString();
-        if (sort.indexOf(sortiranje) != 0){
-            hashMap.put("orderBy", sortiranje);
+        if (sortiranje.equals("Cijena ASC")){
+            hashMap.put("orderBy", "priceAsc");
+        }
+        else if (sortiranje.equals("Cijena DSC")){
+            hashMap.put("orderBy", "priceDec");
         }
 
         Object kategorija = ((AppCompatSpinner)navigationViewFilter.findViewById(R.id.spinner_categories)).getSelectedItem();
