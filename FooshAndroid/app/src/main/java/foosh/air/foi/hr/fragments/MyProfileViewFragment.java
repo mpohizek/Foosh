@@ -27,6 +27,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.User;
 
+/**
+ * Fragment za prikaz profila korisnika
+ * Koristi se kod klika na profil korisnika u prikazu oglasa i kod prikaza profila trenutnog korisnika
+ */
 public class MyProfileViewFragment extends Fragment {
 
     private User user;
@@ -35,6 +39,17 @@ public class MyProfileViewFragment extends Fragment {
 
     private ConstraintLayout contentLayout;
 
+    /**
+     * Dohvaćanje podataka korisnika ovisno o tome jesu li fragmentu poslani agrumenti
+     * U slučaju da se profil želi prikazati iz prikaza oglasa fragmentu će biti prosljeđeni argumenti
+     * ako korisnik klikne na svoj profil u menu-u aplikacije fragment neće primiti argumente.
+     * U slučaju da su argumenti prosljeđeni određuje se je li korisnik vlasnik oglasa ili ne
+     * U slučaju da argumenti nisu poslani dohvaća se ID trenutnog korisnika
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         contentLayout = (ConstraintLayout) container;
@@ -77,22 +92,7 @@ public class MyProfileViewFragment extends Fragment {
             }
         });
 
-        //Fetching the reviews data
-        DatabaseReference reviewsRef;
-        reviewsRef = FirebaseDatabase.getInstance().getReference("reviews");
 
-        Query reviewsQuery = reviewsRef.orderByChild("aboutUser").equalTo(mUserId);
-        reviewsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                showReviewData(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
 
 
@@ -106,6 +106,11 @@ public class MyProfileViewFragment extends Fragment {
 
     }
 
+    /**
+     * Prikaz podataka profila
+     * Ako se radi o profilu trenutnog korisnika prikazati će se gumb za uređivanje profila
+     * @param dataSnapshot
+     */
     private void showData(DataSnapshot dataSnapshot) {
 
         user = dataSnapshot.getValue(User.class);
@@ -159,32 +164,9 @@ public class MyProfileViewFragment extends Fragment {
         }
     }
 
-    private void showReviewData(DataSnapshot dataSnapshot) {
-        int numHired = 0, numEmployed = 0;
-        int numHiredPeople = 0, numPeopleEmployed = 0;
-        float sumHired = 0, sumEmployed = 0;
-        for(DataSnapshot ds : dataSnapshot.getChildren()) {
-            float rating = ds.child("rating").getValue(float.class);
-            if(ds.child("hired").getValue(boolean.class)){
-                sumHired = sumHired + rating;
-                numHired++;
-            }else{
-                sumEmployed = sumEmployed + rating;
-                numEmployed++;
-            }
-        }
-
-
-        //TODO: switch - posao, poslova...
-        String employedNumJobsText = " poslova";
-        String employedNumPeopleText = " zaposlenih osoba";
-        String hiredNumJobsText = " poslova izvršeno";
-        String hiredNumPeopleText = " poslodavaca";
-
-
-
-    }
-
+    /**
+     * Otvaranje fragmenta za uređivanje profila
+     */
     private void openEditMyProfileFragment(){
 
         Bundle userDataBundle = new Bundle();

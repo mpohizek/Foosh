@@ -2,6 +2,10 @@ package foosh.air.foi.hr.helper;
 
 import android.net.Uri;
 
+/**
+ * Klasa koja služi za pohranjivanje elemenata ImagesRecyclerViewDataset-a
+ * kod edita oglasa
+ */
 public class ImagesRecyclerViewDatasetItem {
 
     private Uri imageUri;

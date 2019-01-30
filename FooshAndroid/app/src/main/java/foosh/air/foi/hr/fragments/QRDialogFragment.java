@@ -21,6 +21,9 @@ import java.util.UUID;
 import foosh.air.foi.hr.interfaces.DialogFragmentItem;
 import foosh.air.foi.hr.R;
 
+/**
+ * DialogFragment za skeniranje QR koda
+ */
 public class QRDialogFragment extends DialogFragment implements DialogFragmentItem {
     private String mQRCode;
     private OnQRBitmapListener mListener;
@@ -29,6 +32,10 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
         // Required empty public constructor
     }
 
+    /**
+     * Metoda koja se poziva prilikom kreiranja dijaloga koja generira novi QR kod
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +43,13 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
         mQRCode = generateQRCode();
     }
 
+    /**
+     * Metoda koja kreira pogled sa slikom QR koda
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,6 +61,10 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
         ImageButton exitButton = (ImageButton) view.findViewById(R.id.button_exit);
         exitButton.setOnClickListener(
                 new View.OnClickListener() {
+                    /**
+                     * Metoda za zatvaranje dijaloga
+                     * @param v
+                     */
                     @Override
                     public void onClick(View v) {
                         QRDialogFragment.this.dismiss();
@@ -57,10 +75,19 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
         return view;
     }
 
+    /**
+     * Generiranje QR koda na temelju UUID-a
+     * @return
+     */
     private String generateQRCode(){
         return UUID.randomUUID().toString();
     }
 
+    /**
+     * Kreiranje Bitmap slike QR koda na temelju teksta
+     * @param text
+     * @return
+     */
     private Bitmap createQRBitmap(String text){
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         Bitmap bitmap = null;
@@ -90,26 +117,46 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
         mListener = null;
     }
 
+    /**
+     * Metoda sučelja DialogFragmentItem-a za dohvaćanje dijaloga
+     * @return
+     */
     @Override
     public DialogFragment getFragment() {
         return this;
     }
 
+    /**
+     * Metoda sučelja DialogFragmentItem-a za dohvaćanje imena dijaloga
+     * @param context
+     * @return
+     */
     @Override
     public String getName(Context context) {
         return "QRDialogFragment";
     }
 
+    /**
+     * Metoda sučelja DialogFragmentItem-a za zatvaranje dijaloga
+     */
     @Override
     public void destroyFragment() {
         dismiss();
     }
 
+    /**
+     * Metoda sučelja DialogFragmentItem-a za prikaz dijaloga
+     * @param fragmentManager
+     * @param tag
+     */
     @Override
     public void showFragment(FragmentManager fragmentManager, String tag) {
         show(fragmentManager, tag);
     }
 
+    /**
+     * Sučelje za komunikaciju sa aktivnošću pozivatelja
+     */
     public interface OnQRBitmapListener{
         void onQRShown(DialogFragmentItem self, String qrCode);
     }

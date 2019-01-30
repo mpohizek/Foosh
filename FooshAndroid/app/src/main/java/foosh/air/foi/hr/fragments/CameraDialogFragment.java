@@ -23,6 +23,9 @@ import foosh.air.foi.hr.interfaces.DialogFragmentItem;
 import foosh.air.foi.hr.R;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
+/**
+ * Fragment za skeniranje QR koda kamerom uređaja
+ */
 public class CameraDialogFragment extends DialogFragment implements ZXingScannerView.ResultHandler, DialogFragmentItem {
     private static final int MY_CAMERA_REQUEST_CODE = 101;
 
@@ -34,6 +37,10 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
         // Required empty public constructor
     }
 
+    /**
+     * Postavljanje stila QR dijaloga i zahtjevanja prava pristupa kameri uređaja
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +55,13 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
         }
     }
 
+    /**
+     * Inflate dijaloga i postavljane button eventa
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,12 +88,19 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
         return view;
     }
 
+    /**
+     * Na pauzu dijalog za skeniranje se zatvara
+     */
     @Override
     public void onPause() {
         super.onPause();
         zXingScannerView.stopCamera();
     }
 
+    /**
+     * Dohvat konteksta za potrebe pozivanja metoda akrivnosti
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -105,6 +126,10 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
         zXingScannerView.startCamera();
     }
 
+    /**
+     * dohvaćanje rezultata sekiranja i slanje rezultata u aktivnost koja implemenitra OnQRCameraListener sučelje
+     * @param result
+     */
     @Override
     public void handleResult(Result result) {
         try {
@@ -117,6 +142,12 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
         mListener.onQRScanned(this, result.getText());
     }
 
+    /**
+     * Ispisavanje poruke u slučaju prihvaćanja/odbijanja pristupa kameri uređaja
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -134,6 +165,11 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
         return this;
     }
 
+    /**
+     * Vraća ime fragmenta
+     * @param context
+     * @return
+     */
     @Override
     public String getName(Context context) {
         return "CameraDialogFragment";
@@ -149,6 +185,9 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
         show(fragmentManager, tag);
     }
 
+    /**
+     * Sučelje za komunikaciju sa fragmetom, sluzi dobavljanju skeniranog QR koda
+     */
     public interface OnQRCameraListener{
         void onQRScanned(DialogFragmentItem self, String qrCode);
     }

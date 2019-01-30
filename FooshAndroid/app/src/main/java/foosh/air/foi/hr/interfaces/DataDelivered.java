@@ -1,7 +1,8 @@
 package foosh.air.foi.hr.interfaces;
 
-import android.support.v4.app.Fragment;
-
+/**
+ * Sučelje koje služi za komunikaciju između aktivnosti MainActivity i MainFeedFragment-a
+ */
 public interface DataDelivered {
     void onDataDelivered();
 }

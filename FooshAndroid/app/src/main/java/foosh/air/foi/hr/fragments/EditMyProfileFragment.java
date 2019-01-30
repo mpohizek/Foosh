@@ -1,5 +1,4 @@
 package foosh.air.foi.hr.fragments;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -22,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,11 +30,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.User;
@@ -54,6 +50,10 @@ public class EditMyProfileFragment extends Fragment {
     private TextInputEditText phoneNumber;
     private EditMyProfileInteraction mListener;
 
+    /**
+     * Dohvaćanje podataka korisnika u User objekt iz Bundle-a poslanog od strane aktivnosti koja poziva uređivanje profila
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +73,11 @@ public class EditMyProfileFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_edit_profile, container, false);
     }
 
+    /**
+     * Postavljanje podataka na formu uređivanja profila i definiranje onClick listener-a na gumbe
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -103,16 +108,21 @@ public class EditMyProfileFragment extends Fragment {
         changePhotoLink.setOnClickListener(
             new View.OnClickListener()
                    {
+
                        @Override
                        public void onClick(View v)
                        {
                            openPhotoChoice();
                        }
                    }        );
-        Button saveChanges = scrollView.findViewById(R.id.buttonSaveProfile);
-        saveChanges.setOnClickListener(
-                new View.OnClickListener()
+            Button saveChanges = scrollView.findViewById(R.id.buttonSaveProfile);
+            saveChanges.setOnClickListener(
+                    new View.OnClickListener()
                 {
+                    /**
+                     * Spremanje novih podataka s forme i zatvaranje fragmenta
+                     * @param v
+                     */
                     @Override
                     public void onClick(View v)
                     {
@@ -131,6 +141,10 @@ public class EditMyProfileFragment extends Fragment {
         getPhoneNumber.setOnClickListener(
                 new View.OnClickListener()
                 {
+                    /**
+                     * Dohvaćanje broja telefona uređaja sa SIM kartice uređaja ukoliko takav zapis postoji
+                     * @param v
+                     */
                     @Override
                     public void onClick(View v)
                     {
@@ -155,6 +169,9 @@ public class EditMyProfileFragment extends Fragment {
 
     }
 
+    /**
+     * Dohvaća nove podatke s forme i sprema promjene u bazu podataka
+     */
     private void saveProfileChanges(){
 
         user.setDisplayName(displayName.getText().toString());
@@ -170,12 +187,21 @@ public class EditMyProfileFragment extends Fragment {
 
     }
 
+    /**
+     * Otvara galeriju uređaja
+     */
     private void openPhotoChoice() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(intent, PICK_PHOTO_FOR_AVATAR);
     }
 
+    /**
+     * Spremanje rezultata odabira i pozivanje funkcije za spremanje nove slike na poslužitelj
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -193,6 +219,10 @@ public class EditMyProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Učitavanje slike na Firebase poslužitelj
+     * @param stream
+     */
     public void runUpload(InputStream stream){
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -227,10 +257,17 @@ public class EditMyProfileFragment extends Fragment {
         });
     }
 
+    /**
+     * Sučelje za preuzimanje konteksta roditelja
+     */
     public interface EditMyProfileInteraction{
         void onEditMyProfileInteraction(Fragment fragment);
     }
 
+    /**
+     * Preuzimanje konteksta roditelja
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

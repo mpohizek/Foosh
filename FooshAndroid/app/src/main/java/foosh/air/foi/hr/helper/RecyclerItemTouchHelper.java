@@ -7,7 +7,10 @@ import android.view.View;
 
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
 
-
+/**
+ * Klasa koja omogućuje uklanjanje oglasa na swipe u aktivnostima za kreiranje novog i
+ * uređivanje postojećeg oglasa nasljeđivanjem apstraktne klase ItemTouchHelper.SimpleCallback
+ */
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     private RecyclerItemTouchHelperListener listener;
 
@@ -65,6 +68,10 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
         return super.convertToAbsoluteDirection(flags, layoutDirection);
     }
 
+    /**
+     * Sučelje za komunikaciju koje omogućuje da se na swipe elementa RecyclerViewa-a pozove
+     * odgovarajuća radnja
+     */
     public interface RecyclerItemTouchHelperListener {
         void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
     }

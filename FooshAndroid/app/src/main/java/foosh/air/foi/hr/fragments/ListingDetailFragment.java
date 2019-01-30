@@ -45,6 +45,9 @@ import foosh.air.foi.hr.model.Listing;
 import foosh.air.foi.hr.model.User;
 import me.biubiubiu.justifytext.library.JustifyTextView;
 
+/**
+ * Služi prikazu detalja oglasa
+ */
 public class ListingDetailFragment extends Fragment implements DialogFragmentItem.FragmentCommunicationCameraDialog,
         DialogFragmentItem.FragmentCommunicationQRDialog {
 
@@ -87,6 +90,15 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     public ListingDetailFragment() {
     }
 
+
+    /**
+     * Dohvaćanje podataka trenutnog korisnika i pozivanje funkcija ra prikaz kotrola ovisno o tome je li kroisnik vlasnik oglasa ili zainteresiran za oglas
+     * i postavljanje onClick listenera za kilk na profilnu sliku vlasnika oglasa ili korisničko ime
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -148,6 +160,11 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         return scrollView;
     }
 
+    /**
+     * Dohvaćanje referenci na kontorle fragmetna u postavljanej onClick listenera na gumbe
+     * @param inflater
+     * @param container
+     */
     private void init(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         scrollView = (ScrollView) inflater.inflate(R.layout.fragment_listing_detail, container, false);
 
@@ -227,6 +244,9 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         super.onViewCreated(view, savedInstanceState);
     }
 
+    /**
+     * Postavljanje podataka na fragment
+     */
     private void showListingDetailData() {
         listingTitle.setText(mListing.getTitle());
 
@@ -253,13 +273,17 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         listingLocation.setText(mListing.getLocation());
     }
 
-    //sets the owner display name, profile image and the owners rating based on the type of listing
+    /**
+     * prikaz podataka vlasnka oglasa
+     */
     private void showListingOwnerData() {
         userName.setText(mOwner.getDisplayName());
         Picasso.get().load((mOwner.getProfileImgPath()).equals("")?null:mOwner.getProfileImgPath()).placeholder(R.drawable.avatar).error(R.drawable.ic_launcher_foreground).into(userProfilePhoto);
     }
 
-
+    /**
+     * Prikaz kontrola korisnika koji je zainteresiran za oglas ovisno o stanju u kojem se oglas nalazi
+     */
     private void showControlsApplicant(){
         if(!mListing.isActive()){
             jobFinishedText.setVisibility(View.VISIBLE);
@@ -299,6 +323,9 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
 
     }
 
+    /**
+     * Prikaz kontrola korisnika koji je vlasnik oglasa ovisno o stanju u kojem se oglas nalazi
+     */
     private void showControlsOwner(){
         if(mListing.getApplications() != null){
             if(mListing.getApplicant().containsValue(1)) {
@@ -316,9 +343,6 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
                         applicantsListTitle.setVisibility(View.VISIBLE);
                         applicantsList.setVisibility(View.VISIBLE);
                         fetchApplicantList();
-                    } else{
-                        // TODO: prikazat da je posao uspješno završen
-
                     }
 
                 }
@@ -326,6 +350,9 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         }
     }
 
+    /**
+     * Dohvaćanje podataka prijavljenih na oglas i postavljanje njihovog prikaza
+     */
     private void fetchApplicantList() {
         final ArrayList<User> applicants = new ArrayList<User>();
         final LayoutInflater inflater = getLayoutInflater();
@@ -357,6 +384,10 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
                     applicantName.setTag(dataSnapshot.getKey());
 
                     makeDeal.setOnClickListener(new View.OnClickListener() {
+                        /**
+                         * Slanje notifikacije korisniku s kojim se pokušava sklopiti dogovor
+                         * @param view
+                         */
                         @Override
                         public void onClick(View view) {
                             String applicantId = (String) view.getTag();
@@ -402,6 +433,11 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
 
     }
 
+    /**
+     * Otvaranje prikaza profila korisnika koji je vlasnik oglasa
+     * @param view
+     * @param userId
+     */
     private void goToProfile(View view, String userId) {
         Log.d("ListingDetailFragment","Go to profile " + view.getTag());
         Intent intent = new Intent(scrollView.getContext(), MyProfileActivity.class);
@@ -411,6 +447,9 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         startActivity(intent);
     }
 
+    /**
+     * Skrivanje svih kontrola ispod podataka oglasa
+     */
     public void hideAllControls(){
         buttonApply.setVisibility(View.GONE);
         buttonUnapply.setVisibility(View.GONE);
@@ -424,6 +463,11 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         applicantsListTitle.setVisibility(View.GONE);
     }
 
+
+    /**
+     * Otvaranje zadane aplikacije uređaja za SMS/MMS
+     * @param contact
+     */
     private void openAndroidDefaultSMSApp(String contact){
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
         smsIntent.setType("vnd.android-dir/mms-sms");
@@ -432,27 +476,50 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         startActivity(smsIntent);
     }
 
+    /**
+     * Spremanje zapisa prijave na oglas u bazu podataka na klik gumba Zanima me
+     */
     private void buttonApplyOnClickListener(){
         mListingReference.child("applications/"+ userId).setValue("1");
         mUsersReference.child(userId+"/applications/"+mListing.getId()).setValue(mListing.getId());
         FirebaseMessagingService.sendNotificationToUser(mListing.getOwnerId(),"Prijava na oglas",
                 "Korisnik "+mAuth.getCurrentUser().getDisplayName()+" se prijavio na oglas: "+mListing.getTitle());
     }
+
+    /**
+     * Micanje postjeće prijave na oglas u bazu podataka
+     */
     private void buttonUnapplyOnClickListener(){
         mListingReference.child("applications/"+ userId).setValue(null);
         mUsersReference.child(userId+"/applications/"+mListing.getId()).removeValue();
     }
+
+    /**
+     * otvaranje poruke s kontaktom korisnika na popisu prijavjenih na oglas
+     */
     private void buttonMessageOnClickListener(){
         openAndroidDefaultSMSApp(mOwner.getContact());
     }
+
+    /**
+     * Spremanje prihvaćanja dogovara u bazu podataka
+     */
     private void buttonAcceptDealOnClickListener(){
         mListingReference.child("applicant/"+ userId).setValue(1);
         FirebaseMessagingService.sendNotificationToUser(mListing.getOwnerId(),"Prihvaćen vaš zahtjev",
                 "Korisnik "+mAuth.getCurrentUser().getDisplayName()+" je prihvatio ponudu za oglas: "+mListing.getTitle());
     }
+
+    /**
+     * Spremanje dobijanja dogovora u bazu podataka
+     */
     private void buttonNotAcceptDealOnClickListener(){
         mListingReference.child("applicant/"+ userId).setValue(null);
     }
+
+    /**
+     * Otvaranje QR koda ili skenera QR koda pri završetku posla
+     */
     private void buttonFinishJobClickListener(){
         if(authOwner){
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -466,6 +533,11 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
 
     }
 
+    /**
+     * Dohvaćanje rezultata skeniranja qr koda i uspoređivanje istog s onim spremljenim u bazu podatak, obavještavanje korisnik o uspješnosti završetka posla
+     * @param self
+     * @param qrCode
+     */
     @Override
     public void onQRScannedfromActivity(DialogFragmentItem self, String qrCode) {
 
@@ -480,11 +552,19 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         }
     }
 
+    /**
+     * Spremanje generiranog QR koda u bazu podataka
+     * @param self
+     * @param qrCode
+     */
     @Override
     public void onQRShownfromActivity(DialogFragmentItem self, String qrCode) {
         mListingReference.child("qrCode/").setValue(qrCode);
     }
 
+    /**
+     * uklanjanje slušaća događaja na promjene u bazi podataka za oglas
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

@@ -196,7 +196,12 @@ if(isOwner){
             listings = listings.filter((el) => {
                 el.images = [el.images[0]];
                 return el;
-            });   
+            });
+            listings = listings.filter((el) => {
+                if(el.active){
+                    return el;
+                }
+            });    
             res.send({data : listings});
     
             
@@ -232,6 +237,11 @@ if(isOwner){
                     listings = listings.filter((el) => {
                         el.images = [el.images[0]];
                         return el;
+                    });
+                    listings = listings.filter((el) => {
+                        if(el.active){
+                            return el;
+                        }
                     });           
                     res.send({data : listings});    
                 }
