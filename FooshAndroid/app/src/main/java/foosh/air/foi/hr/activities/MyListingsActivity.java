@@ -17,7 +17,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import foosh.air.foi.hr.R;
-import foosh.air.foi.hr.activities.NavigationDrawerBaseActivity;
 import foosh.air.foi.hr.adapters.PagerAdapter;
 
 /**
@@ -25,18 +24,9 @@ import foosh.air.foi.hr.adapters.PagerAdapter;
  */
 public class MyListingsActivity extends NavigationDrawerBaseActivity {
 
-    private ConstraintLayout contentLayout;
-
     //used in the NavigationDrawerBaseActivity for the menu item id
     public static final int id=1;
-    private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
-    private PagerAdapter mPagerAdapter;
-    private ViewPager mViewPager;
     //what happens with layout when selected tab changes
-    private TabLayout mTabLayout;
-    private Toolbar toolbar;
-    private AppBarLayout appBarLayoutMain;
-    private AdView mAdView;
 
     /**
      * Dohvaća naziv aktivnosti.
@@ -63,13 +53,13 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        contentLayout = findViewById(R.id.main_layout);
+        ConstraintLayout contentLayout = findViewById(R.id.main_layout);
         getLayoutInflater().inflate(R.layout.activity_my_listing_base, contentLayout);
 
-        appBarLayoutMain = findViewById(R.id.id_appbar_main);
+        AppBarLayout appBarLayoutMain = findViewById(R.id.id_appbar_main);
         appBarLayoutMain.setVisibility(View.GONE);
 
-        toolbar = findViewById(R.id.id_toolbar);
+        Toolbar toolbar = findViewById(R.id.id_toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionbar = getSupportActionBar();
@@ -77,16 +67,16 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity {
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         actionbar.setTitle("Moji oglasi");
 
-        mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        mViewPager = contentLayout.findViewById(R.id.id_viewpager);
+        PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        ViewPager mViewPager = contentLayout.findViewById(R.id.id_viewpager);
 
-        mTabLayout = contentLayout.findViewById(R.id.id_tabs);
+        TabLayout mTabLayout = contentLayout.findViewById(R.id.id_tabs);
 
         mViewPager.setAdapter(mPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager, true);
 
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
-        mAdView = findViewById(R.id.adView);
+        AdView mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }

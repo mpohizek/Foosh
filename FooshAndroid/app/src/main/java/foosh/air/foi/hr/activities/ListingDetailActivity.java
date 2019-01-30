@@ -22,7 +22,6 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
     private final int MenuItem_ExpandOpt = 0;
     private String fragmentKey;
     private String mListingId;
-    private Toolbar toolbar;
 
 
 
@@ -30,7 +29,7 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        toolbar = findViewById(R.id.id_toolbar_main);
+        Toolbar toolbar = findViewById(R.id.id_toolbar_main);
         setSupportActionBar(toolbar);
 
         ActionBar actionbar = getSupportActionBar();
@@ -50,7 +49,6 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
         Fragment listingDetailFragment = new ListingDetailFragment();
         listingDetailFragment.setArguments(bundle);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().add(R.id.main_layout, listingDetailFragment, fragmentKey);
-        //transaction.addToBackStack(null);
 
         // Commit the transaction
         transaction.commit();

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
@@ -30,12 +29,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,15 +53,13 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
     private static final int RC_MAIN = 1001;
     private FirebaseAuth mAuth;
 
-    private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
+    private final int MenuItem_FilterAds = 0;
     private MainFeedPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     //what happens with layout when selected tab changes
-    private TabLayout mTabLayout;
     private Toolbar toolbar;
     private AppBarLayout appBarLayoutMain;
     private SearchView searchView;
-    private AdView mAdView;
 
     private DatabaseReference mDatabaseCategorys;
     private DatabaseReference mDatabaseCities;
@@ -78,8 +75,8 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        contentLayout = (ConstraintLayout) findViewById(R.id.main_layout);
-        CoordinatorLayout coordinatorLayout = getLayoutInflater().inflate(R.layout.activity_main_feed, contentLayout).findViewById(R.id.main_content_main_feed);
+        contentLayout = findViewById(R.id.main_layout);
+        getLayoutInflater().inflate(R.layout.activity_main_feed, contentLayout).findViewById(R.id.main_content_main_feed);
 
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.END);
 
@@ -97,7 +94,7 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
 
         mPagerAdapter = new MainFeedPagerAdapter(getSupportFragmentManager());
         mViewPager = contentLayout.findViewById(R.id.main_feed_viewpager);
-        mTabLayout = contentLayout.findViewById(R.id.id_tabs_main_feed);
+        TabLayout mTabLayout = contentLayout.findViewById(R.id.id_tabs_main_feed);
         mViewPager.setAdapter(mPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager, true);
 
@@ -206,7 +203,7 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         });
 
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
-        mAdView = findViewById(R.id.adView);
+        AdView mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }
