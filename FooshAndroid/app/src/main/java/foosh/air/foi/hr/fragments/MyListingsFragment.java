@@ -129,22 +129,12 @@ public class MyListingsFragment extends Fragment{
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.YELLOW, Color.RED, Color.GREEN);
         recyclerView = view.findViewById(R.id.id_recycle_view);
-        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) new LinearLayoutManager(getContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         boolean isOwner = mType.equals("OBJAVLJENI");
-        if (mType.equals("OBJAVLJENI")){
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, loadMoreListener);
-        }
-        else if (mType.equals("PRIJAVLJENI")){
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, loadMoreListener);
-        }
-        else {
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, loadMoreListener);
-        }
+        myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
+                swipeRefreshLayout, 10, loadMoreListener);
         recyclerView.setAdapter(myListingsEndlessRecyclerViewAdapter);
         return swipeRefreshLayout;
     }

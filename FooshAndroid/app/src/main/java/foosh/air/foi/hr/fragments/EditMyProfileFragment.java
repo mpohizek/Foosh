@@ -52,6 +52,7 @@ public class EditMyProfileFragment extends Fragment {
     private TextInputEditText city;
     private TextInputEditText bio;
     private TextInputEditText phoneNumber;
+    private EditMyProfileInteraction mListener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,8 +70,6 @@ public class EditMyProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        context = container.getContext();
-
         return inflater.inflate(R.layout.fragment_edit_profile, container, false);
     }
 
@@ -228,4 +227,25 @@ public class EditMyProfileFragment extends Fragment {
         });
     }
 
+    public interface EditMyProfileInteraction{
+        void onEditMyProfileInteraction(Fragment fragment);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof EditMyProfileInteraction) {
+            mListener = (EditMyProfileInteraction) context;
+            this.context = context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement EditMyProfileInteraction");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
 }

@@ -12,12 +12,13 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 
 import foosh.air.foi.hr.R;
+import foosh.air.foi.hr.fragments.EditMyProfileFragment;
 import foosh.air.foi.hr.fragments.MyProfileViewFragment;
 
 /**
  * Aktivnost za prikaz profila korisnika.
  */
-public class MyProfileActivity extends NavigationDrawerBaseActivity {
+public class MyProfileActivity extends NavigationDrawerBaseActivity implements EditMyProfileFragment.EditMyProfileInteraction {
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";
 
@@ -97,5 +98,10 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
             default:
                 return false;
         }
+    }
+
+    @Override
+    public void onEditMyProfileInteraction(Fragment fragment) {
+
     }
 }

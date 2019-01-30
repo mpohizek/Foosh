@@ -23,7 +23,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-
+            android:layout_marginStart="12dp"
             grid:columnCount="3"
             grid:layout_constraintHorizontal_bias="0.0"
             grid:rowCount="4">

@@ -138,19 +138,9 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) new LinearLayoutManager(getContext());
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-
-        if (mType.equals("OBJAVLJENI")){
-            mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
-        }
-        else if (mType.equals("PRIJAVLJENI")){
-            mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(false, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
-        }
-        else {
-            mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
-        }
+        boolean isOwner = mType.equals("OBJAVLJENI");
+        mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
+                swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
         recyclerView.setAdapter(mainFeedListingsEndlessRecyclerViewAdapter);
         return swipeRefreshLayout;
     }
