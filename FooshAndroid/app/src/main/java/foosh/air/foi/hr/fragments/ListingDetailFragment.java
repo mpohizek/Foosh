@@ -82,6 +82,7 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     private JustifyTextView applicantNotAcceptedInfo;
     private ImageView listingsQrCode;
     private TextView jobFinishedText;
+    private ValueEventListener onListingChangeEvent;
 
     public ListingDetailFragment() {
     }
@@ -94,8 +95,7 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
         }
 
         init(inflater, container);
-
-        mListingReference.addValueEventListener(new ValueEventListener() {
+        onListingChangeEvent = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mListing = dataSnapshot.getValue(Listing.class);
@@ -132,7 +132,8 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+        mListingReference.addValueEventListener(onListingChangeEvent);
 
 
         View.OnClickListener profileOnClickListener = new View.OnClickListener() {
@@ -482,5 +483,11 @@ public class ListingDetailFragment extends Fragment implements DialogFragmentIte
     @Override
     public void onQRShownfromActivity(DialogFragmentItem self, String qrCode) {
         mListingReference.child("qrCode/").setValue(qrCode);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mListingReference.removeEventListener(onListingChangeEvent);
     }
 }
