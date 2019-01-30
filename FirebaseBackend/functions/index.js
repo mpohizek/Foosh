@@ -44,7 +44,7 @@ const onListingsCreate = functions.database.ref('/listings/{pushId}')
       );
 });
 
-exports.createBlankUserDocument = functions.auth.user().onCreate( userCreate => {
+const createBlankUserDocument = functions.auth.user().onCreate( userCreate => {
   admin.auth().getUser(userCreate.uid).then(
     user => {
       console.log('User document creation begin for UID:' + user.uid
@@ -58,7 +58,7 @@ exports.createBlankUserDocument = functions.auth.user().onCreate( userCreate => 
       bio : '',
       updateFlag: false,
       email: user.email,
-      contact : ['']
+      contact : ''
     };
     const userDbRef = database.ref('users/'+ user.uid).set(userDocument).then(
       result => {     
@@ -163,6 +163,11 @@ app.post("/mainfeed", jsonParser, (req, res) => {
                 listings = listings.slice(skip, skip + limit);
             }
 
+            listings = listings.filter((el) => {
+                el.images = [el.images[0]];
+                return el;
+            });
+
             res.send({data : listings});
 
         }
@@ -187,7 +192,11 @@ if(isOwner){
                 listings.push(el.val())               
             });
                 
-            listings = listings.filter(el => el).sort( (a,b) => b.orderNum-a.orderNum).slice(startAt, startAt + limit);        
+            listings = listings.filter(el => el).sort( (a,b) => b.orderNum-a.orderNum).slice(startAt, startAt + limit);
+            listings = listings.filter((el) => {
+                el.images = [el.images[0]];
+                return el;
+            });   
             res.send({data : listings});
     
             
@@ -219,7 +228,11 @@ if(isOwner){
                             }
                         }
                     )
-                    listings = listings.slice(startAt, startAt + limit);        
+                    listings = listings.slice(startAt, startAt + limit);
+                    listings = listings.filter((el) => {
+                        el.images = [el.images[0]];
+                        return el;
+                    });           
                     res.send({data : listings});    
                 }
               );
@@ -273,5 +286,6 @@ function sendNotificationToUser(username, message, onSuccess) {
 module.exports = {
   api,
   onListingsCreate,
-  onNotificationSend
+  onNotificationSend,
+  createBlankUserDocument
 }
