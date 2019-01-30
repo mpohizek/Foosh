@@ -561,6 +561,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        actionbar.setTitle("Uredi oglas");
 
         categoriesSpinner = contentLayout.findViewById(R.id.spinner_categories);
 

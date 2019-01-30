@@ -494,6 +494,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        actionbar.setTitle("Dodaj oglas");
 
         scrollView = findViewById(R.id.fragment_listing_add);
         listingTitle = findViewById(R.id.listingTitle);
