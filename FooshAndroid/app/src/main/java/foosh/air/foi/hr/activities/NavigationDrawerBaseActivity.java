@@ -35,8 +35,6 @@ import foosh.air.foi.hr.model.User;
  */
 public class NavigationDrawerBaseActivity extends AppCompatActivity {
 
-    private static final int RC_MAIN = 1001;
-
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     NavigationView navigationViewFilter;
@@ -53,16 +51,16 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         View navigationHeader = navigationView.getHeaderView(0);
 
-        navigationViewFilter = (NavigationView) findViewById(R.id.nav_main_feed);
+        navigationViewFilter = findViewById(R.id.nav_main_feed);
 
         setUserNameListener(navigationHeader);
 
@@ -86,11 +84,6 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(Gravity.START, true);
             }
         });
-
-        TextView displayNameText = (TextView) navigationHeader.findViewById(R.id.displayNameText);
-        //displayNameText.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-        TextView emailText = (TextView) navigationHeader.findViewById(R.id.emailText);
-        //emailText.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         navigationView.getMenu().add(Menu.NONE,MainActivity.id,Menu.NONE,MainActivity.getMenuTitle()).setIcon(R.drawable.ic_home_white_24dp);
 
@@ -145,6 +138,8 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
                                     }
                                 });
                         break;
+                        default:
+                            break;
                 }
                 return false;
             }

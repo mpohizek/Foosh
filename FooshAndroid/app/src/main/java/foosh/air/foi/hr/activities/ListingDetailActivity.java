@@ -18,8 +18,6 @@ import foosh.air.foi.hr.fragments.QRDialogFragment;
 public class ListingDetailActivity extends NavigationDrawerBaseActivity implements QRDialogFragment.OnQRBitmapListener, CameraDialogFragment.OnQRCameraListener {
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";
-
-    private final int MenuItem_ExpandOpt = 0;
     private String fragmentKey;
     private String mListingId;
 

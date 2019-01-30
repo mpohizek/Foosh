@@ -38,8 +38,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.UUID;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -48,7 +46,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -62,6 +59,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
@@ -79,8 +77,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     private ImagesRecyclerViewDatasetItem imagesRecyclerViewDatasetItem;
 
     private RecyclerView recyclerView;
-    private Toolbar toolbar;
-    private ScrollView scrollView;
 
     private TextInputEditText listingTitle;
     private TextInputEditText listingDescription;
@@ -93,10 +89,10 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
     private Spinner categoriesSpinner;
 
     public static final int id = 2;
-    private final int PICK_IMAGES_FOR_LISTING = 1500;
-    private final int REQUEST_IMAGE_CAPTURE = 1501;
+    private static final int PICK_IMAGES_FOR_LISTING = 1500;
+    private static final int REQUEST_IMAGE_CAPTURE = 1501;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
-    private final int NUMBER_OF_IMAGES = 10;
+    private static final int NUMBER_OF_IMAGES = 10;
 
     private AppCompatImageView appCompatImageViewLibrary;
     private AppCompatImageView appCompatImageViewCamera;
@@ -273,9 +269,9 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                 for (DataSnapshot item : dataSnapshot.getChildren()) {
                     cities.add(item.getKey().toString());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(EditListingActivity.this,
+                ArrayAdapter<String> adapterCities = new ArrayAdapter<>(EditListingActivity.this,
                         android.R.layout.simple_list_item_1, cities);
-                listingLocation.setAdapter(adapter);
+                listingLocation.setAdapter(adapterCities);
             }
 
             @Override
@@ -446,16 +442,6 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
                             double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                             progressBars.get(j).setProgress((int)Math.floor(progress));
                         }
-                    }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-
-                        /**
-                         * Listener koji se poziva u slučaju pauziranja učitavanja slike.
-                         * @param taskSnapshot
-                         */
-                        @Override
-                        public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                            System.out.println(R.string.toast_upload_paused);
-                        }
                     }).addOnFailureListener(new OnFailureListener() {
 
                         /**
@@ -555,7 +541,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
      * Metoda koja se poziva u onCreate za dohvaćanje svih widgeta layouta aktivnosti.
      */
     private void init() {
-        toolbar = findViewById(R.id.id_toolbar_main);
+        Toolbar toolbar = findViewById(R.id.id_toolbar_main);
         setSupportActionBar(toolbar);
 
         ActionBar actionbar = getSupportActionBar();
@@ -567,7 +553,7 @@ public class EditListingActivity extends NavigationDrawerBaseActivity implements
 
         mListingReference = FirebaseDatabase.getInstance().getReference().child("listings").child(mListingId);
 
-        scrollView = findViewById(R.id.fragment_listing_add);
+        ScrollView scrollView = findViewById(R.id.fragment_listing_add);
         listingTitle = findViewById(R.id.listingTitle);
         listingDescription = findViewById(R.id.ListingDescription);
         listingPrice = findViewById(R.id.ListingPrice);

@@ -47,7 +47,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -84,7 +83,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private final int REQUEST_IMAGE_CAPTURE = 1501;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
     private final int NUMBER_OF_IMAGES = 10;
-    private final int MenuItem_FilterAds = 0, MenuItem_ExpandOpt = 1;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
     private ScrollView scrollView;
@@ -109,8 +107,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private DatabaseReference mDatabaseListings;
     private DatabaseReference mDatabaseCategorys;
     private DatabaseReference mDatabaseCities;
-    private FirebaseAuth mAuth;
-    private String mUserId;
 
     private ImagesRecyclerViewAdapter imagesRecyclerViewAdapter;
 
@@ -223,16 +219,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                                     double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                                     progressBars.get(j).setProgress((int)Math.floor(progress));
-                                }
-                            }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-
-                                /**
-                                 * Listener koji se poziva u slučaju pauziranja učitavanja slike.
-                                 * @param taskSnapshot
-                                 */
-                                @Override
-                                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                    System.out.println(R.string.toast_upload_paused);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
 

@@ -48,7 +48,6 @@ public class EditMyProfileFragment extends Fragment {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private Context context;
-    private CircleImageView profilePhoto;
     private TextInputEditText displayName;
     private TextInputEditText city;
     private TextInputEditText bio;
@@ -81,7 +80,7 @@ public class EditMyProfileFragment extends Fragment {
         ScrollView scrollView = (ScrollView) view;
         contentLayout = scrollView;
 
-        profilePhoto =  scrollView.findViewById(R.id.userProfileImage);
+        CircleImageView profilePhoto =  scrollView.findViewById(R.id.userProfileImage);
         displayName = scrollView.findViewById(R.id.userDisplayName);
         city = scrollView.findViewById(R.id.userCity);
         bio = scrollView.findViewById(R.id.userDescription);

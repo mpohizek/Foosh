@@ -46,18 +46,14 @@ import foosh.air.foi.hr.fragments.MainFeedFragment;
 
 public class MainActivity extends NavigationDrawerBaseActivity implements MainFeedFragment.onFragmentInteractionListener {
 
-    private ConstraintLayout contentLayout;
-
     //used in the NavigationDrawerBaseActivity for the menu item id
     public static final int id=0;
-    private static final int RC_MAIN = 1001;
     private FirebaseAuth mAuth;
 
     private final int MenuItem_FilterAds = 0;
     private MainFeedPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     //what happens with layout when selected tab changes
-    private Toolbar toolbar;
     private AppBarLayout appBarLayoutMain;
     private SearchView searchView;
 
@@ -75,7 +71,7 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        contentLayout = findViewById(R.id.main_layout);
+        ConstraintLayout contentLayout = findViewById(R.id.main_layout);
         getLayoutInflater().inflate(R.layout.activity_main_feed, contentLayout).findViewById(R.id.main_content_main_feed);
 
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.END);
@@ -83,7 +79,7 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         appBarLayoutMain = findViewById(R.id.id_appbar_main);
         appBarLayoutMain.setVisibility(View.GONE);
 
-        toolbar = findViewById(R.id.id_toolbar_main_feed);
+        Toolbar toolbar = findViewById(R.id.id_toolbar_main_feed);
         setSupportActionBar(toolbar);
 
         searchView = findViewById(R.id.search_view);
