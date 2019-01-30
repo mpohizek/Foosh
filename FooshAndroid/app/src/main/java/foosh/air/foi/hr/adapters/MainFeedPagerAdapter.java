@@ -10,6 +10,9 @@ import java.util.List;
 
 import foosh.air.foi.hr.fragments.MainFeedFragment;
 
+/**
+ * Adapter kartica za glavni feed: Zaradi i Zaposli
+ */
 public class MainFeedPagerAdapter extends FragmentPagerAdapter {
 
     static final int PAGE_COUNT = 2;
@@ -24,6 +27,12 @@ public class MainFeedPagerAdapter extends FragmentPagerAdapter {
     public MainFeedFragment getFragment(int i){
         return registeredFragments.get(i);
     }
+
+    /**
+     * Dohvaćanje fragmenta ovisno o poziciji u listi registriranih fragmenata
+     * @param position
+     * @return
+     */
     @Override
     public Fragment getItem(int position) {
         switch (position){
@@ -36,10 +45,20 @@ public class MainFeedPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
+    /**
+     * Dohvaćanje broja kartica
+     * @return
+     */
     @Override
     public int getCount() {
         return PAGE_COUNT;
     }
+
+    /**
+     * Dohvaćanje naziva kartice fragmenta
+     * @param position
+     * @return
+     */
     @Override
     public CharSequence getPageTitle(int position) {
         return tabTitles[position];

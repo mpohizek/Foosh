@@ -28,6 +28,9 @@ import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.MyListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.model.Listing;
 
+/**
+ * Fragment za prikaz popisa oglasa u aktivnosti MyListingsActivity
+ */
 public class MyListingsFragment extends Fragment{
 
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
@@ -35,6 +38,14 @@ public class MyListingsFragment extends Fragment{
 
     private String mType;
     private LoadMoreListener loadMoreListener = new LoadMoreListener() {
+        /**
+         * Pozivanje Firebase funkcije za dohvaćanje popisa oglasa.
+         * @param owner
+         * @param last
+         * @param startAt
+         * @param limit
+         * @param loadCompletedListener
+         */
         @Override
         public void loadMore(boolean owner, Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener) {
             final Listing l = last;
@@ -52,6 +63,10 @@ public class MyListingsFragment extends Fragment{
 
             FirebaseFunctions.getInstance().getHttpsCallable("api/mylistings")
                     .call(data).addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                /**
+                 * Spremanje dohvaćenih oglasa u listu oglasa
+                 * @param httpsCallableResult
+                 */
                 @Override
                 public void onSuccess(HttpsCallableResult httpsCallableResult) {
                     ArrayList<Listing> listings = new ArrayList<>();
@@ -65,6 +80,10 @@ public class MyListingsFragment extends Fragment{
                     loadCompletedListener.onLoadCompleted(listings);
                 }
             }).addOnFailureListener(new OnFailureListener() {
+                /**
+                 * Vraćanje prazne liste oglasa u slučaju pogreške s Firebase funkcijom.
+                 * @param e
+                 */
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     loadCompletedListener.onLoadCompleted(new ArrayList<Listing>());
@@ -73,6 +92,11 @@ public class MyListingsFragment extends Fragment{
         }
     };
 
+    /**
+     * Pretvaranje oglasa iz HashMap oblika u objekt klase Listing
+     * @param listingHashMap
+     * @return
+     */
     private Listing listingHashMapToListing(HashMap listingHashMap) {
         Listing listing = new Listing();
         listing.setCategory((String) listingHashMap.get("category"));
@@ -103,6 +127,11 @@ public class MyListingsFragment extends Fragment{
         // Required empty public constructor
     }
 
+    /**
+     * Za dohvaćanje instance fragmenta.
+     * @param type
+     * @return
+     */
     public static MyListingsFragment getInstance(String type) {
         MyListingsFragment fragment = new MyListingsFragment();
 
@@ -119,6 +148,13 @@ public class MyListingsFragment extends Fragment{
         }
     }
 
+    /**
+     * Kreiranje View-a za prikaz vlastitih oglasa
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(

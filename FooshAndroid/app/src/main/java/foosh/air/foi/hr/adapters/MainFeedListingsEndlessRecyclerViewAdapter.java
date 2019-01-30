@@ -25,6 +25,9 @@ import foosh.air.foi.hr.interfaces.MainFeedLoadMoreListener;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Listing;
 
+/**
+ * Adapter koji koristi fragment glavnog feed-a za dohvaćanje svih oglasa
+ */
 public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Listing> mDataset = new ArrayList<>();
     private Context mContext;
@@ -97,6 +100,10 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
     }
 
     private LoadCompletedListener loadCompletedListener= new LoadCompletedListener(){
+        /**
+         * Dodavanje novih oglasa u adapter nakon učitavanja.
+         * @param newListings
+         */
         @Override
         public void onLoadCompleted(ArrayList<Listing> newListings) {
             remove(null);
@@ -112,6 +119,9 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
         }
     };
 
+    /**
+     * Ponovno učitavanje oglasa ovisno o postavkama pretraživanja.
+     */
     public void sortOperation(){
         recyclerView.post(new Runnable() {
             @Override
@@ -125,6 +135,17 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
             }
         });
     }
+
+    /**
+     * Konstruktor. Osim instanciranja klase dohvaća oglase.
+     * @param owner
+     * @param context
+     * @param recyclerViewArg
+     * @param swipeRefreshLayoutArg
+     * @param mPostsPerPageArg
+     * @param mainFeedLoadMoreListenerArg
+     * @param navigationView
+     */
     public MainFeedListingsEndlessRecyclerViewAdapter (boolean owner, final Context context, RecyclerView recyclerViewArg, SwipeRefreshLayout swipeRefreshLayoutArg,
                                                        int mPostsPerPageArg, MainFeedLoadMoreListener mainFeedLoadMoreListenerArg, final NavigationView navigationView){
 
@@ -136,6 +157,9 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
         mainFeedLoadMoreListener = mainFeedLoadMoreListenerArg;
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            /**
+             * Ponovno dohvaćanje oglasa nakon refresh-a
+             */
             @Override
             public void onRefresh() {
                 if (isLoading()) {
@@ -147,6 +171,10 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
                 setLoading(true);
                 startAt = 0;
                 mainFeedLoadMoreListener.loadMore(listingHiring, getLastItem(), 0, mPostsPerPage, new LoadCompletedListener() {
+                    /**
+                     * Dodavanje dodanih oglasa u listu
+                     * @param newListings
+                     */
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         if (newListings.size() > 0){
@@ -161,6 +189,13 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /**
+             * Na događaj scroll-a, ako se prijeđe prag broja viđenih oglasa poziva se funkcija za dohvaćanje
+             * oglasa koji slijede nakon zadnjeg prikazanog oglasa
+             * @param recyclerView
+             * @param dx
+             * @param dy
+             */
             @Override
             public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -172,6 +207,9 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
                 if (!isLoading && totalItemCount <= (lastVisibleItem + 1 + visibleThreshold)) {
                     setLoading(true);
                     recyclerView.post(new Runnable() {
+                        /**
+                         * Pozivanje funkcije za dohvaćanje oglasa koji slijede nakon zadnjeg prikazanog oglasa
+                         */
                         @Override
                         public void run() {
                             add(null);
@@ -183,6 +221,9 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
         });
 
         recyclerView.post(new Runnable() {
+            /**
+             * Dohvaćanje oglasa nakon kreiranja instance klase
+             */
             @Override
             public void run() {
                 setStopScrolling(true);
@@ -190,6 +231,10 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
                 add(null);
                 setLoading(true);
                 mainFeedLoadMoreListener.loadMore(listingHiring, null, 0, mPostsPerPage, new LoadCompletedListener() {
+                    /**
+                     * Dodavanje dodanih oglasa u listu
+                     * @param newListings
+                     */
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         remove(null);
@@ -205,6 +250,13 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
         });
     }
 
+    /**
+     * Inflate-anje pogleda za oglas ovisno o tipu. Ako je tip pogleda oglas inflate-a karticu za oglas
+     * inače inflate-a karticu za učitavanje
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM) {
@@ -221,6 +273,12 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
         return null;
     }
 
+    /**
+     * Povezivanje ViewHolder-a s podacima oglasa iz popisa oglasa ovisno o poziciji oglasa u listi
+     * ako je tip ViewHolder-a MainFeedViewHolderRow
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MainFeedViewHolderRow){
@@ -270,6 +328,9 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
         return mDataset.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
+    /**
+     * Holder kartice za učitavanje
+     */
     private class ViewHolderLoading extends RecyclerView.ViewHolder {
         public ProgressBar progressBar;
 
@@ -279,6 +340,9 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
         }
     }
 
+    /**
+     * Holder kartice za prikaz oglasa
+     */
     public class MainFeedViewHolderRow extends RecyclerView.ViewHolder {
         private ImageView image;
         private TextView title;

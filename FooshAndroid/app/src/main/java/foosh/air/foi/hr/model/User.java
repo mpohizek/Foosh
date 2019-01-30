@@ -1,5 +1,8 @@
 package foosh.air.foi.hr.model;
 
+/**
+ * Model klasa za korisnika
+ */
 public class User {
     private String displayName;
     private String profileImgPath;

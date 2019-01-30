@@ -30,6 +30,9 @@ import foosh.air.foi.hr.interfaces.LoadMoreListener;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Listing;
 
+/**
+ * Adapter koji koristi fragment mojih oglasa za dohvaćanje oglasa
+ */
 public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();

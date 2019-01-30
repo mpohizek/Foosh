@@ -3,6 +3,9 @@ package foosh.air.foi.hr.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Model klasa za oglas
+ */
 public class Listing {
     private String category;
     private String dateCreated;
