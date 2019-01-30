@@ -43,7 +43,7 @@ public class MyProfileActivity extends NavigationDrawerBaseActivity {
     }
 
     /**
-     * Pozivanje kreiranja framenta preko intenta.
+     * Pozivanje kreiranja fragmenta preko intenta.
      */
     public void startProfileView(){
         toolbar = findViewById(R.id.id_toolbar_main);

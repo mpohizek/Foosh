@@ -33,6 +33,7 @@ import foosh.air.foi.hr.model.User;
 
 /**
  * Aktivnost za bočni glavni meni.
+ * Bazna aktivnost koju druge aktivnosti da bi mogle imati bočni glavni meni.
  */
 public class NavigationDrawerBaseActivity extends AppCompatActivity {
 

@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import foosh.air.foi.hr.fragments.MyListingsFragment;
 import foosh.air.foi.hr.model.Listing;
 
+/**
+ * Aktivnost za prikaz prijavljenih i objavljenih oglasa prijavljenog korisnika.
+ */
 public class MyListingsActivity extends NavigationDrawerBaseActivity implements onListingsDelivered, MyListingsFragment.onFragmentInteractionListener {
 
     private ConstraintLayout contentLayout;
@@ -38,16 +41,28 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity implements 
     private AppBarLayout appBarLayoutMain;
     private AdView mAdView;
 
+    /**
+     * Dohvaća naziv aktivnosti.
+     * @return
+     */
     public static String getMenuTitle(){
         return "Moji oglasi";
     }
 
+    /**
+     * Izbjegavanje efekata prijelaza iz jedne aktivnosti u drugu.
+     */
     @Override
     protected void onStart() {
         super.onStart();
         overridePendingTransition(0, 0);
     }
 
+    /**
+     * Dohvaćanje potrebnih widgeta.
+     * Učitavanje AdMob oglasa.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,11 +94,23 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity implements 
         mAdView.loadAd(adRequest);
     }
 
+    /**
+     * Listener koji se poziva klkom na opciju Moji oglasi su glavnom bočnom meniju.
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
     }
 
+
+    /**
+     * Aktivira se klikom na hamburger.
+     * Otvara bočni meni.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
