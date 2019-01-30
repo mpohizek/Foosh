@@ -98,6 +98,7 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
         mListener = null;
     }
 
+    @Override
     public void onResume() {
         super.onResume();
         zXingScannerView.setResultHandler(this);

@@ -28,10 +28,10 @@ import foosh.air.foi.hr.model.Listing;
 public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Listing> mDataset = new ArrayList<>();
     private Context mContext;
-    private final int VIEW_TYPE_ITEM = 0;
-    private final int VIEW_TYPE_LOADING = 1;
-    private final int VIEW_TYPE_AD = 2;
-    private final int descriptionLength = 100;
+    private static final int VIEW_TYPE_ITEM = 0;
+    private static final int VIEW_TYPE_LOADING = 1;
+    private static final int VIEW_TYPE_AD = 2;
+    private static final int descriptionLength = 100;
 
     private int startAt;
     private boolean listingHiring;
@@ -281,7 +281,10 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
 
     public class MainFeedViewHolderRow extends RecyclerView.ViewHolder {
         private ImageView image;
-        private TextView title, category, desc, price;
+        private TextView title;
+        private TextView category;
+        private TextView desc;
+        private TextView price;
         private CardView cardView;
 
         public String getListingID() {

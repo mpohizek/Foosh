@@ -10,8 +10,8 @@ import foosh.air.foi.hr.fragments.MyListingsFragment;
  * Upravlja tabovima kod pregleda Mojih oglasa.
  */
 public class PagerAdapter extends FragmentPagerAdapter {
-    final int PAGE_COUNT = 2;
-    final String tabTitles[] = new String[] {"OBJAVLJENI", "PRIJAVLJENI"};
+    static final int PAGE_COUNT = 2;
+    static final String tabTitles[] = new String[] {"OBJAVLJENI", "PRIJAVLJENI"};
 
     /**
      * Konstruktor.

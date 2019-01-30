@@ -33,10 +33,7 @@ public class MyListingsFragment extends Fragment{
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "type-key";
 
-    private MyListingsEndlessRecyclerViewAdapter myListingsEndlessRecyclerViewAdapter;
     private String mType;
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private LoadMoreListener loadMoreListener = new LoadMoreListener() {
         @Override
         public void loadMore(boolean owner, Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener) {
@@ -126,14 +123,14 @@ public class MyListingsFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(
                 R.layout.fragment_my_listings, container, false);
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.YELLOW, Color.RED, Color.GREEN);
-        recyclerView = view.findViewById(R.id.id_recycle_view);
+         RecyclerView recyclerView = view.findViewById(R.id.id_recycle_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         boolean isOwner = mType.equals("OBJAVLJENI");
-        myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
+        MyListingsEndlessRecyclerViewAdapter myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
                 swipeRefreshLayout, 10, loadMoreListener);
         recyclerView.setAdapter(myListingsEndlessRecyclerViewAdapter);
         return swipeRefreshLayout;

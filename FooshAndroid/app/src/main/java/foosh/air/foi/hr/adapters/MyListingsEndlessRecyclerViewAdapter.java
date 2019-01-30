@@ -38,10 +38,10 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     private int limit;
     private int startAt = 0;
     private boolean listingHiring;
-    private final int VIEW_TYPE_ITEM = 0;
-    private final int VIEW_TYPE_LOADING = 1;
-    private final int VIEW_TYPE_AD = 2;
-    private final int descriptionLength = 100;
+    private static final int VIEW_TYPE_ITEM = 0;
+    private static final int VIEW_TYPE_LOADING = 1;
+    private static final int VIEW_TYPE_AD = 2;
+    private static final int descriptionLength = 100;
 
     public boolean isLoading() {
         return isLoading;
@@ -53,7 +53,8 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
 
     private boolean isLoading;
     private int visibleThreshold = 0;
-    private int lastVisibleItem, totalItemCount;
+    private int lastVisibleItem;
+    private int totalItemCount;
 
     public boolean isStopScrolling() {
         return stopScrolling;
@@ -298,9 +299,13 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
 
     public class ViewHolderRow extends RecyclerView.ViewHolder {
         public SwipeRevealLayout swipeRevealLayout;
-        private Button prvi, drugi;
+        private Button prvi;
+        private Button drugi;
         private ImageView slika;
-        private TextView naslov, kategorije, opis, price;
+        private TextView naslov;
+        private TextView kategorije;
+        private TextView opis;
+        private TextView price;
         private CardView cardView;
 
         public String getListingID() {

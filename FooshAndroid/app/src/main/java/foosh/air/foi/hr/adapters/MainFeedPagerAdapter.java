@@ -12,8 +12,8 @@ import foosh.air.foi.hr.fragments.MainFeedFragment;
 
 public class MainFeedPagerAdapter extends FragmentPagerAdapter {
 
-    final int PAGE_COUNT = 2;
-    final String tabTitles[] = new String[] {"ZARADI", "ZAPOSLI"};
+    static final int PAGE_COUNT = 2;
+    static final String tabTitles[] = new String[] {"ZARADI", "ZAPOSLI"};
 
     public MainFeedPagerAdapter(FragmentManager fm) {
         super(fm);
