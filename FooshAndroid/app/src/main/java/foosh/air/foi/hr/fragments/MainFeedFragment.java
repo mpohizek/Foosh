@@ -31,11 +31,17 @@ import foosh.air.foi.hr.adapters.MainFeedListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.model.Listing;
 
 public class MainFeedFragment extends Fragment implements DataDelivered {
+    /**
+     * Ponovno učitavanje oglasa s prikazom od početne pozicije
+     */
     @Override
     public void onDataDelivered() {
         mainFeedListingsEndlessRecyclerViewAdapter.sortOperation();
     }
 
+    /**
+     * Sučelje za oslušivanje interakcija s fragmentom
+     */
     public interface onFragmentInteractionListener{
         NavigationView getNavigationView();
         void getHashMapValues(Map<String, String> hashMap);
@@ -50,6 +56,14 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MainFeedLoadMoreListener mainFeedLoadMoreListener = new MainFeedLoadMoreListener() {
+        /**
+         * Pozivanje Firebase funkcije za dohvaćanje popisa oglasa.
+         * @param hiring
+         * @param last
+         * @param startAt
+         * @param limit
+         * @param loadCompletedListener
+         */
         @Override
         public void loadMore(boolean hiring, Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener){
             Map<String, String> data = new HashMap<>();
@@ -61,6 +75,10 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
 
             FirebaseFunctions.getInstance().getHttpsCallable("api/mainfeed")
                     .call(data).addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                /**
+                 * Spremanje dohvaćenih oglasa u listu oglasa
+                 * @param httpsCallableResult
+                 */
                 @Override
                 public void onSuccess(HttpsCallableResult httpsCallableResult) {
                     ArrayList<Listing> listings = new ArrayList<>();
@@ -74,6 +92,10 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
                     loadCompletedListener.onLoadCompleted(listings);
                 }
             }).addOnFailureListener(new OnFailureListener() {
+                /**
+                 * Vraćanje prazne liste oglasa u slučaju pogreške s Firebase funkcijom.
+                 * @param e
+                 */
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     loadCompletedListener.onLoadCompleted(new ArrayList<Listing>());
@@ -82,6 +104,11 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
         }
     };
 
+    /**
+     * Pretvaranje oglasa iz HashMap oblika u objekt klase Listing
+     * @param listingHashMap
+     * @return
+     */
     private Listing listingHashMapToListing(HashMap listingHashMap) {
         Listing listing = new Listing();
         listing.setCategory((String) listingHashMap.get("category"));
@@ -112,6 +139,11 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
         // Required empty public constructor
     }
 
+    /**
+     * Za dohvaćanje instance fragmenta.
+     * @param type
+     * @return
+     */
     public static MainFeedFragment getInstance(String type) {
         MainFeedFragment fragment = new MainFeedFragment();
 
@@ -128,6 +160,13 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
         }
     }
 
+    /***
+     * Kreiranje View-a za prikaz oglasa glavnog feed-a
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(
@@ -139,8 +178,9 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         boolean isOwner = mType.equals("OBJAVLJENI");
-        mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
-                swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
+        mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(
+                isOwner, getContext(), recyclerView, swipeRefreshLayout, 10,
+                mainFeedLoadMoreListener, mListener.getNavigationView());
         recyclerView.setAdapter(mainFeedListingsEndlessRecyclerViewAdapter);
         return swipeRefreshLayout;
     }
@@ -163,6 +203,9 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
         }
     }
 
+    /**
+     * Odjavljivanje listenera mListener nakon izlaska iz fragmenta
+     */
     @Override
     public void onDetach() {
         super.onDetach();

@@ -44,6 +44,9 @@ import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.MainFeedPagerAdapter;
 import foosh.air.foi.hr.fragments.MainFeedFragment;
 
+/**
+ * Klasa aktivnosti glavnog feeda.
+ */
 public class MainActivity extends NavigationDrawerBaseActivity implements MainFeedFragment.onFragmentInteractionListener {
 
     //used in the NavigationDrawerBaseActivity for the menu item id
@@ -64,6 +67,10 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
     private List<String> cities = new ArrayList<>();
     private List<String> sort = new ArrayList<>();
 
+    /**
+     * Vraća naziv aktivnosti.
+     * @return
+     */
     public static String getMenuTitle(){
         return "Početna stranica";
     }
@@ -114,6 +121,10 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         mDatabaseCities = FirebaseDatabase.getInstance().getReference().child("cities");
 
         mDatabaseCategorys.addListenerForSingleValueEvent(new ValueEventListener() {
+            /**
+             * Dohvaćanje popisa kategorija iz baze podataka te stavljanje u Spinner unutar navigationViewFilter-a
+             * @param dataSnapshot
+             */
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 categories.add("Odaberite kategoriju");
@@ -134,6 +145,10 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         });
 
         mDatabaseCities.addListenerForSingleValueEvent(new ValueEventListener() {
+            /**
+             * Dohvaćanje popisa gradova iz baze podataka te spremanje u adapter za AutoCompleteTextView unutar navigationViewFilter-a
+             * @param dataSnapshot
+             */
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot item: dataSnapshot.getChildren()){
@@ -152,6 +167,13 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         });
 
         ((AutoCompleteTextView)navigationViewFilter.findViewById(R.id.cities_autocomplete)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * Sakrivanje tipkovnice nakon odabira grada iz liste
+             * @param adapterView
+             * @param view
+             * @param i
+             * @param l
+             */
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -160,6 +182,10 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         });
 
         navigationViewFilter.findViewById(R.id.remove_autocomplete_text).setOnClickListener(new View.OnClickListener() {
+            /**
+             * Postavljanje AutoCompleteTextView-a za gradove na prazan string
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 ((AutoCompleteTextView)navigationViewFilter.findViewById(R.id.cities_autocomplete)).setText("");
@@ -173,6 +199,10 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         FirebaseMessaging.getInstance().subscribeToTopic("user_" + mAuth.getUid());
 
         navigationViewFilter.findViewById(R.id.clearFilter).setOnClickListener(new View.OnClickListener() {
+            /**
+             * Postavljanje minimalne i maksimalne cijene u navigationViewFilter-u na prazan string
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 ((TextInputEditText)navigationViewFilter.findViewById(R.id.minPriceFilter)).setText("");
@@ -180,12 +210,21 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
             }
         });
         navigationViewFilter.findViewById(R.id.button_done).setOnClickListener(new View.OnClickListener() {
+            /**
+             * Ponovno učitavanje oglasa na aktivnoj kartici ovisno o unesenim postavkama pretraživanja
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 mPagerAdapter.getFragment(mViewPager.getCurrentItem()).onDataDelivered();
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            /**
+             * Ponovno učitavanje oglasa na aktivnom fragmentu
+             * @param query
+             * @return
+             */
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mPagerAdapter.getFragment(mViewPager.getCurrentItem()).onDataDelivered();
@@ -204,6 +243,11 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         mAdView.loadAd(adRequest);
     }
 
+    /**
+     * Kreiranje gumba za navigationViewFilter
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem item1 = menu.add(0, MenuItem_FilterAds, 0, "Filter");
@@ -213,6 +257,11 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Klikom na hamburger otvara bočni glavni meni.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -233,6 +282,10 @@ public class MainActivity extends NavigationDrawerBaseActivity implements MainFe
         return navigationViewFilter;
     }
 
+    /**
+     * Preuzimanje postavki iz navigationViewFilter-a i spremanje u hashMap
+     * @param hashMap
+     */
     @Override
     public void getHashMapValues(Map<String, String> hashMap){
         String sortiranje = ((AppCompatSpinner)navigationViewFilter.findViewById(R.id.spinner_sort_by)).getSelectedItem().toString();

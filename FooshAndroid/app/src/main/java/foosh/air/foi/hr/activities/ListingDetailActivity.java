@@ -15,6 +15,9 @@ import foosh.air.foi.hr.fragments.CameraDialogFragment;
 import foosh.air.foi.hr.fragments.ListingDetailFragment;
 import foosh.air.foi.hr.fragments.QRDialogFragment;
 
+/**
+ * Klasa aktivnosti za detaljni prikaz oglasa
+ */
 public class ListingDetailActivity extends NavigationDrawerBaseActivity implements QRDialogFragment.OnQRBitmapListener, CameraDialogFragment.OnQRCameraListener {
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";
@@ -57,6 +60,11 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Klikom na hamburger otvara bočni glavni meni.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -68,11 +76,21 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
         }
     }
 
+    /**
+     * Nakon skeniranja QR koda poziva se aktivni fragment te mu prosljeđuje skenirani QR kod za usporedbu
+     * @param self Aktivni fragment
+     * @param qrCode Skenirani QR kod
+     */
     @Override
     public void onQRScanned(DialogFragmentItem self, String qrCode) {
         ((DialogFragmentItem.FragmentCommunicationCameraDialog)getSupportFragmentManager().findFragmentByTag(fragmentKey)).onQRScannedfromActivity(self, qrCode);
     }
 
+    /**
+     * Nakon prikazivanja QR koda poziva se aktivni fragment te mu prosljeđuje generirani QR kod
+     * @param self
+     * @param qrCode Generirani QR kod
+     */
     @Override
     public void onQRShown(DialogFragmentItem self, String qrCode) {
         ((DialogFragmentItem.FragmentCommunicationQRDialog)getSupportFragmentManager().findFragmentByTag(fragmentKey)).onQRShownfromActivity(self, qrCode);
