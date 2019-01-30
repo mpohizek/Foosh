@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,16 +30,14 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import foosh.air.foi.hr.DialogFragmentItem;
-import foosh.air.foi.hr.FirebaseMessagingService;
-import foosh.air.foi.hr.MyProfileActivity;
+import foosh.air.foi.hr.interfaces.DialogFragmentItem;
+import foosh.air.foi.hr.services.FirebaseMessagingService;
+import foosh.air.foi.hr.activities.MyProfileActivity;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.SlidingImageAdapter;
 import foosh.air.foi.hr.helper.DialogFragmentManager;

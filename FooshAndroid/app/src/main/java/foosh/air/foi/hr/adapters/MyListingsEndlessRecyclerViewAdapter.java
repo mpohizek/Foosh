@@ -23,11 +23,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import foosh.air.foi.hr.EditListingActivity;
-import foosh.air.foi.hr.ListingDetailActivity;
-import foosh.air.foi.hr.LoadCompletedListener;
-import foosh.air.foi.hr.LoadMoreListener;
-import foosh.air.foi.hr.MainActivity;
+import foosh.air.foi.hr.activities.EditListingActivity;
+import foosh.air.foi.hr.activities.ListingDetailActivity;
+import foosh.air.foi.hr.interfaces.LoadCompletedListener;
+import foosh.air.foi.hr.interfaces.LoadMoreListener;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Listing;
 

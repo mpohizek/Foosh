@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import foosh.air.foi.hr.interfaces.DialogFragmentItem;
+import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.fragments.CameraDialogFragment;
 import foosh.air.foi.hr.fragments.ListingDetailFragment;
 import foosh.air.foi.hr.fragments.QRDialogFragment;

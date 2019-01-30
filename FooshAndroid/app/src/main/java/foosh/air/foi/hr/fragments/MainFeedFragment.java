@@ -10,26 +10,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import foosh.air.foi.hr.DataDelivered;
-import foosh.air.foi.hr.LoadCompletedListener;
-import foosh.air.foi.hr.MainFeedLoadMoreListener;
+import foosh.air.foi.hr.interfaces.DataDelivered;
+import foosh.air.foi.hr.interfaces.LoadCompletedListener;
+import foosh.air.foi.hr.interfaces.MainFeedLoadMoreListener;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.MainFeedListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.model.Listing;
@@ -45,7 +41,7 @@ public class MainFeedFragment extends Fragment implements DataDelivered {
         void getHashMapValues(Map<String, String> hashMap);
     }
 
-    private static final String KEY_PREFIX = "foosh.air.foi.hr.MainActivity.";
+    private static final String KEY_PREFIX = "foosh.air.foi.hr.activities.MainActivity.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "MainFeedFragment";
     private onFragmentInteractionListener mListener;
 

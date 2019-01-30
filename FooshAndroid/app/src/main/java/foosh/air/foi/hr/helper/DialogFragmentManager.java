@@ -1,11 +1,9 @@
 package foosh.air.foi.hr.helper;
 
-import android.support.v4.app.FragmentManager;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import foosh.air.foi.hr.DialogFragmentItem;
+import foosh.air.foi.hr.interfaces.DialogFragmentItem;
 
 public class DialogFragmentManager {
     private static DialogFragmentManager instance;

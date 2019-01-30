@@ -1,5 +1,6 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.interfaces;
 
+import foosh.air.foi.hr.interfaces.LoadCompletedListener;
 import foosh.air.foi.hr.model.Listing;
 
 public interface MainFeedLoadMoreListener {

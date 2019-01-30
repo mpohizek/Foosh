@@ -1,33 +1,27 @@
 package foosh.air.foi.hr.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.chauthai.swipereveallayout.ViewBinderHelper;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import foosh.air.foi.hr.ListingDetailActivity;
-import foosh.air.foi.hr.LoadCompletedListener;
-import foosh.air.foi.hr.LoadMoreListener;
-import foosh.air.foi.hr.MainFeedLoadMoreListener;
+import foosh.air.foi.hr.activities.ListingDetailActivity;
+import foosh.air.foi.hr.interfaces.LoadCompletedListener;
+import foosh.air.foi.hr.interfaces.MainFeedLoadMoreListener;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Listing;
 

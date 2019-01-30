@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.interfaces;
 
 import android.support.v4.app.Fragment;
 

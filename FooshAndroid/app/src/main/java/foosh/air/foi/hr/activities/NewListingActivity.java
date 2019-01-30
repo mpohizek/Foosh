@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.activities;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
 import foosh.air.foi.hr.helper.ImagesRecyclerViewDatasetItem;
 import foosh.air.foi.hr.helper.RecyclerItemTouchHelper;

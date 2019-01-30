@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.interfaces;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
+
+import foosh.air.foi.hr.R;
 
 /**
  * Prva aktivnost koja se otvara ako korisnik nije prijavljen u aplikaciju.

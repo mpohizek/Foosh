@@ -1,6 +1,5 @@
 package foosh.air.foi.hr.fragments;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +15,6 @@ import android.view.ViewGroup;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
@@ -29,23 +22,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import foosh.air.foi.hr.LoadCompletedListener;
-import foosh.air.foi.hr.LoadMoreListener;
+import foosh.air.foi.hr.interfaces.LoadCompletedListener;
+import foosh.air.foi.hr.interfaces.LoadMoreListener;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.MyListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.model.Listing;
 
 public class MyListingsFragment extends Fragment{
 
-    public interface onFragmentInteractionListener{
-        void onFragmentInteraction(Fragment fragment);
-    }
-
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "type-key";
 
     private MyListingsEndlessRecyclerViewAdapter myListingsEndlessRecyclerViewAdapter;
-    private onFragmentInteractionListener mListener;
     private String mType;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -164,23 +152,6 @@ public class MyListingsFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof onFragmentInteractionListener) {
-            mListener = (onFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     public String getType() {

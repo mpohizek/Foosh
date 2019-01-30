@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.activities;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -42,7 +42,6 @@ import java.util.UUID;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -64,6 +63,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
 import foosh.air.foi.hr.helper.ImagesRecyclerViewDatasetItem;
 import foosh.air.foi.hr.helper.RecyclerItemTouchHelper;

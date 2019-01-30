@@ -19,7 +19,7 @@ import com.google.zxing.Result;
 
 import java.util.Collections;
 
-import foosh.air.foi.hr.DialogFragmentItem;
+import foosh.air.foi.hr.interfaces.DialogFragmentItem;
 import foosh.air.foi.hr.R;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 

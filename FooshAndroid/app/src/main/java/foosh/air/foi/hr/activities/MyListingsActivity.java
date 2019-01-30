@@ -1,11 +1,9 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -18,15 +16,14 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
-import java.util.ArrayList;
-
-import foosh.air.foi.hr.fragments.MyListingsFragment;
-import foosh.air.foi.hr.model.Listing;
+import foosh.air.foi.hr.R;
+import foosh.air.foi.hr.activities.NavigationDrawerBaseActivity;
+import foosh.air.foi.hr.adapters.PagerAdapter;
 
 /**
  * Aktivnost za prikaz prijavljenih i objavljenih oglasa prijavljenog korisnika.
  */
-public class MyListingsActivity extends NavigationDrawerBaseActivity implements onListingsDelivered, MyListingsFragment.onFragmentInteractionListener {
+public class MyListingsActivity extends NavigationDrawerBaseActivity {
 
     private ConstraintLayout contentLayout;
 
@@ -121,12 +118,4 @@ public class MyListingsActivity extends NavigationDrawerBaseActivity implements 
                 return false;
         }
     }
-
-    @Override
-    public ArrayList<Listing> fetchListings(Context context){
-        return null;
-    }
-
-    @Override
-    public void onFragmentInteraction(Fragment fragment) { }
 }

@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.activities;
 
 
 import android.os.Bundle;
@@ -9,14 +9,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.gson.Gson;
 
-import java.util.List;
-
-import foosh.air.foi.hr.fragments.EditMyProfileFragment;
+import foosh.air.foi.hr.R;
+import foosh.air.foi.hr.activities.NavigationDrawerBaseActivity;
 import foosh.air.foi.hr.fragments.MyProfileViewFragment;
 
 /**

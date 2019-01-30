@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.MainFeedPagerAdapter;
 import foosh.air.foi.hr.fragments.MainFeedFragment;
 
