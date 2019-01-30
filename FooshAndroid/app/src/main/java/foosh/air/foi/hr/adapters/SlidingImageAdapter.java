@@ -14,29 +14,53 @@ import java.util.ArrayList;
 
 import foosh.air.foi.hr.R;
 
+/**
+ * Adapter za prikaz slika u klizaču slika.
+ */
 public class SlidingImageAdapter extends PagerAdapter {
 
-    private ArrayList<String> IMAGES;
+    private ArrayList<String> images;
     private LayoutInflater inflater;
     private Context context;
 
 
-    public SlidingImageAdapter(Context context, ArrayList<String> IMAGES) {
+    /**
+     * Konstruktor.
+     * @param context
+     * @param images
+     */
+    public SlidingImageAdapter(Context context, ArrayList<String> images) {
         this.context = context;
-        this.IMAGES=IMAGES;
+        this.images =images;
         inflater = LayoutInflater.from(context);
     }
 
+    /**
+     * Briše sliku iz klizača slika.
+     * @param container
+     * @param position
+     * @param object
+     */
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
     }
 
+    /**
+     * Broji slike.
+     * @return
+     */
     @Override
     public int getCount() {
-        return (IMAGES!=null?IMAGES.size():0);
+        return (images !=null? images.size():0);
     }
 
+    /**
+     * Instancira novu sliku.
+     * @param view
+     * @param position
+     * @return
+     */
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
         View imageLayout = inflater.inflate(R.layout.viewpager_image, view, false);
@@ -44,7 +68,7 @@ public class SlidingImageAdapter extends PagerAdapter {
         assert imageLayout != null;
         final ImageView imageView = (ImageView) imageLayout.findViewById(R.id.viewPagerItem_image1);
 
-        Picasso.get().load(IMAGES.get(position)).error(R.drawable.ic_launcher_foreground).centerCrop().fit().into(imageView);
+        Picasso.get().load(images.get(position)).error(R.drawable.ic_launcher_foreground).centerCrop().fit().into(imageView);
 
         view.addView(imageLayout, 0);
 

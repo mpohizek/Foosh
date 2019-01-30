@@ -19,24 +19,43 @@ import java.util.Stack;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.helper.ImagesRecyclerViewDatasetItem;
 
+/**
+ * Adapter za prikaz slika u RecyclerView-u u formi za dodavanje i formi za uređivanje oglasa.
+ */
 public class ImagesRecyclerViewAdapter extends RecyclerView.Adapter<ImagesRecyclerViewAdapter.MyViewHolder> {
 
     private ArrayList<ImagesRecyclerViewDatasetItem> mDataset;
     private Stack<ImagesRecyclerViewDatasetItem> mDeleted  = new Stack<>();
     private Context context;
 
+    /**
+     * Dohvaća listu slika.
+     * @return
+     */
     public ArrayList<ImagesRecyclerViewDatasetItem> getmDataset() {
         return mDataset;
     }
 
+    /**
+     * Dohvaća popis izbrisanih slika.
+     * @return
+     */
     public Stack<ImagesRecyclerViewDatasetItem> getmDeleted() {
         return mDeleted;
     }
 
+    /**
+     * Klasa za prikaz jedne slike u RecyclerView-u.
+     */
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private ImageView image;
         private ImageView deleteImage;
         private RelativeLayout viewBackground, viewForeground;
+
+        /**
+         * Konstruktor.
+         * @param viewItem
+         */
         public MyViewHolder(View viewItem) {
             super(viewItem);
             viewBackground = viewItem.findViewById(R.id.view_background);
@@ -45,10 +64,19 @@ public class ImagesRecyclerViewAdapter extends RecyclerView.Adapter<ImagesRecycl
             image.setAdjustViewBounds(true);
             deleteImage = viewItem.findViewById(R.id.delete_icon);
         }
+
+        /**
+         * Učitava sliku na ImageViewHolder.
+         * @param image
+         */
         public void setImage(Uri image){
             Picasso.get().load(image).into(this.image);
         }
 
+        /**
+         * Uklanja vidljivost slike.
+         * @param imageVisibility
+         */
         public void setDeleteImageVisibility(int imageVisibility) {
             deleteImage.setVisibility(imageVisibility);
         }
@@ -70,32 +98,58 @@ public class ImagesRecyclerViewAdapter extends RecyclerView.Adapter<ImagesRecycl
         }
     }
 
+    /**
+     * Konstruktor.
+     * @param context
+     */
     public ImagesRecyclerViewAdapter(Context context){
         mDataset = new ArrayList<>();
         this.context = context;
     }
 
+    /**
+     * Konstruktor.
+     * @param myDataset
+     * @param context
+     */
     public ImagesRecyclerViewAdapter(List<ImagesRecyclerViewDatasetItem> myDataset, Context context) {
         mDataset = (ArrayList<ImagesRecyclerViewDatasetItem>) myDataset;
         this.context = context;
     }
 
+    /**
+     * Dodaje sliku u Dataset.
+     * @param image
+     */
     public void addImageToDataset(ImagesRecyclerViewDatasetItem image){
         mDataset.add(image);
         notifyItemInserted(mDataset.size() - 1);
     }
 
+    /**
+     * Dodaje više slika u Dataset.
+     * @param images
+     */
     public void addImagesToDataset(List<ImagesRecyclerViewDatasetItem> images){
         mDataset.addAll(images);
         notifyItemRangeInserted(mDataset.size() - 1, images.size());
     }
 
+    /**
+     * Uklanja element na indeksu.
+     * @param position
+     */
     public void removeItem(int position) {
         mDeleted.add(mDataset.get(position));
         mDataset.remove(mDataset.get(position));
         notifyItemRemoved(position);
     }
 
+    /**
+     * Undo brisanja slike.
+     * @param item
+     * @param position
+     */
     public void restoreItem(Object item, int position) {
         mDataset.add(mDeleted.pop());
         notifyItemInserted(position);
@@ -108,12 +162,21 @@ public class ImagesRecyclerViewAdapter extends RecyclerView.Adapter<ImagesRecycl
         return new MyViewHolder(frameLayout);
     }
 
+    /**
+     * Postavlja slike u ViewHolder.
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
             holder.setImage(mDataset.get(position).getImageUri());
             holder.setDeleteImageVisibility(View.VISIBLE);
     }
 
+    /**
+     * Vraća broj slika u ViewHolderu.
+     * @return
+     */
     @Override
     public int getItemCount() {
         return mDataset.size();
