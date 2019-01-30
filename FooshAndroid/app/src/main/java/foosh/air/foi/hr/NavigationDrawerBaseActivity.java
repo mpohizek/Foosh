@@ -1,6 +1,12 @@
 package foosh.air.foi.hr;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -29,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Arrays;
 import java.util.List;
 
+import am.appwise.components.ni.NoInternetDialog;
 import foosh.air.foi.hr.model.User;
 
 /**
@@ -43,6 +50,7 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
     ActionBarDrawerToggle actionBarDrawerToggle;
     NavigationView navigationViewFilter;
     FirebaseUser mUser;
+    private NoInternetDialog noInternetDialog;
 
     /**
      * Ovisno o odabiru opcije iz glavnog menija, otvara odgovarajuću aktivnost.
@@ -150,6 +158,8 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
                 return false;
             }
         });
+        noInternetDialog = new NoInternetDialog.Builder(this).build();
+
     }
 
     /**
@@ -201,5 +211,11 @@ public class NavigationDrawerBaseActivity extends AppCompatActivity {
         else{
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        noInternetDialog.onDestroy();
     }
 }
