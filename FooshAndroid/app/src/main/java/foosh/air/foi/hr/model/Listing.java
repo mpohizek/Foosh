@@ -1,6 +1,7 @@
 package foosh.air.foi.hr.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Listing {
     private String category;
@@ -9,27 +10,27 @@ public class Listing {
     private boolean hiring;
     private boolean active;
     private String id;
-    private ArrayList<String> images;
+    private ArrayList<String> images = new ArrayList<>();
     private String location;
     private String ownerId;
     private int price;
     private String qrCode;
     private String status;
     private String title;
-    private ArrayList<Interest> interests;
-
-    {
-        images = new ArrayList<>();
-        interests = new ArrayList<>();
-    }
+    private int orderNum;
+    private HashMap<String, String> applications = new HashMap<String, String>();
+    private HashMap<String, Integer> applicant = new HashMap<String, Integer>();
 
     public Listing() {
     }
 
-    public Listing(String category, String description, boolean hiring, boolean active,
-                   String id, ArrayList<String> images, String location, String ownerId, int price,
-                   String qrCode, String status, String title, ArrayList<Interest> interests) {
+    public Listing(String category, String dateCreated,
+                   String description, boolean hiring, boolean active, String id,
+                   ArrayList<String> images, String location, String ownerId, int price,
+                   String qrCode, String status, String title, int orderNum, HashMap<String, String> applications,
+                   HashMap<String, Integer> applicant) {
         this.category = category;
+        this.dateCreated = dateCreated;
         this.description = description;
         this.hiring = hiring;
         this.active = active;
@@ -41,7 +42,9 @@ public class Listing {
         this.qrCode = qrCode;
         this.status = status;
         this.title = title;
-        this.interests = interests;
+        this.orderNum = orderNum;
+        this.applications = applications;
+        this.applicant = applicant;
     }
 
     public String getCategory() {
@@ -144,11 +147,25 @@ public class Listing {
         this.active = active;
     }
 
-    public ArrayList<Interest> getInterests() {
-        return interests;
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
-    public void setInterests(ArrayList<Interest> interests) {
-        this.interests = interests;
+    public HashMap<String, String> getApplications() {
+        return applications;
     }
+
+    public void setApplications(HashMap<String, String> applications) { this.applications = applications; }
+
+    public HashMap<String, Integer> getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(HashMap<String, Integer> applicant) {
+        this.applicant = applicant;
+    }
+
+    public int getOrderNum() { return orderNum; }
+
+    public void setOrderNum(int orderNum) { this.orderNum = orderNum; }
 }

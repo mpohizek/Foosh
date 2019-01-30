@@ -1,8 +1,8 @@
 package foosh.air.foi.hr.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,38 +10,31 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.chauthai.swipereveallayout.ViewBinderHelper;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import foosh.air.foi.hr.activities.EditListingActivity;
 import foosh.air.foi.hr.activities.ListingDetailActivity;
 import foosh.air.foi.hr.interfaces.LoadCompletedListener;
-import foosh.air.foi.hr.interfaces.LoadMoreListener;
+import foosh.air.foi.hr.interfaces.MainFeedLoadMoreListener;
 import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.model.Listing;
 
-public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Listing> mDataset = new ArrayList<>();
-    private Context mcontext;
-    private int limit;
-    private int startAt = 0;
-    private boolean listingHiring;
+    private Context mContext;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private final int VIEW_TYPE_AD = 2;
     private final int descriptionLength = 100;
+
+    private int startAt;
+    private boolean listingHiring;
 
     public boolean isLoading() {
         return isLoading;
@@ -65,6 +58,10 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
 
     private boolean stopScrolling = false;
 
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private MainFeedLoadMoreListener mainFeedLoadMoreListener;
+    private int mPostsPerPage;
 
     public ArrayList<Listing> getDataSet(){
         return mDataset;
@@ -77,7 +74,7 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
         return null;
     }
     public int getLastItemPosition(){
-        return mDataset.size() - 1;
+        return mDataset.size()-1;
     }
     public void add(Listing item) {
         mDataset.add(item);
@@ -99,11 +96,45 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
         notifyDataSetChanged();
     }
 
-    public MyListingsEndlessRecyclerViewAdapter(boolean hiring, final Context context, RecyclerView recyclerView, final SwipeRefreshLayout swipeRefreshLayout,
-                                                final int mPostsPerPage, final LoadMoreListener loadMoreListener) {
-        mcontext = context;
-        listingHiring = hiring;
-        limit = mPostsPerPage;
+    private LoadCompletedListener loadCompletedListener= new LoadCompletedListener(){
+        @Override
+        public void onLoadCompleted(ArrayList<Listing> newListings) {
+            remove(null);
+            if (newListings.size() > 0){
+                addList(newListings);
+                startAt += newListings.size();
+                setStopScrolling(false);
+            }
+            else{
+                setStopScrolling(true);
+            }
+            setLoading(false);
+        }
+    };
+
+    public void sortOperation(){
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                setStopScrolling(true);
+                clear();
+                add(null);
+                setLoading(true);
+                startAt = 0;
+                mainFeedLoadMoreListener.loadMore(listingHiring, null, startAt, mPostsPerPage, loadCompletedListener);
+            }
+        });
+    }
+    public MainFeedListingsEndlessRecyclerViewAdapter (boolean owner, final Context context, RecyclerView recyclerViewArg, SwipeRefreshLayout swipeRefreshLayoutArg,
+                                                       int mPostsPerPageArg, MainFeedLoadMoreListener mainFeedLoadMoreListenerArg, final NavigationView navigationView){
+
+        mContext = context;
+        listingHiring = owner;
+        recyclerView = recyclerViewArg;
+        swipeRefreshLayout = swipeRefreshLayoutArg;
+        mPostsPerPage = mPostsPerPageArg;
+        mainFeedLoadMoreListener = mainFeedLoadMoreListenerArg;
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -115,18 +146,15 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                 clear();
                 setLoading(true);
                 startAt = 0;
-                loadMoreListener.loadMore(listingHiring, getLastItem(), 0, mPostsPerPage, new LoadCompletedListener() {
+                mainFeedLoadMoreListener.loadMore(listingHiring, getLastItem(), 0, mPostsPerPage, new LoadCompletedListener() {
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         if (newListings.size() > 0){
                             addList(newListings);
                             startAt += newListings.size();
-                            setStopScrolling(false);
-                        }
-                        else{
-                            setStopScrolling(true);
                         }
                         setLoading(false);
+                        setStopScrolling(false);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -147,32 +175,21 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
                         @Override
                         public void run() {
                             add(null);
-                            loadMoreListener.loadMore(listingHiring, getLastItem(), startAt, mPostsPerPage, new LoadCompletedListener() {
-                                @Override
-                                public void onLoadCompleted(ArrayList<Listing> newListings) {
-                                    remove(null);
-                                    if (newListings.size() > 0){
-                                        addList(newListings);
-                                        startAt += newListings.size();
-                                        setStopScrolling(false);
-                                    }
-                                    else{
-                                        stopScrolling = true;
-                                    }
-                                    setLoading(false);
-                                }
-                            });
+                            mainFeedLoadMoreListener.loadMore(listingHiring, getLastItem(), startAt, mPostsPerPage, loadCompletedListener);
                         }
                     });
                 }
             }
         });
+
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
+                setStopScrolling(true);
+                clear();
                 add(null);
                 setLoading(true);
-                loadMoreListener.loadMore(listingHiring, null, 0, mPostsPerPage, new LoadCompletedListener() {
+                mainFeedLoadMoreListener.loadMore(listingHiring, null, 0, mPostsPerPage, new LoadCompletedListener() {
                     @Override
                     public void onLoadCompleted(ArrayList<Listing> newListings) {
                         remove(null);
@@ -191,8 +208,8 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_listing_item, parent, false);
-            return new ViewHolderRow(view);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_feed_listing_item, parent, false);
+            return new MainFeedViewHolderRow(view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_bar_item, parent, false);
             if (view instanceof SwipeRevealLayout){
@@ -206,68 +223,34 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ViewHolderRow){
+        if (holder instanceof MainFeedViewHolderRow){
             final Listing listing = mDataset.get(position);
-            final ViewHolderRow viewHolderRow = (ViewHolderRow)holder;
-            viewBinderHelper.setOpenOnlyOne(true);
-            viewBinderHelper.bind(viewHolderRow.swipeRevealLayout, String.valueOf(listing.getId()));
-            if (!listingHiring){
-                viewHolderRow.swipeRevealLayout.setLockDrag(true);
-                viewBinderHelper.lockSwipe(String.valueOf(listing.getId()));
-            }
+            final MainFeedViewHolderRow viewHolderRow = (MainFeedViewHolderRow)holder;
 
+            viewHolderRow.category.setText(listing.getCategory());
+            viewHolderRow.title.setText(listing.getTitle());
             viewHolderRow.price.setText(String.valueOf(listing.getPrice())+" HRK");
-            viewHolderRow.kategorije.setText(listing.getCategory());
-            viewHolderRow.naslov.setText(listing.getTitle());
 
             if(listing.getDescription().length()<descriptionLength){
-                viewHolderRow.opis.setText(listing.getDescription());
+                viewHolderRow.desc.setText(listing.getDescription());
             }else{
                 String opis = listing.getDescription().substring(0,descriptionLength);
-                viewHolderRow.opis.setText(opis.trim() + "...");
+                viewHolderRow.desc.setText(opis.trim() + "...");
             }
 
             if(listing.getImages()!= null){
                 Picasso.get().load(listing.getImages().get(0)).centerCrop().fit().placeholder(R.drawable.avatar)
-                        .error(R.drawable.ic_launcher_foreground).into(viewHolderRow.slika);
+                        .error(R.drawable.ic_launcher_foreground).into(viewHolderRow.image);
             }
             viewHolderRow.setListingID(listing.getId());
-            if (listingHiring){
-                viewHolderRow.prvi.setText("Obriši");
-                viewHolderRow.prvi.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mcontext,
-                                R.style.CustomDialog);
-                        builder.setMessage("Jeste li sigurni?").setTitle("Brisanje oglasa")
-                                .setPositiveButton("Da", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        FirebaseDatabase.getInstance().getReference().child("listings/" + listing.getId()).child("active").setValue(false);
-                                        Toast.makeText(mcontext, "Oglas obrisan!", Toast.LENGTH_LONG).show();
-                                        remove(listing);
-                                    }
-                                })
-                                .setNegativeButton("Ne", null).create().show();
-                    }
-                });
-                viewHolderRow.drugi.setText("Uredi");
-                viewHolderRow.drugi.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(mcontext, EditListingActivity.class);
-                        intent.putExtra("listingId", listing.getId());
-                        mcontext.startActivity(intent);
-                    }
-                });
-            }
             viewHolderRow.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mcontext, ListingDetailActivity.class);
+                    Intent intent = new Intent(mContext, ListingDetailActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     intent.putExtra("foosh.air.foi.hr.MyListingsFragment.fragment-key","listingDetail");
                     intent.putExtra("listingId", listing.getId());
-                    mcontext.startActivity(intent);
+                    mContext.startActivity(intent);
                 }
             });
         }
@@ -296,11 +279,9 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
         }
     }
 
-    public class ViewHolderRow extends RecyclerView.ViewHolder {
-        public SwipeRevealLayout swipeRevealLayout;
-        private Button prvi, drugi;
-        private ImageView slika;
-        private TextView naslov, kategorije, opis, price;
+    public class MainFeedViewHolderRow extends RecyclerView.ViewHolder {
+        private ImageView image;
+        private TextView title, category, desc, price;
         private CardView cardView;
 
         public String getListingID() {
@@ -313,17 +294,14 @@ public class MyListingsEndlessRecyclerViewAdapter extends RecyclerView.Adapter<R
 
         private String listingID;
 
-        public ViewHolderRow(View itemView) {
+        public MainFeedViewHolderRow(View itemView) {
             super(itemView);
-            swipeRevealLayout = itemView.findViewById(R.id.id_swipe);
-            prvi = itemView.findViewById(R.id.info_button);
-            drugi = itemView.findViewById(R.id.edit_button);
-            slika = itemView.findViewById(R.id.my_listing_picture);
-            naslov = itemView.findViewById(R.id.textView);
-            kategorije = itemView.findViewById(R.id.textView2);
-            opis = itemView.findViewById(R.id.textView3);
-            price = itemView.findViewById(R.id.textView4);
-            cardView = itemView.findViewById(R.id.listingCardView);
+            image = itemView.findViewById(R.id.main_feed_listing_image);
+            title = itemView.findViewById(R.id.main_feed_listing_title);
+            category = itemView.findViewById(R.id.main_feed_listing_category);
+            desc = itemView.findViewById(R.id.main_feed_listing_description);
+            cardView = itemView.findViewById(R.id.main_feed_card_view);
+            price = itemView.findViewById(R.id.main_feed_listing_price);
         }
     }
 }

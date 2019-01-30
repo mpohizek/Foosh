@@ -288,9 +288,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="0dp"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:hint="@string/listing_price"
                 android:inputType="numberDecimal"
                 android:text="" />
@@ -316,7 +316,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout3"
-            android:hint="Location:"
+            android:hint="@string/hint_location"
             android:dropDownAnchor="@id/ListingDescription">
         </AutoCompleteTextView>
 

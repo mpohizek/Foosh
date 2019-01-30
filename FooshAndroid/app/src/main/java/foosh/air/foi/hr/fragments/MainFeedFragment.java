@@ -1,9 +1,11 @@
 package foosh.air.foi.hr.fragments;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +16,6 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
@@ -22,45 +23,50 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import foosh.air.foi.hr.interfaces.DataDelivered;
 import foosh.air.foi.hr.interfaces.LoadCompletedListener;
-import foosh.air.foi.hr.interfaces.LoadMoreListener;
+import foosh.air.foi.hr.interfaces.MainFeedLoadMoreListener;
 import foosh.air.foi.hr.R;
-import foosh.air.foi.hr.adapters.MyListingsEndlessRecyclerViewAdapter;
+import foosh.air.foi.hr.adapters.MainFeedListingsEndlessRecyclerViewAdapter;
 import foosh.air.foi.hr.model.Listing;
 
-public class MyListingsFragment extends Fragment{
+public class MainFeedFragment extends Fragment implements DataDelivered {
+    @Override
+    public void onDataDelivered() {
+        mainFeedListingsEndlessRecyclerViewAdapter.sortOperation();
+    }
 
-    private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
-    private static final String ARG_TYPE_KEY = KEY_PREFIX + "type-key";
+    public interface onFragmentInteractionListener{
+        NavigationView getNavigationView();
+        void getHashMapValues(Map<String, String> hashMap);
+    }
 
-    private MyListingsEndlessRecyclerViewAdapter myListingsEndlessRecyclerViewAdapter;
+    private static final String KEY_PREFIX = "foosh.air.foi.hr.activities.MainActivity.";
+    private static final String ARG_TYPE_KEY = KEY_PREFIX + "MainFeedFragment";
+    private onFragmentInteractionListener mListener;
+
+    private MainFeedListingsEndlessRecyclerViewAdapter mainFeedListingsEndlessRecyclerViewAdapter;
     private String mType;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private LoadMoreListener loadMoreListener = new LoadMoreListener() {
+    private MainFeedLoadMoreListener mainFeedLoadMoreListener = new MainFeedLoadMoreListener() {
         @Override
-        public void loadMore(boolean owner, Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener) {
-            final Listing l = last;
+        public void loadMore(boolean hiring, Listing last, int startAt, int limit, final LoadCompletedListener loadCompletedListener){
             Map<String, String> data = new HashMap<>();
+            mListener.getHashMapValues(data);
 
-            if (last == null) {
-                data.put("ownerId", FirebaseAuth.getInstance().getUid());
-            } else {
-                data.put("ownerId", l.getOwnerId());
-            }
-
-            data.put("isOwner", owner ? "1" : "");
-            data.put("startAt", String.valueOf(startAt));
+            data.put("hiring", hiring ? "1" : "");
+            data.put("skip", String.valueOf(startAt));
             data.put("limit", String.valueOf(limit));
 
-            FirebaseFunctions.getInstance().getHttpsCallable("api/mylistings")
+            FirebaseFunctions.getInstance().getHttpsCallable("api/mainfeed")
                     .call(data).addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
                 @Override
                 public void onSuccess(HttpsCallableResult httpsCallableResult) {
                     ArrayList<Listing> listings = new ArrayList<>();
                     ArrayList<HashMap> result = (ArrayList<HashMap>) httpsCallableResult.getData();
-                    if (httpsCallableResult.getData() != null) {
-                        for (HashMap listingHashMap : result) {
+                    if(httpsCallableResult.getData() != null){
+                        for (HashMap listingHashMap : result){
                             Listing listing = listingHashMapToListing(listingHashMap);
                             listings.add(listing);
                         }
@@ -91,7 +97,7 @@ public class MyListingsFragment extends Fragment{
         listing.setStatus((String) listingHashMap.get("status"));
         listing.setTitle((String) listingHashMap.get("title"));
         if(listingHashMap.get("active") != null){
-            listing.setActive((boolean) listingHashMap.get("active"));
+            listing.setActive((Boolean) listingHashMap.get("active"));
         }
         if(listingHashMap.get("applications") != null){
             listing.setApplications((HashMap<String, String>) listingHashMap.get("applications"));
@@ -102,12 +108,12 @@ public class MyListingsFragment extends Fragment{
         return listing;
     }
 
-    public MyListingsFragment() {
+    public MainFeedFragment() {
         // Required empty public constructor
     }
 
-    public static MyListingsFragment getInstance(String type) {
-        MyListingsFragment fragment = new MyListingsFragment();
+    public static MainFeedFragment getInstance(String type) {
+        MainFeedFragment fragment = new MainFeedFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(ARG_TYPE_KEY, type);
@@ -132,26 +138,45 @@ public class MyListingsFragment extends Fragment{
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) new LinearLayoutManager(getContext());
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        boolean isOwner = mType.equals("OBJAVLJENI");
+
         if (mType.equals("OBJAVLJENI")){
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, loadMoreListener);
+            mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
+                    swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
         }
         else if (mType.equals("PRIJAVLJENI")){
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, loadMoreListener);
+            mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(false, getContext(), recyclerView,
+                    swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
         }
         else {
-            myListingsEndlessRecyclerViewAdapter = new MyListingsEndlessRecyclerViewAdapter(isOwner, getContext(), recyclerView,
-                    swipeRefreshLayout, 10, loadMoreListener);
+            mainFeedListingsEndlessRecyclerViewAdapter = new MainFeedListingsEndlessRecyclerViewAdapter(true, getContext(), recyclerView,
+                    swipeRefreshLayout, 10, mainFeedLoadMoreListener, mListener.getNavigationView());
         }
-        recyclerView.setAdapter(myListingsEndlessRecyclerViewAdapter);
+        recyclerView.setAdapter(mainFeedListingsEndlessRecyclerViewAdapter);
         return swipeRefreshLayout;
     }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof onFragmentInteractionListener) {
+            mListener = (onFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     public String getType() {

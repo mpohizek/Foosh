@@ -1,4 +1,4 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,11 +23,17 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
+import foosh.air.foi.hr.R;
+
+/**
+ * Prva aktivnost koja se otvara ako korisnik nije prijavljen u aplikaciju.
+ */
 public class SignInActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1000;
     private FirebaseAuth mAuth;
     Button signInButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +47,7 @@ public class SignInActivity extends AppCompatActivity {
                     callSignInActivity();
                 }
                 else{
-                    Toast.makeText(SignInActivity.this, "No internet connection", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignInActivity.this, R.string.toast_no_internet_connection, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -52,6 +58,11 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Provjerava je li aplikacija povezana na internet ili nije.
+     * @return
+     * @throws NullPointerException
+     */
     private boolean isNetworkAvailable() throws NullPointerException{
         try{
             ConnectivityManager connectivityManager
@@ -62,6 +73,13 @@ public class SignInActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    /**
+     * Preuzimanje rezultata druge aktivnosti.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -70,6 +88,12 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Prijava korisnika u aplikaciju. Ako je prijava uspješna, otvara se glavni feed i dohvaća se ID korisnika.
+     * @param resultCode
+     * @param data
+     * @throws NullPointerException
+     */
     private void handleSignInResponse(int resultCode, Intent data) throws NullPointerException{
         IdpResponse response = IdpResponse.fromResultIntent(data);
         Toast toast;
@@ -82,13 +106,13 @@ public class SignInActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(SignInActivity.this, "Verification email sent!", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SignInActivity.this, R.string.toast_verification_mail_sent, Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
                 }
             } catch (NullPointerException ex){
-                Toast.makeText(SignInActivity.this, "Error sending verification email!", Toast.LENGTH_LONG).show();
+                Toast.makeText(SignInActivity.this, R.string.toast_verification_mail_sent, Toast.LENGTH_LONG).show();
             }
             finally {
                 startActivity(new Intent(this, MainActivity.class));
@@ -97,24 +121,27 @@ public class SignInActivity extends AppCompatActivity {
         }
         else{
             if (response == null) {
-                toast = Toast.makeText(this, "Sign in was cancelled!", Toast.LENGTH_LONG);
+                toast = Toast.makeText(this, R.string.toast_sign_in_canceled, Toast.LENGTH_LONG);
                 toast.show();
             }
             else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                toast = Toast.makeText(this, "You have no internet connection", Toast.LENGTH_LONG);
+                toast = Toast.makeText(this, R.string.toast_no_internet_connection, Toast.LENGTH_LONG);
                 toast.show();
             }
             else {
-                toast = Toast.makeText(this, "Unknown Error!", Toast.LENGTH_LONG);
+                toast = Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG);
                 toast.show();
             }
         }
     }
+
+    /**
+     * Otvara korisniku izbor načina prijave u aplikaciju (e-mail, Google).
+     */
     public void callSignInActivity(){
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.FacebookBuilder().build());
+                new AuthUI.IdpConfig.GoogleBuilder().build());
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()

@@ -4,22 +4,30 @@ const cors = require("cors")
 const express = require("express")
 const Fuse = require("fuse.js")
 const bodyParser = require("body-parser");
-
+var request = require('request');
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 
-admin.initializeApp();
+
+var API_KEY = "AAAAh-OdgCM:APA91bH-RNBKfVErwazv5DjhNBv5qFVFaHGxkiXyk4h16tF8Aiegw_5HC18OXgVUK3dVLryU1cCPp1pf-ZEso9cHmOeGSlgHZRR46cbK1JY3mLZGQxqreP28wPzEqQyY8UVY-ZvzzAwG"; // Your Firebase Cloud Messaging Server API key
+var serviceAccount = require("./fooshandroid-4f97debb2be3.json");
+admin.initializeApp(
+    {
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: "https://fooshandroid.firebaseio.com/"
+    }
+);
 const database = admin.database();
 
 
 const app = express();
 const api = functions.https.onRequest(app);
 
-const onListingsCreate = functions.database.ref('/listings-test/{pushId}')
+const onListingsCreate = functions.database.ref('/listings/{pushId}')
     .onCreate((snapshot, context) => {
       var listing = snapshot.val();
-      database.ref("listings-test/").orderByChild("orderNum").limitToLast(1).once('value').then(
+      database.ref("listings/").orderByChild("orderNum").limitToLast(1).once('value').then(
         snap => {   
           var lastListing;    
           snap.forEach(el => {     
@@ -29,14 +37,14 @@ const onListingsCreate = functions.database.ref('/listings-test/{pushId}')
           console.log("Last:" + lastListing.orderNum)
           var num = lastListing.orderNum + 1;
           console.log(num);
-          var updates = { dateCreated: new Date().toISOString(), orderNum: num}
+          var updates = { dateCreated: new Date().toUTCString(), orderNum: num}
           
           return snapshot.ref.update(updates);   
         }
       );
 });
 
-exports.createBlankUserDocument = functions.auth.user().onCreate( userCreate => {
+const createBlankUserDocument = functions.auth.user().onCreate( userCreate => {
   admin.auth().getUser(userCreate.uid).then(
     user => {
       console.log('User document creation begin for UID:' + user.uid
@@ -50,7 +58,7 @@ exports.createBlankUserDocument = functions.auth.user().onCreate( userCreate => 
       bio : '',
       updateFlag: false,
       email: user.email,
-      contact : ['']
+      contact : ''
     };
     const userDbRef = database.ref('users/'+ user.uid).set(userDocument).then(
       result => {     
@@ -72,16 +80,17 @@ app.get("", (req, res) => {
 })
 
 app.post("/mainfeed", jsonParser, (req, res) => {  
-  var ref = database.ref("listings-test");
+  var ref = database.ref("listings");
 
-    var orderBy = req.body.orderBy;
-    var category = req.body.category;
-    var priceLowBound = req.body.priceLowBound;
-    var priceUpBound = req.body.priceUpBound;
-    var location = req.body.location;
-    var textSearch = req.body.textSearch;
-    var skip = req.body.skip;
-    var limit = req.body.limit;
+    var orderBy = req.body.data.orderBy;
+    var category = req.body.data.category;
+    var priceLowBound = req.body.data.priceLowBound;
+    var priceUpBound = req.body.data.priceUpBound;
+    var location = req.body.data.location;
+    var textSearch = req.body.data.textSearch;
+    var skip = req.body.data.skip;
+    var limit = req.body.data.limit;
+    var hiring = req.body.data.hiring; 
 
     ref.orderByChild("orderNum").once("value").then(
         (snapshot) =>{           
@@ -90,7 +99,18 @@ app.post("/mainfeed", jsonParser, (req, res) => {
                 listings.push(el.val())               
             });
             listings = listings.reverse();
-            
+            if(hiring != undefined){
+                listings = listings.filter((el) => {
+                    if(el.hiring == hiring){
+                        return el;
+                    }
+                });      
+            }                  
+            listings = listings.filter((el) => {
+                if(el.active == true){                 
+                    return el;
+                }
+            })
             if(orderBy == "priceAsc"){
                 listings = listings.sort((a,b) => {return a.price-b.price});
             }
@@ -140,8 +160,13 @@ app.post("/mainfeed", jsonParser, (req, res) => {
             }
 
             if(skip && limit){
-                listings.slice(skip, skip + limit);
+                listings = listings.slice(skip, skip + limit);
             }
+
+            listings = listings.filter((el) => {
+                el.images = [el.images[0]];
+                return el;
+            });
 
             res.send({data : listings});
 
@@ -150,43 +175,117 @@ app.post("/mainfeed", jsonParser, (req, res) => {
 })
 
 app.post("/mylistings", jsonParser, (req, res) => {  
-  var ref = database.ref("listings-test");
-  
-  var ownerId = req.body.ownerId;    
-  var hiring = req.body.hiring;
-  var startAt = req.body.startAt;
-  var limit = req.body.limit; 
+  var ref = database.ref("listings");
+  var userRef = database.ref("users");
 
-  ref.orderByChild("ownerId").equalTo(ownerId).once("value").then(
-      (snapshot) =>{           
-          var listings = [];
-          var finalRes = [];
-          var hiringFalse = [];
-          var hiringTrue = [];                
-          snapshot.forEach(el => {
-              listings.push(el.val())               
-          });
-          console.log(listings);
-          if(hiring == true){
-              hiringTrue = listings.map((listing)=>{                
-                  if(listing.hiring) return listing
-              })
-              finalRes = hiringTrue;
-          } else{
-              hiringFalse = listings.map((listing)=>{
-                  if(!listing.hiring) return listing
-              })
-              finalRes = hiringFalse;
-          }
-          finalRes = finalRes.filter(el => el).sort( (a,b) => b.orderNum-a.orderNum).slice(startAt, startAt + limit);        
-          res.send({data : listings});
-      }
-  )      
+  var ownerId = req.body.data.ownerId;  
+  var startAt = req.body.data.startAt;
+  var limit = req.body.data.limit;
+  var isOwner = req.body.data.isOwner;    
+
+if(isOwner){
+    ref.orderByChild("ownerId").equalTo(ownerId).once("value").then(
+        (snapshot) =>{           
+            var listings = []; 
+                            
+            snapshot.forEach(el => {
+                listings.push(el.val())               
+            });
+                
+            listings = listings.filter(el => el).sort( (a,b) => b.orderNum-a.orderNum).slice(startAt, startAt + limit);
+            listings = listings.filter((el) => {
+                el.images = [el.images[0]];
+                return el;
+            });   
+            res.send({data : listings});
+    
+            
+        }  
+    
+    )  
+} else {
+    ref.orderByChild("orderNum").once("value").then(
+        (snapshot) =>{           
+            var listings = [];              
+            snapshot.forEach(el => {
+                listings.push(el.val())               
+            });
+            console.log(ownerId);
+            var userRef = database.ref("users");
+
+            userRef.child(ownerId + "/applications").once('value').then(
+                (snapshot) =>{           
+                    var applications = [];
+                   
+                    snapshot.forEach(el => {
+                        applications.push(el.val())               
+                    });
+                    console.log(applications);          
+                    listings = listings.filter(
+                        (el) => {
+                            if(applications.includes(el.id)){
+                                return el;
+                            }
+                        }
+                    )
+                    listings = listings.slice(startAt, startAt + limit);
+                    listings = listings.filter((el) => {
+                        el.images = [el.images[0]];
+                        return el;
+                    });           
+                    res.send({data : listings});    
+                }
+              );
+
+        }
+    )
+}
+
+    
 })
+
+const onNotificationSend = functions.database.ref('/notificationRequests/{pushId}')
+    .onCreate((requestSnapshot, context) => {
+        var request = requestSnapshot.val();
+        sendNotificationToUser(
+          request.username, 
+          request.message,
+          function() {
+            requestSnapshot.ref.remove();
+          }
+        );
+
+});
+
+
+function sendNotificationToUser(username, message, onSuccess) {
+    request({
+    url: 'https://fcm.googleapis.com/fcm/send',
+    method: 'POST',
+    headers: {
+      'Content-Type' :' application/json',
+      'Authorization': 'key='+API_KEY
+    },
+    body: JSON.stringify({
+      notification: {
+        title: message
+      },
+      to : '/topics/user_'+username
+    })
+  }, function(error, response, body) {
+    if (error) { console.error(error); }
+    else if (response.statusCode >= 400) { 
+      console.error('HTTP Error: '+response.statusCode+' - '+response.statusMessage); 
+    }
+    else {
+      onSuccess();
+    }
+  });
+}
 
 module.exports = {
   api,
-  onListingsCreate
+  onListingsCreate,
+  onNotificationSend,
+  createBlankUserDocument
 }
-
-

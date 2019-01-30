@@ -1,19 +1,20 @@
-package foosh.air.foi.hr;
+package foosh.air.foi.hr.activities;
 
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.AppCompatImageView;
@@ -39,8 +40,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,22 +53,30 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
-import java.text.FieldPosition;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Locale;
+import java.util.UUID;
 
+import foosh.air.foi.hr.R;
 import foosh.air.foi.hr.adapters.ImagesRecyclerViewAdapter;
+import foosh.air.foi.hr.helper.ImagesRecyclerViewDatasetItem;
 import foosh.air.foi.hr.helper.RecyclerItemTouchHelper;
 import foosh.air.foi.hr.model.Listing;
 
+/**
+ * Aktivnost za dodavanje novog oglasa u bazu.
+ */
 public class NewListingActivity extends NavigationDrawerBaseActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     private ConstraintLayout contentLayout;
+
+    private ImagesRecyclerViewDatasetItem imagesRecyclerViewDatasetItem;
 
     //used in the NavigationDrawerBaseActivity for the menu item id
     public static final int id = 2;
@@ -114,6 +121,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
     private List<UploadTask> uploadTask;
     private int finished;
 
+    private String mCurrentPhotoPath;
     {
         listing = new Listing();
         mDatabaseListings = FirebaseDatabase.getInstance().getReference().child("listings");
@@ -125,10 +133,17 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         cities = new ArrayList<>();
     }
 
+    /**
+     * Dohvaća naziv aktivnosti.
+     * @return
+     */
     public static String getMenuTitle(){
         return "Dodaj oglas";
     }
 
+    /**
+     * Spremanje naziva oglasa, opisa oglasa, cijene, vlasnika oglasa i statusa u objekt modela.
+     */
     private void fillListingPartial(){
         listing.setTitle(listingTitle.getText().toString());
         listing.setDescription(listingDescription.getText().toString());
@@ -142,6 +157,10 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         listing.setId(key);
     }
 
+    /**
+     * Inicijalizacija potrebnog broja ProgressBarova za prikaz učitavanja slika na Firebase Storage.
+     * @param progressBarNumber Broj slika.
+     */
     private void setUpProgress(int progressBarNumber){
         linearLayout.setVisibility(View.VISIBLE);
         linearLayout.setWeightSum((float)progressBarNumber);
@@ -152,7 +171,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
             progressBars.get(i).setProgressTintList(ColorStateList.valueOf(Color.GREEN));
         }
 
-        textViewUploadImages.setText("Uploading images...");
+        textViewUploadImages.setText(R.string.toast_uploading);
         textViewUploadImages.setVisibility(View.VISIBLE);
     }
     @Override
@@ -164,50 +183,83 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         init();
 
         buttonAddNewListing.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             * Provjerava je li korisnik unio sve potrebne podatke o oglasu.
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 if (listingTitle.getText().length()==0
                         || listingDescription.getText().length()==0
                         || listingPrice.getText().length()==0
-                        || autoCompleteTextView.getText().length()==0) {
-                    Toast.makeText(NewListingActivity.this, "Not all fileds have been populated!", Toast.LENGTH_LONG).show();
+                        || autoCompleteTextView.getText().toString().length()==0
+                        || imagesRecyclerViewAdapter.getmDataset().size() == 0) {
+                    Toast.makeText(NewListingActivity.this, R.string.toast_not_all_fields_populated, Toast.LENGTH_LONG).show();
                 }
                 else {
+                    listing.setLocation(autoCompleteTextView.getText().toString());
                     fillListingPartial();
                     setUpProgress(imagesRecyclerViewAdapter.getmDataset().size());
                     finished = 0;
                     for (int i = 0; i < imagesRecyclerViewAdapter.getmDataset().size(); i++){
-                        String imageName = listing.getId() + "_image_" + (i + 1);
+                        String uniqueID = UUID.randomUUID().toString().replace("-", "");
+                        String imageName = listing.getId() + "_image_" + uniqueID;
                         final StorageReference listingImageRef = FirebaseStorage.getInstance().getReference()
                             .child("listings/" + listing.getOwnerId() + "/" + listing.getId() + "/" + imageName);
                         StorageMetadata metadata = new StorageMetadata.Builder()
                                 .setContentType("image/jpeg")
                                 .build();
-                        if (imagesRecyclerViewAdapter.getmDataset().get(i) instanceof Uri){
-                            Uri imageUri = (Uri) imagesRecyclerViewAdapter.getmDataset().get(i);
+                            Uri imageUri = imagesRecyclerViewAdapter.getmDataset().get(i).getImageUri();
                             uploadTask.add(listingImageRef.putFile(imageUri, metadata));
                             final int j = i;
                             uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+
+                                /**
+                                 * Listener koji kontinuirano dojavljuje napredak učitavanja slike.
+                                 * @param taskSnapshot
+                                 */
                                 @Override
                                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
+                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    progressBars.get(j).setProgress((int)Math.floor(progress));
                                 }
                             }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+
+                                /**
+                                 * Listener koji se poziva u slučaju pauziranja učitavanja slike.
+                                 * @param taskSnapshot
+                                 */
                                 @Override
                                 public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                    System.out.println("Upload is paused");
+                                    System.out.println(R.string.toast_upload_paused);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
+
+                                /**
+                                 * Listener koji se poziva u slučaju neuspješnog učitavanja slike.
+                                 * @param exception
+                                 */
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
                                     progressBars.get(j).setProgressTintList(ColorStateList.valueOf(Color.RED));
                                     progressBars.get(j).setProgress(100);
                                 }
                             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                                /**
+                                 * Listener koji se poziva u slučaju uspješnog učitavanja slike.
+                                 * @param taskSnapshot
+                                 */
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     progressBars.get(j).setProgress(100);
                                     listingImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+
+                                        /**
+                                         * Listener koji se poziva nakon uspješnog dohvaćanja URL-a prethodno učitane slike.
+                                         * @param uri
+                                         */
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             listing.getImages().add(uri.toString());
@@ -215,6 +267,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                                             checkNewListing();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
+
+                                        /**
+                                         * Listener koji se poziva nakon neuspješnog dohvaćanja URL-a prethodno učitane slike.
+                                         * @param e
+                                         */
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
 
@@ -222,50 +279,6 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                                     });
                                 }
                             });
-                        }
-                        else if (imagesRecyclerViewAdapter.getmDataset().get(i) instanceof Bitmap){
-                            Bitmap imageBitmap = (Bitmap) imagesRecyclerViewAdapter.getmDataset().get(i);
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                            byte[] data = baos.toByteArray();
-                            final int j = i;
-                            uploadTask.add(listingImageRef.putBytes(data, metadata));
-                            uploadTask.get(uploadTask.size() - 1).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                }
-                            }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                    System.out.println("Upload is paused");
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    progressBars.get(j).setIndeterminateTintList(ColorStateList.valueOf(Color.RED));
-                                    progressBars.get(j).setProgress(100);
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    progressBars.get(j).setProgress(100);
-                                    listingImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            listing.getImages().add(uri.toString());
-                                            finished++;
-                                            checkNewListing();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-
-                                        }
-                                    });
-                                }
-                            });
-                        }
                     }
                 }
             }
@@ -273,27 +286,38 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
        buttonPayingForService.setOnClickListener(new View.OnClickListener() {
 
+           /**
+            * Listener koji se poziva klikom na gumb PayingForService.
+            * @param view
+            */
             @Override
             public void onClick(View view) {
                 buttonPayingForService.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(132, 146, 166));
-                listing.setHiring(false);
-                listing.setStatus("KREIRAN");
+                listing.setHiring(true);
             }
         });
 
         buttonIWantToEarn.setOnClickListener(new View.OnClickListener() {
 
+            /**
+             * Listener koji se poziva klikom na gumb IWantToEarn.
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 buttonIWantToEarn.setBackgroundColor(Color.rgb(114, 79, 175));
                 buttonPayingForService.setBackgroundColor(Color.rgb(132, 146, 166));
-                listing.setHiring(true);
-                listing.setStatus("OBJAVLJEN");
+                listing.setHiring(false);
             }
         });
 
         appCompatImageViewLibrary.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             * Listener koji se poziva klikom na gumb za dohvaćanje pohranjenih slika na mobitelu.
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 if (!canAddListingImageBefore()){
@@ -311,6 +335,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         });
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)){
             appCompatImageViewCamera.setOnClickListener(new View.OnClickListener() {
+
+                /**
+                 * Listener koji se poziva klikom na gumb za otvaranje aktivnosti za rukovanje s kamerom.
+                 * @param view
+                 */
                 @Override
                 public void onClick(View view) {
                     if (!canAddListingImageBefore()){
@@ -320,26 +349,43 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                     }
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                        File photoFile = null;
+                        try {
+                            photoFile = createImageFile();
+                        } catch (IOException ex) {
+                            Toast.makeText(NewListingActivity.this, R.string.toast_cant_save_img, Toast.LENGTH_LONG).show();
+                        }
+                        if (photoFile != null) {
+                            Uri photoURI = FileProvider.getUriForFile(NewListingActivity.this,
+                                    "foosh.air.foi.hr.fileprovider",
+                                    photoFile);
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                        }
                     }
                 }
             });
-            if (checkSelfPermission(android.Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.CAMERA},
-                        MY_CAMERA_REQUEST_CODE);
-            }
         }
         else{
             appCompatImageViewCamera.setOnClickListener(new View.OnClickListener() {
+
+                /**
+                 * Listener koji obavještava korisnika da nema kameru ako klikne na gumb za otvaranje aktivnosti za rukovanje s kamerom.
+                 * @param view
+                 */
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(NewListingActivity.this, "Camera not found!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(NewListingActivity.this, R.string.toast_camera_not_found, Toast.LENGTH_LONG).show();
                 }
             });
         }
 
         mDatabaseCategorys.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            /**
+             * Listener koji se poziva nakon dohvaćanja podatka o mogućim kategorijama oglasa.
+             * @param dataSnapshot
+             */
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
@@ -358,6 +404,12 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         });
 
         mDatabaseCities.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            /**
+             * Listener koji dohvaća gradove i puni adapter s gradovima.
+             * Adapter predaje gradove autoCompleteTextViewu.
+             * @param dataSnapshot
+             */
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot item: dataSnapshot.getChildren()){
@@ -375,6 +427,14 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         });
 
         categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            /**
+             * Listenr koji se poziva nakon odabira određene kategorije u Spinneru.
+             * @param adapterView
+             * @param view
+             * @param i
+             * @param l
+             */
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String itemValue = adapterView.getItemAtPosition(i).toString();
@@ -388,6 +448,28 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         });
     }
 
+    /**
+     * Kreiranje prazne datoteke za privremeno pohranjivanje slike koja će se učitati na Firebase Storage.
+     * @return
+     * @throws IOException
+     */
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    /**
+     * Provjerava završetak učitavanja svih odabranih slika na Firebase Storage.
+     */
     private void checkNewListing(){
         if (uploadTask.size() != imagesRecyclerViewAdapter.getmDataset().size()){
             return;
@@ -400,16 +482,12 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         if (uploadTask.size() != finished){
             return;
         }
-
-        createFirebaseListing(listing);
-        Toast.makeText(NewListingActivity.this, "New listing has been successfully added!", Toast.LENGTH_LONG).show();
-        finish();
+        createFirebaseListing();
     }
 
-    private void updateCategorys() {
-        mDatabaseCategorys.child(listing.getCategory()).setValue(categories.get(listing.getCategory()) + 1);
-    }
-
+    /**
+     * Metoda koja se poziva u onCreate za dohvaćanje svih widgeta layouta aktivnosti.
+     */
     private void init() {
         toolbar = findViewById(R.id.id_toolbar_main);
         setSupportActionBar(toolbar);
@@ -417,6 +495,7 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        actionbar.setTitle("Dodaj oglas");
 
         scrollView = findViewById(R.id.fragment_listing_add);
         listingTitle = findViewById(R.id.listingTitle);
@@ -453,6 +532,12 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
         recyclerView.setOnTouchListener(new View.OnTouchListener() {
 
+            /**
+             * Listener kojim dijete presreće user interaction s roditeljem.
+             * @param v
+             * @param event
+             * @return
+             */
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.getParent().requestDisallowInterceptTouchEvent(true);
@@ -462,6 +547,12 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
 
         scrollView.setOnTouchListener(new View.OnTouchListener() {
 
+            /**
+             * Listener kojim roditelj presreće user interaction s djetetom.
+             * @param v
+             * @param event
+             * @return
+             */
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 recyclerView.getParent().requestDisallowInterceptTouchEvent(true);
@@ -470,15 +561,24 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         });
     }
 
-    public void createFirebaseListing(Listing listing){
+    /**
+     * Sprema oglas u bazu i poziva izlaz iz aktivnosti.
+     */
+    public void createFirebaseListing(){
         mDatabaseListings.child(listing.getId()).setValue(listing).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                updateCategorys();
+                Toast.makeText(NewListingActivity.this, R.string.toast_listing_successfully_added, Toast.LENGTH_LONG).show();
+                finish();
             }
         });
     }
 
+    /**
+     * Klikom na hamburger otvara bočni glavni meni.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -491,6 +591,12 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         }
     }
 
+    /**
+     * Nakon što korisnik odabere slike iz galerije i/ili nakon što korisnik uslika slike kamerom, slike se stavljaju u adapter.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -502,10 +608,11 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                                 " images can be added!", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    imagesRecyclerViewAdapter.addImageToDataset(data.getData());
+                    imagesRecyclerViewDatasetItem = new ImagesRecyclerViewDatasetItem(data.getData());
+                    imagesRecyclerViewAdapter.addImageToDataset(imagesRecyclerViewDatasetItem);
                 }
                 else{
-                    List<Object> imagesList = new ArrayList<>();
+                    List<ImagesRecyclerViewDatasetItem> imagesList = new ArrayList<>();
                     ClipData mClipData = data.getClipData();
                     if (!canAddListingImageAfter(mClipData.getItemCount())){
                         Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
@@ -513,25 +620,30 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
                         return;
                     }
                     for (int i=0;i<mClipData.getItemCount();i++){
-                        imagesList.add(mClipData.getItemAt(i).getUri());
+                        imagesRecyclerViewDatasetItem = new ImagesRecyclerViewDatasetItem(mClipData.getItemAt(i).getUri());
+                        imagesList.add(imagesRecyclerViewDatasetItem);
                     }
                     imagesRecyclerViewAdapter.addImagesToDataset(imagesList);
                 }
             }
         }
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
-            if (data != null && data.getExtras() != null) {
-                if (!canAddListingImageAfter(1)){
-                    Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
-                            " images can be added!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-                imagesRecyclerViewAdapter.addImageToDataset(imageBitmap);
+            if (!canAddListingImageAfter(1)){
+                Toast.makeText(NewListingActivity.this, "No more than " + NUMBER_OF_IMAGES +
+                        " images can be added!", Toast.LENGTH_LONG).show();
+                return;
             }
+            imagesRecyclerViewDatasetItem = new ImagesRecyclerViewDatasetItem(Uri.fromFile(new File(mCurrentPhotoPath)));
+            imagesRecyclerViewAdapter.addImageToDataset(imagesRecyclerViewDatasetItem);
         }
     }
 
+    /**
+     * Listener koji se poziva nako što korisnik učitanu ili uslikanu sliku povuče prema dolje u recyclerViewu.
+     * @param viewHolder
+     * @param direction
+     * @param position
+     */
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (viewHolder instanceof ImagesRecyclerViewAdapter.MyViewHolder) {
@@ -556,26 +668,45 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         }
     }
 
+    /**
+     * Listener koji se poziva nakon što korisnik dopusti /  odbije aktivnost korištenje kamere.
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Camera permission granted!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.toast_camera_granted, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Camera permission denied!", Toast.LENGTH_LONG).show();
+                appCompatImageViewCamera.setVisibility(View.GONE);
             }
         }
     }
 
+    /**
+     * Provjerava može li se dodati još slika.
+     * @return
+     */
     private boolean canAddListingImageBefore(){
         return imagesRecyclerViewAdapter.getmDataset().size() < NUMBER_OF_IMAGES;
     }
 
+    /**
+     * Ograničava korisnika da na oglas stavi maksimalno 10 slika.
+     * @param plusNumberOfImages
+     * @return
+     */
     private boolean canAddListingImageAfter(int plusNumberOfImages){
         return imagesRecyclerViewAdapter.getmDataset().size() + plusNumberOfImages <= NUMBER_OF_IMAGES;
     }
 
+    /**
+     * U slučaju pauziranja aktivnosti za vrijeme učitavanja slike, učitavanje slika se pauzira.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -588,6 +719,9 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         }
     }
 
+    /**
+     * Nastavljanje učitavanja slika nakon pauziranja aktivnosti.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -600,13 +734,29 @@ public class NewListingActivity extends NavigationDrawerBaseActivity implements 
         }
     }
 
+    /**
+     * Listener koji se poziva na klik Back gumba.
+     */
     @Override
     public void onBackPressed() {
         if (uploadTask.size() > 0){
-            Toast.makeText(this, "Uploading images... Please wait!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.toast_uploading, Toast.LENGTH_LONG).show();
         }
         else{
             super.onBackPressed();
+        }
+    }
+
+    /**
+     * Pita korisnika za dozvolu kamere.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (checkSelfPermission(android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA},
+                    MY_CAMERA_REQUEST_CODE);
         }
     }
 }

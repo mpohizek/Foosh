@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="Title"
+                android:text="@string/label_title"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 grid:layout_columnSpan="3" />
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="Kategorija"
+                android:text="@string/label_category"
                 grid:layout_columnSpan="2" />
 
             <TextView
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="Datum"
+                android:text="@string/label_date"
                 grid:layout_columnSpan="1"
                 grid:layout_gravity="right" />
 
@@ -99,7 +99,7 @@
 
         </FrameLayout>
 
-        <android.support.v7.widget.GridLayout
+        <android.support.constraint.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:grid="http://schemas.android.com/apk/res-auto"
             android:id="@+id/gridLayout"
@@ -109,99 +109,74 @@
             android:paddingBottom="2dp"
             android:paddingTop="2dp"
             android:background="@color/colorAccentBackground"
-            grid:columnCount="5"
             grid:layout_constraintEnd_toEndOf="parent"
             grid:layout_constraintHorizontal_bias="1.0"
             grid:layout_constraintStart_toStartOf="parent"
             grid:layout_constraintTop_toBottomOf="@+id/imageLayout"
-            grid:rowCount="2"
             >
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/userProfileImage"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
+                android:layout_margin="5dp"
                 android:src="@drawable/avatar"
                 app:civ_border_color="#FF000000"
-                app:layout_rowSpan="2"
-                app:layout_column="0"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <TextView
                 android:id="@+id/listingOwner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="0dp"
-                android:text="Ime Prezime"
-                grid:layout_gravity="start|center_vertical"
-                grid:layout_rowWeight="1"
-                grid:layout_column="1"
-                grid:layout_columnWeight="1"/>
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textSize="18sp"
+                android:text="@string/label_firstname_lastname"
+                grid:layout_constraintTop_toTopOf="parent"
+                grid:layout_constraintBottom_toBottomOf="parent"
+                grid:layout_constraintStart_toEndOf="@id/userProfileImage"/>
 
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorWhite"
-                grid:layout_rowSpan="2"
-                grid:layout_column="2"
-                grid:layout_gravity="center_horizontal"/>
 
             <android.support.v7.widget.AppCompatImageView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_marginEnd="0dp"
                 android:src="@drawable/ic_outline_location_on_24px"
-                grid:layout_column="3"
-                grid:layout_gravity="center_vertical|right"
-                grid:layout_columnWeight="2"
+                grid:layout_constraintEnd_toStartOf="@id/listingLocation"
+                grid:layout_constraintTop_toTopOf="parent"
+                grid:layout_constraintBottom_toBottomOf="@id/listingLocation"
+                android:paddingTop="8dp"
                 />
 
             <TextView
                 android:id="@+id/listingLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_marginEnd="8dp"
-                android:text="Location"
+                android:text="@string/label_location"
                 android:textSize="18sp"
-                grid:layout_column="4"
-                grid:layout_gravity="end|center_vertical"
+                grid:layout_constraintEnd_toEndOf="parent"
+                grid:layout_constraintBottom_toTopOf="@id/ListingPrice"
+                grid:layout_constraintTop_toTopOf="parent"
                 />
-
-
-
-            <RatingBar
-                android:id="@+id/ratingHired"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.RatingBar.Small"
-                android:layout_marginBottom="8dp"
-                android:progressBackgroundTint="@color/colorBlack"
-                android:progressBackgroundTintMode="src_atop"
-                android:progressTint="@color/colorPrimaryDark"
-                android:progressTintMode="src_atop"
-                grid:layout_gravity="center_vertical"
-                />
-
-
 
             <TextView
                 android:id="@+id/ListingPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_marginEnd="8dp"
-                android:text="0"
+                android:text=""
                 android:textSize="18sp"
-                grid:layout_column="4"
-                grid:layout_gravity="end|center_vertical"
+                grid:layout_constraintEnd_toEndOf="parent"
+                grid:layout_constraintBottom_toBottomOf="parent"
+                grid:layout_constraintTop_toBottomOf="@id/listingLocation"
                 />
 
 
-        </android.support.v7.widget.GridLayout>
+        </android.support.constraint.ConstraintLayout>
 
 
         <TextView
@@ -211,7 +186,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
             android:gravity="start"
-            android:text="Opis"
+            android:text="@string/label_description"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -225,11 +200,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginEnd="14dp"
-            android:text="Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusant doloremque laudantium, totam rem aperiam eaque ipsa.\n"
+            android:text="@string/default_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/descriptionTitle"/>
 
+
+
+
+
+        <!-- APPLICANT VIEWING ACTIVE LISTING, CAN APPLY-->
         <Button
             android:id="@+id/buttonInterested"
             android:layout_width="wrap_content"
@@ -239,16 +219,228 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="12dp"
             android:backgroundTint="@color/colorPrimary"
-            android:text="zanima me"
+            android:text="@string/button_interested"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"/>
+
+
+
+        <!-- APPLICANT APPLIED, WAITING FOR DEAL -->
+        <Button
+            android:id="@+id/buttonUnapply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/button_uninterested"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonMessage"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/buttonMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/button_message"
             android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@id/buttonUnapply"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"/>
+
+
+
+
+        <!-- APPLICANT ACCEPT DEAL -->
+        <me.biubiubiu.justifytext.library.JustifyTextView
+            android:id="@+id/acceptDealQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/accept_deal_question"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listingDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"
+            />
+        <Button
+            android:id="@+id/buttonAcceptDeal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/yes"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonNotAcceptDeal"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@id/buttonUnapply"
+            app:layout_constraintTop_toBottomOf="@+id/acceptDealQuestion"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/buttonNotAcceptDeal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/no"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toEndOf="@id/buttonAcceptDeal"
+            app:layout_constraintTop_toBottomOf="@+id/acceptDealQuestion"
+            android:visibility="gone"/>
+
+
+        <!-- APPLICANT - FINISH JOB -->
+        <Button
+            android:id="@+id/buttonFinishJob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/finish_job"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"/>
 
 
 
+        <!-- OWNER - SHOW LIST OF APPLICANTS -->
+
+        <TextView
+            android:id="@+id/applicantsListTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="start"
+            android:text="@string/label_list_of_applicants"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"/>
+        <LinearLayout
+            android:id="@+id/applicantsList"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/applicantsListTitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone">
+
+        </LinearLayout>
+
+
+        <!-- OWNER SHOW - WAITING FOR APPLICANT -->
+        <me.biubiubiu.justifytext.library.JustifyTextView
+            android:id="@+id/applicantNotAccepted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/applicant_not_accepted_deal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+            android:visibility="gone"
+
+            />
+
+
+
+
+        <!-- OWNER SHOW QR CODE - APPLICANT ACCEPTED THE DEAL -->
+
+        <Button
+            android:id="@+id/listingQrCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listingDescription"
+            android:visibility="gone"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/finish_job"
+            android:textColor="@color/colorWhite"
+            />
+        <me.biubiubiu.justifytext.library.JustifyTextView
+            android:id="@+id/finishJobOwnerHint"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listingQrCode"
+            android:text="@string/finish_job_owner_hint"
+            />
+
+        <me.biubiubiu.justifytext.library.JustifyTextView
+            android:id="@+id/finishJobApplicantHint"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listingQrCode"
+            android:text="@string/finish_job_applicant_hint"
+            />
+        <TextView
+            android:id="@+id/jobFinishedText"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="30sp"
+            android:text="@string/job_finished_text"
+            android:textColor="@color/colorGreen"
+            app:layout_constraintTop_toBottomOf="@+id/listingDescription"
+
+            />
     </android.support.constraint.ConstraintLayout>
 
 </ScrollView>

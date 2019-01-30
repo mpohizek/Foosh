@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
+
+    <TextView
+        android:id="@+id/drawerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/search_settings"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/colorWhite"/>
+
+    <GridLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:columnCount="1"
+        android:rowCount="2"
+        android:background="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/drawerTitle">
+
+        <TextView
+            android:id="@+id/text_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_row="0"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/sort_by"
+            android:textColor="@color/colorWhite"/>
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner_sort_by"
+            style="@style/SpinnerWhiteTheme"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_row="1"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"/>
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/layout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:columnCount="1"
+        android:rowCount="2"
+        android:background="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout1">
+
+        <TextView
+            android:id="@+id/text_price"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_row="0"
+            android:textColor="@color/colorWhite"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/pick_category" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner_categories"
+            style="@style/SpinnerWhiteTheme"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_row="1"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"/>
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/layout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:columnCount="8"
+        android:rowCount="2"
+        android:background="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout2">
+
+        <TextView
+            android:id="@+id/text_category"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_row="0"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorWhite"
+            android:text="@string/price_range" />
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/minPriceFilter"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:hint="@string/price_from"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:backgroundTint="@color/colorWhite"
+            android:inputType="numberDecimal"
+            android:text=""
+            android:imeOptions="actionDone" />
+
+        <TextView
+            android:id="@+id/textDash"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="-30dp"
+            android:layout_row="1"
+            android:layout_column="2"
+            android:textColor="@color/colorWhite"
+            android:text="@string/price_between" />
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/maxPriceFilter"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_column="3"
+            android:hint="@string/price_to"
+            android:inputType="numberDecimal"
+            android:backgroundTint="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:textColor="@color/colorWhite"
+            android:text=""
+            android:imeOptions="actionDone" />
+
+        <TextView
+            android:id="@+id/textDash2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_row="1"
+            android:layout_column="5"
+            android:textColor="@color/colorWhite"
+            android:text="@string/currency" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/clearFilter"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginEnd="28dp"
+            android:src="@drawable/ic_baseline_close_24px"
+            android:layout_column="7"
+            android:clickable="true"
+            android:focusable="true"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:tint="@color/colorWhite"
+            android:layout_row="1"
+            app:layout_constraintTop_toBottomOf="@+id/textUploadImage" />
+
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/layout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:columnCount="1"
+        android:rowCount="2"
+        android:backgroundTint="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout3">
+
+        <TextView
+            android:id="@+id/text_city"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_row="0"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorWhite"
+            android:text="@string/pick_city" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/cities_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:hint="@string/pick_city"
+                android:textColorHint="@color/colorWhite"
+                android:textColor="@color/colorWhite"
+                android:backgroundTint="@color/colorWhite"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/remove_autocomplete_text"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginEnd="28dp"
+                android:layout_gravity="end"
+                android:src="@drawable/ic_baseline_close_24px"
+                android:clickable="true"
+                android:focusable="true"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:tint="@color/colorWhite" />
+
+        </FrameLayout>
+
+    </GridLayout>
+
+    <TextView
+        android:id="@+id/button_done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/done"
+        android:focusable="true"
+        android:clickable="true"
+        android:gravity="end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout4"
+        android:textColor="@color/colorWhite"/>
+
+
+</android.support.constraint.ConstraintLayout>
