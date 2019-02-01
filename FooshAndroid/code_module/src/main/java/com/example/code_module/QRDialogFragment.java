@@ -124,12 +124,16 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
 
     /**
      * Metoda sučelja DialogFragmentItem-a za dohvaćanje imena dijaloga
-     * @param context
      * @return
      */
     @Override
-    public String getName(Context context) {
+    public String getName() {
         return "QRDialogFragment";
+    }
+
+    @Override
+    public boolean getIsGenerator() {
+        return true;
     }
 
     /**

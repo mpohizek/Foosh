@@ -10,7 +10,8 @@ import android.support.v4.app.FragmentManager;
  */
 public interface DialogFragmentItem {
     public DialogFragment getFragment();
-    public String getName(Context context);
+    public String getName();
+    public boolean getIsGenerator();
     public void destroyFragment();
     public void showFragment(FragmentManager fragmentManager, String tag);
 }

@@ -317,7 +317,7 @@
 
 
         <!-- APPLICANT - FINISH JOB -->
-        <Button
+ <!--      <Button
             android:id="@+id/buttonFinishJob"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -333,6 +333,15 @@
             app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintTop_toBottomOf="@+id/listingDescription"
             android:visibility="gone"/>
+        -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/listingModularApplicant"
+            app:layout_constraintTop_toBottomOf="@id/listingDescription">
+
+        </LinearLayout>
 
 
 
@@ -388,7 +397,7 @@
 
 
         <!-- OWNER SHOW QR CODE - APPLICANT ACCEPTED THE DEAL -->
-
+<!--
         <Button
             android:id="@+id/listingQrCode"
             android:layout_width="wrap_content"
@@ -401,6 +410,15 @@
             android:text="@string/finish_job"
             android:textColor="@color/colorWhite"
             />
+            -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/listingModularOwner"
+            app:layout_constraintTop_toBottomOf="@id/listingDescription">
+
+        </LinearLayout>
         <me.biubiubiu.justifytext.library.JustifyTextView
             android:id="@+id/finishJobOwnerHint"
             android:visibility="gone"
@@ -410,7 +428,7 @@
             android:layout_marginEnd="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listingQrCode"
+            app:layout_constraintTop_toBottomOf="@+id/listingModularOwner"
             android:text="@string/finish_job_owner_hint"
             />
 
@@ -423,7 +441,7 @@
             android:layout_marginEnd="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listingQrCode"
+            app:layout_constraintTop_toBottomOf="@+id/listingModularOwner"
             android:text="@string/finish_job_applicant_hint"
             />
         <TextView

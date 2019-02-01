@@ -297,8 +297,8 @@ public class MainFeedListingsEndlessRecyclerViewAdapter extends RecyclerView.Ada
             }
 
             if(listing.getImages()!= null){
-                Picasso.get().load(listing.getImages().get(0)).centerCrop().fit().placeholder(R.drawable.avatar)
-                        .error(R.drawable.ic_launcher_foreground).into(viewHolderRow.image);
+                //Picasso.get().load(listing.getImages().get(0)).centerCrop().fit().placeholder(R.drawable.avatar)
+                 //       .error(R.drawable.ic_launcher_foreground).into(viewHolderRow.image);
             }
             viewHolderRow.setListingID(listing.getId());
             viewHolderRow.cardView.setOnClickListener(new View.OnClickListener() {

@@ -165,12 +165,16 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
 
     /**
      * Vraća ime fragmenta
-     * @param context
      * @return
      */
     @Override
-    public String getName(Context context) {
+    public String getName() {
         return "CameraDialogFragment";
+    }
+
+    @Override
+    public boolean getIsGenerator() {
+        return false;
     }
 
     @Override

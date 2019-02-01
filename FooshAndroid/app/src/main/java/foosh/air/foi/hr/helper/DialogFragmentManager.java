@@ -13,49 +13,44 @@ import java.util.Map;
  * Utility klasa za pohranu svih DialogFragmenat-a, odnosno DialogFragmentItem-a
  */
 public class DialogFragmentManager {
-    public static final int QRCODE = 0;
-    public static final int QRSCANNER = 1;
+    //public static final int QRCODE = 0;
+    //public static final int QRSCANNER = 1;
 
     private FragmentManager fragmentManager;
 
-
-    private Map<Integer, DialogFragmentItem> dialogFragmentItems;
+    private Map<String, DialogFragmentItem> dialogFragmentItems;
     {
         dialogFragmentItems = new HashMap<>();
     }
 
-    public void getResult(int code){
-        addDialogFragmentItems(code);
-        dialogFragmentItems.get(code).showFragment(fragmentManager, "F");
+    public Map<String, DialogFragmentItem> getDialogFragmentItems() {
+        return dialogFragmentItems;
+    }
+
+    public void getResult(String key){
+        dialogFragmentItems.get(key).showFragment(fragmentManager,"F");
     }
 
     public DialogFragmentManager(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
+        DialogFragmentItem dialogFragmentItem = new QRDialogFragment();
+        addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
+
+        dialogFragmentItem = new CameraDialogFragment();
+        addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
+
+
+
+        dialogFragmentItem = new QRDialogFragment();
+        addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
+
+        dialogFragmentItem = new CameraDialogFragment();
+        addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
     }
 
-    /**
-     * Dohvaćanje DialogFragmentItem-a na temelju ključa
-     * @param key
-     * @return
-     */
-    public DialogFragmentItem getDialogFragment(int key){
-        return dialogFragmentItems.get(key);
+
+    public void addDialogFragment(String key, DialogFragmentItem item){
+        dialogFragmentItems.put(key, item);
     }
 
-    public void addDialogFragmentItems(int code) {
-        if (!dialogFragmentItems.containsKey(code)){
-            DialogFragmentItem dfi;
-            switch (code){
-                case QRCODE:
-                    dfi = new QRDialogFragment();
-                    break;
-                case QRSCANNER:
-                    dfi = new CameraDialogFragment();
-                    break;
-                default:
-                    dfi = new CameraDialogFragment();
-            }
-            dialogFragmentItems.put(code, dfi);
-        }
-    }
 }
