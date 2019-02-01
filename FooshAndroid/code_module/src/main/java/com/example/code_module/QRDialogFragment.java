@@ -1,4 +1,4 @@
-package foosh.air.foi.hr.fragments;
+package com.example.code_module;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,15 +18,12 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.UUID;
 
-import foosh.air.foi.hr.interfaces.DialogFragmentItem;
-import foosh.air.foi.hr.R;
-
 /**
  * DialogFragment za skeniranje QR koda
  */
 public class QRDialogFragment extends DialogFragment implements DialogFragmentItem {
     private String mQRCode;
-    private OnQRBitmapListener mListener;
+    private FragmentCommunication mListener;
 
     public QRDialogFragment() {
         // Required empty public constructor
@@ -57,7 +54,7 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
         View view =  inflater.inflate(R.layout.dialogfragment_qr, container, false);
         ImageView imageView = view.findViewById(R.id.qr_code);
         imageView.setImageBitmap(createQRBitmap(mQRCode));
-        mListener.onQRShown(this, mQRCode);
+        mListener.onCompleted(mQRCode);
         ImageButton exitButton = (ImageButton) view.findViewById(R.id.button_exit);
         exitButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -71,7 +68,6 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
                     }
                 }
         );
-
         return view;
     }
 
@@ -103,11 +99,11 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnQRBitmapListener) {
-            mListener = (OnQRBitmapListener) context;
+        if (context instanceof FragmentCommunication) {
+            mListener = (FragmentCommunication) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement FragmentCommunication");
         }
     }
 
@@ -152,12 +148,5 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
     @Override
     public void showFragment(FragmentManager fragmentManager, String tag) {
         show(fragmentManager, tag);
-    }
-
-    /**
-     * Sučelje za komunikaciju sa aktivnošću pozivatelja
-     */
-    public interface OnQRBitmapListener{
-        void onQRShown(DialogFragmentItem self, String qrCode);
     }
 }

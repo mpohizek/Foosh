@@ -1,4 +1,4 @@
-package foosh.air.foi.hr.fragments;
+package com.example.code_module;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -19,8 +19,6 @@ import com.google.zxing.Result;
 
 import java.util.Collections;
 
-import foosh.air.foi.hr.interfaces.DialogFragmentItem;
-import foosh.air.foi.hr.R;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 /**
@@ -29,7 +27,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class CameraDialogFragment extends DialogFragment implements ZXingScannerView.ResultHandler, DialogFragmentItem {
     private static final int MY_CAMERA_REQUEST_CODE = 101;
 
-    private OnQRCameraListener mListener;
+    private FragmentCommunication mListener;
 
     private ZXingScannerView zXingScannerView;
 
@@ -105,11 +103,11 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof OnQRCameraListener) {
-            mListener = (OnQRCameraListener) context;
+        if (context instanceof FragmentCommunication) {
+            mListener = (FragmentCommunication) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnQRCameraListener");
+                    + " must implement FragmentCommunication");
         }
     }
 
@@ -139,7 +137,7 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
             Log.d("Vibration", "Cannot vibrate");
         }
 
-        mListener.onQRScanned(this, result.getText());
+        mListener.onCompleted(result.getText());
     }
 
     /**
@@ -183,12 +181,5 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
     @Override
     public void showFragment(FragmentManager fragmentManager, String tag) {
         show(fragmentManager, tag);
-    }
-
-    /**
-     * Sučelje za komunikaciju sa fragmetom, sluzi dobavljanju skeniranog QR koda
-     */
-    public interface OnQRCameraListener{
-        void onQRScanned(DialogFragmentItem self, String qrCode);
     }
 }
