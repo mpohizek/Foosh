@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -20,10 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.code_module.CameraDialogFragment;
-import com.example.code_module.DialogFragmentItem;
-import com.example.code_module.FragmentCommunication;
-import com.example.code_module.QRDialogFragment;
+import com.example.base.interfaces.DialogFragmentItem;
+import com.example.base.interfaces.FragmentCommunication;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -242,10 +239,9 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
         userProfilePhoto = (CircleImageView) findViewById(R.id.userProfileImage);
         behindImages = (TextView) findViewById(R.id.behindImages);
 
-
         for (DialogFragmentItem item : dialogFragmentManager.getDialogFragmentItems().values()) {
             Button button = new Button(this);
-            button.setText(item.getName());
+            button.setText(item.getShortName());
             button.setTag(item.getName());
             if(item.getIsGenerator()){
                 modularOwner.addView(button);

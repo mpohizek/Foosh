@@ -2,9 +2,11 @@ package foosh.air.foi.hr.helper;
 
 import android.support.v4.app.FragmentManager;
 
+import com.example.base.interfaces.DialogFragmentItem;
 import com.example.code_module.CameraDialogFragment;
-import com.example.code_module.DialogFragmentItem;
 import com.example.code_module.QRDialogFragment;
+import com.example.pin_module.GenPINDialogFragment;
+import com.example.pin_module.ReadPINDialogFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +15,6 @@ import java.util.Map;
  * Utility klasa za pohranu svih DialogFragmenat-a, odnosno DialogFragmentItem-a
  */
 public class DialogFragmentManager {
-    //public static final int QRCODE = 0;
-    //public static final int QRSCANNER = 1;
-
     private FragmentManager fragmentManager;
 
     private Map<String, DialogFragmentItem> dialogFragmentItems;
@@ -39,18 +38,19 @@ public class DialogFragmentManager {
         dialogFragmentItem = new CameraDialogFragment();
         addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
 
-
-
-        dialogFragmentItem = new QRDialogFragment();
+        dialogFragmentItem = new GenPINDialogFragment();
         addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
 
-        dialogFragmentItem = new CameraDialogFragment();
+        dialogFragmentItem = new ReadPINDialogFragment();
         addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
+
     }
 
 
-    public void addDialogFragment(String key, DialogFragmentItem item){
-        dialogFragmentItems.put(key, item);
+    private void addDialogFragment(String key, DialogFragmentItem item){
+        if (!dialogFragmentItems.containsKey(key)){
+            dialogFragmentItems.put(key, item);
+        }
     }
 
 }

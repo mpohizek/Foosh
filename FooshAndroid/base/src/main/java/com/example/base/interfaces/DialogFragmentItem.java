@@ -1,6 +1,5 @@
-package com.example.code_module;
+package com.example.base.interfaces;
 
-import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 
@@ -11,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 public interface DialogFragmentItem {
     public DialogFragment getFragment();
     public String getName();
+    public String getShortName();
     public boolean getIsGenerator();
     public void destroyFragment();
     public void showFragment(FragmentManager fragmentManager, String tag);

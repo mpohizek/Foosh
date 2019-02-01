@@ -1,4 +1,4 @@
-package com.example.code_module;
+package com.example.base.interfaces;
 
 /**
  * Sučelje za komunikaciju modula s aktivnošću pozivatelja

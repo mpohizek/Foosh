@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.base.interfaces.DialogFragmentItem;
+import com.example.base.interfaces.FragmentCommunication;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
@@ -170,6 +172,11 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
     @Override
     public String getName() {
         return "CameraDialogFragment";
+    }
+
+    @Override
+    public String getShortName() {
+        return "Skeniraj QR kod";
     }
 
     @Override

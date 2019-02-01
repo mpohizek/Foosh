@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.example.base.interfaces.DialogFragmentItem;
+import com.example.base.interfaces.FragmentCommunication;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
@@ -129,6 +131,11 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
     @Override
     public String getName() {
         return "QRDialogFragment";
+    }
+
+    @Override
+    public String getShortName() {
+        return "Generiraj QR kod";
     }
 
     @Override
