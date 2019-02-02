@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.base.interfaces.DialogFragmentItem;
-import com.example.base.interfaces.FragmentCommunication;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,7 +46,7 @@ import me.biubiubiu.justifytext.library.JustifyTextView;
 /**
  * Klasa aktivnosti za detaljni prikaz oglasa
  */
-public class ListingDetailActivity extends NavigationDrawerBaseActivity implements FragmentCommunication {
+public class ListingDetailActivity extends NavigationDrawerBaseActivity implements DialogFragmentItem.FragmentCommunication {
     private static final String KEY_PREFIX = "foosh.air.foi.hr.MyListingsFragment.";
     private static final String ARG_TYPE_KEY = KEY_PREFIX + "fragment-key";
     private String fragmentKey;
@@ -101,7 +100,7 @@ public class ListingDetailActivity extends NavigationDrawerBaseActivity implemen
         getLayoutInflater().inflate(R.layout.fragment_listing_detail, contentLayout);
 
         fragmentManager = getSupportFragmentManager();
-        dialogFragmentManager = new DialogFragmentManager(fragmentManager);
+        dialogFragmentManager = new DialogFragmentManager(fragmentManager, this);
 
         Toolbar toolbar = findViewById(R.id.id_toolbar_main);
         setSupportActionBar(toolbar);

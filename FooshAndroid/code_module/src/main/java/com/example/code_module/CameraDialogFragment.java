@@ -15,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.base.interfaces.DialogFragmentItem;
-import com.example.base.interfaces.FragmentCommunication;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
@@ -29,7 +28,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class CameraDialogFragment extends DialogFragment implements ZXingScannerView.ResultHandler, DialogFragmentItem {
     private static final int MY_CAMERA_REQUEST_CODE = 101;
 
-    private FragmentCommunication mListener;
+    private DialogFragmentItem.FragmentCommunication mListener;
 
     private ZXingScannerView zXingScannerView;
 
@@ -95,22 +94,6 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
     public void onPause() {
         super.onPause();
         zXingScannerView.stopCamera();
-    }
-
-    /**
-     * Dohvat konteksta za potrebe pozivanja metoda akrivnosti
-     * @param context
-     */
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof FragmentCommunication) {
-            mListener = (FragmentCommunication) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement FragmentCommunication");
-        }
     }
 
     @Override
@@ -192,5 +175,11 @@ public class CameraDialogFragment extends DialogFragment implements ZXingScanner
     @Override
     public void showFragment(FragmentManager fragmentManager, String tag) {
         show(fragmentManager, tag);
+    }
+
+    @Override
+    public DialogFragment setListener(FragmentCommunication context) {
+        mListener = context;
+        return this;
     }
 }

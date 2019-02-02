@@ -1,6 +1,5 @@
 package com.example.pin_module;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -11,13 +10,12 @@ import android.widget.ImageButton;
 
 import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.example.base.interfaces.DialogFragmentItem;
-import com.example.base.interfaces.FragmentCommunication;
 
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 
 public class GenPINDialogFragment extends DialogFragment implements DialogFragmentItem {
-    private FragmentCommunication mListener;
+    private DialogFragmentItem.FragmentCommunication mListener;
 
     private String pin;
     private PinEntryEditText pinEntry;
@@ -95,22 +93,6 @@ public class GenPINDialogFragment extends DialogFragment implements DialogFragme
         return format.format(num);
     }
 
-    /**
-     * Dohvat konteksta za potrebe pozivanja metoda aktivnosti
-     * @param context
-     */
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof FragmentCommunication) {
-            mListener = (FragmentCommunication) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement FragmentCommunication");
-        }
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -149,5 +131,11 @@ public class GenPINDialogFragment extends DialogFragment implements DialogFragme
     @Override
     public void showFragment(FragmentManager fragmentManager, String tag) {
         show(fragmentManager, tag);
+    }
+
+    @Override
+    public DialogFragment setListener(FragmentCommunication context) {
+        mListener = context;
+        return this;
     }
 }

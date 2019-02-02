@@ -1,6 +1,5 @@
 package com.example.code_module;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -12,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.example.base.interfaces.DialogFragmentItem;
-import com.example.base.interfaces.FragmentCommunication;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
@@ -25,7 +23,7 @@ import java.util.UUID;
  */
 public class QRDialogFragment extends DialogFragment implements DialogFragmentItem {
     private String mQRCode;
-    private FragmentCommunication mListener;
+    private DialogFragmentItem.FragmentCommunication mListener;
 
     public QRDialogFragment() {
         // Required empty public constructor
@@ -99,17 +97,6 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof FragmentCommunication) {
-            mListener = (FragmentCommunication) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement FragmentCommunication");
-        }
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -159,5 +146,11 @@ public class QRDialogFragment extends DialogFragment implements DialogFragmentIt
     @Override
     public void showFragment(FragmentManager fragmentManager, String tag) {
         show(fragmentManager, tag);
+    }
+
+    @Override
+    public DialogFragment setListener(FragmentCommunication context) {
+        mListener = context;
+        return this;
     }
 }

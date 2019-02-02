@@ -16,6 +16,7 @@ import java.util.Map;
  */
 public class DialogFragmentManager {
     private FragmentManager fragmentManager;
+    private DialogFragmentItem.FragmentCommunication context;
 
     private Map<String, DialogFragmentItem> dialogFragmentItems;
     {
@@ -30,27 +31,30 @@ public class DialogFragmentManager {
         dialogFragmentItems.get(key).showFragment(fragmentManager,"F");
     }
 
-    public DialogFragmentManager(FragmentManager fragmentManager) {
+    public DialogFragmentManager(FragmentManager fragmentManager, DialogFragmentItem.FragmentCommunication context) {
         this.fragmentManager = fragmentManager;
+        this.context = context;
+
         DialogFragmentItem dialogFragmentItem = new QRDialogFragment();
+        dialogFragmentItem.setListener(context);
         addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
 
         dialogFragmentItem = new CameraDialogFragment();
+        dialogFragmentItem.setListener(context);
         addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
 
         dialogFragmentItem = new GenPINDialogFragment();
+        dialogFragmentItem.setListener(context);
         addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
 
         dialogFragmentItem = new ReadPINDialogFragment();
+        dialogFragmentItem.setListener(context);
         addDialogFragment(dialogFragmentItem.getName(), dialogFragmentItem);
-
     }
-
 
     private void addDialogFragment(String key, DialogFragmentItem item){
         if (!dialogFragmentItems.containsKey(key)){
             dialogFragmentItems.put(key, item);
         }
     }
-
 }
